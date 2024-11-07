@@ -5,6 +5,22 @@
 | 2024-11-04 | Isaac, Kalle, Malte, Asim, Jessie, Nas | First meeting, organizational matters                                        |
 | 2024-11-07 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Decide ideas for pitch presentation. Create initial slides                   |
 
+---
+
+# Attendance Tracker
+✅ = Present | ❌ = Absent
+
+| Name     | Assignment 1  | Assignment 2 |
+|----------|---------------|--------------|
+| Kalle    | ✅            |              |
+| Malte    | ✅            |              |
+| Isaac    | ✅            |              |
+| Nas      | ✅            |              |
+| Jessie   | ✅            |              |
+| Asim     | ✅            |              |
+
+---
+
 # Detailed Meeting Descriptions
 
 ### Meeting 1 - Monday, 04-11-24
@@ -26,3 +42,5 @@
 * Further discussed challenges of obtaining data
 
 **TODO:** Obtain data for top-3 ideas before ideas-pitch presentation
+
+---
