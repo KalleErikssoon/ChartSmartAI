@@ -10,14 +10,14 @@
 # Attendance Tracker
 ✅ = Present | ❌ = Absent
 
-| Name     | Assignment 1  | Assignment 2 |
-|----------|---------------|--------------|
-| Kalle    | ✅            |              |
-| Malte    | ✅            |              |
-| Isaac    | ✅            |              |
-| Nas      | ✅            |              |
-| Jessie   | ✅            |              |
-| Asim     | ✅            |              |
+| Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
+|----------|------------------------|----------------------|
+| Kalle    | ✅✅                  |                      |
+| Malte    | ✅✅                  |                      |
+| Isaac    | ✅✅                  |                      |
+| Nas      | ✅✅                  |                      |
+| Jessie   | ✅✅                  |                      |
+| Asim     | ✅✅                  |                      |
 
 ---
 
