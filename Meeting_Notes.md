@@ -16,6 +16,8 @@
 
 **TODO:** Each team member must generate 1-2 project ideas for discussion at the next meeting.
 
+---
+
 ### Meeting 2 - Thursday, 07-11-24
 **Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
 * Each team member presented new ideas
