@@ -5,7 +5,7 @@
 | 2024-11-04 | Isaac, Kalle, Malte, Asim, Jessie, Nas | First meeting, organizational matters                                        |
 | 2024-11-07 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Decide ideas for pitch presentation. Create initial slides                   |
 | 2024-11-11 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finalize slides for pitch meeting                                            |
-
+| 2024-11-14 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches                     |
 ---
 
 # Attendance Tracker
@@ -13,12 +13,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅                  |                      |
-| Malte    | ✅✅✅                  |                      |
-| Isaac    | ✅✅✅                  |                      |
-| Nas      | ✅✅✅                  |                      |
-| Jessie   | ✅✅✅                  |                      |
-| Asim     | ✅✅✅                  |                      |
+| Kalle    | ✅✅✅✅                  |                      |
+| Malte    | ✅✅✅✅                  |                      |
+| Isaac    | ✅✅✅✅                  |                      |
+| Nas      | ✅✅✅✅                  |                      |
+| Jessie   | ✅✅✅✅                  |                      |
+| Asim     | ✅✅✅✅                  |                      |
 
 ---
 
@@ -53,5 +53,13 @@
 * Prepared for presentation 
 
 **TODO:** Present at pitch meeting, plan next steps
+
+---
+### Meeting 4 - Thursday, 14-11-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Discussed training approaches for the system.
+* Discussed specific implementation details for the training phase.
+
+**TODO:** Contunue writing assignment 1 
 
 ---
