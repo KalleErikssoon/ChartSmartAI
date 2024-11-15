@@ -1,5 +1,4 @@
 # Ignore environment variables file
 .env
 # Ignore temp python files
-stock_project/stock_app/__pycache__/
-stock_project/stock_project/__pycache__/
+**/__pycache__/
