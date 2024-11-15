@@ -1,6 +1,12 @@
-# group2
+# Group 2 - Stock market prediction system
 
-
+## Configuring Django project - Environment Variables (API keys)
+1. Create a '.env' file in the root of the Django project (same level as 'manage.py')
+2. Add the following to '.env':
+```
+    ALPACA_API_KEY="YOUR_API_KEY"
+    ALPACA_SECRET_KEY="YOUR_SECRET_KEY"
+```
 
 ## Getting started
 
