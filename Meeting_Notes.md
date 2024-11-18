@@ -5,7 +5,9 @@
 | 2024-11-04 | Isaac, Kalle, Malte, Asim, Jessie, Nas | First meeting, organizational matters                                        |
 | 2024-11-07 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Decide ideas for pitch presentation. Create initial slides                   |
 | 2024-11-11 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finalize slides for pitch meeting                                            |
-| 2024-11-14 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches                     |
+| 2024-11-14 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches                                                |
+| 2024-11-18 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches and data, evaluation methods                   |
+
 ---
 
 # Attendance Tracker
@@ -13,12 +15,13 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅                  |                      |
-| Malte    | ✅✅✅✅                  |                      |
-| Isaac    | ✅✅✅✅                  |                      |
-| Nas      | ✅✅✅✅                  |                      |
-| Jessie   | ✅✅✅✅                  |                      |
-| Asim     | ✅✅✅✅                  |                      |
+| Kalle    | ✅✅✅✅✅            |                      |
+| Malte    | ✅✅✅✅✅            |                      |
+| Isaac    | ✅✅✅✅✅            |                      |
+| Nas      | ✅✅✅✅✅            |                      |
+| Jessie   | ✅✅✅✅✅            |                      |
+| Asim     | ✅✅✅✅✅            |                      |
+
 
 ---
 
@@ -61,5 +64,17 @@
 * Discussed specific implementation details for the training phase.
 
 **TODO:** Contunue writing assignment 1 
+
+---
+
+### Meeting 5 - Monday, 18-11-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Further discussed training approaches for the system.
+* Further discussed specific implementation details for the training phase.
+* Discussed division of initial issues, such as data cleaning, the website and the model training section
+* 3 initial issues, 1 for each invesment strategy (RSI, MACD, EMA)
+* 
+
+**TODO:** Finish writing Assignment 1, start working  on data cleaning
 
 ---
