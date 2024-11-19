@@ -20,7 +20,7 @@ django.setup()
 from stockAPP.models import APPLbar
 
 # Initialize Alpaca stock data client
-client = StockHistoricalDataClient("PK0BNYKSH22YC7WCC5MC", "HIxPOZknJkvQ7OQ8qxGqOZypfLaFPKPNY5yUj5it")
+client = StockHistoricalDataClient("ALPACA_API_KEY", "ALPACA_SECRET_KEY")
 
 # Delete all existing data in the table
 APPLbar.objects.all().delete()
