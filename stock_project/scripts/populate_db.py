@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stock_project.settings')
 django.setup()
 
-from stock_app.models import StockData
+from stock_app.models import StockData, RSIModel
 
 # Alpaca API imports
 from alpaca.data import StockHistoricalDataClient
@@ -41,6 +41,17 @@ for symbol in stocks:
     # Insert retrieved data using Django ORM
     for bar in bars[symbol]:
         StockData.objects.create(
+            timestamp=bar.timestamp,
+            symbol=bar.symbol,
+            open=bar.open,
+            high=bar.high,
+            low=bar.low,
+            close=bar.close,
+            volume=bar.volume,
+            vwap=bar.vwap,
+            trade_count=bar.trade_count
+        )
+        RSIModel.objects.create(
             timestamp=bar.timestamp,
             symbol=bar.symbol,
             open=bar.open,
