@@ -1,5 +1,3 @@
-# Import necessary libraries
-# Import necessary libraries
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
@@ -15,25 +13,27 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from django.utils import timezone
-import ta  # TA-Lib for technical indicators
 
-# 设置 Django 环境变量
+# Setting Django environment variable
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_ai_test_project.settings')
 django.setup()
 from stockAPP.models import APPLbar
 
-# Initialize the Alpaca stock data client
-client = StockHistoricalDataClient("YOUR-API-KEY", "SECRET-KEY")
+# Initialize Alpaca stock data client
+client = StockHistoricalDataClient("PK0BNYKSH22YC7WCC5MC", "HIxPOZknJkvQ7OQ8qxGqOZypfLaFPKPNY5yUj5it")
 
-# Setting request parameters
+# Delete all existing data in the table
+APPLbar.objects.all().delete()
+
+# Request parameters
 request_params = StockBarsRequest(
     symbol_or_symbols="AAPL",
     timeframe=TimeFrame.Day,
-    start=datetime(2023, 1, 1),
-    end=datetime(2024, 4, 30)
+    start=datetime(2024, 1, 1),
+    end=datetime(2024, 11, 11)
 )
 
-# Getting bar data
+# Fetching bar data
 bars = client.get_stock_bars(request_params)
 
 for bar in bars["AAPL"]:
@@ -55,7 +55,7 @@ for bar in bars["AAPL"]:
     )
 print("...Data has been saved to the SQLite database...")
 
-# Query data
+# Query data from the database
 queryset = APPLbar.objects.all()
 data = list(queryset.values())
 
@@ -64,76 +64,65 @@ df = pd.DataFrame(data)
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 df.set_index('timestamp', inplace=True)
 
-# 添加技术指标
-df['SMA_20'] = ta.trend.sma_indicator(df['close'], window=20)  # 20日均线
-df['MACD'] = ta.trend.macd(df['close'])  # MACD 指标
-df['RSI'] = ta.momentum.rsi(df['close'], window=14)  # 相对强弱指标 RSI
-
-# 删除 NaN 值
+# Handle missing values
 df.fillna(method='bfill', inplace=True)
 
-# 归一化所有特征
-feature_columns = ['open', 'high', 'low', 'close', 'volume', 'SMA_20', 'MACD', 'RSI']
-scaler = MinMaxScaler(feature_range=(0, 1))
-scaled_data = scaler.fit_transform(df[feature_columns].values)
+# Feature selection
+df = df[['close']]  # Using 'close' for prediction
 
-# 创建时间序列
+# Normalize the features
+scaler = MinMaxScaler(feature_range=(0, 1))
+scaled_data = scaler.fit_transform(df)
+
+# **2. Create time series data**
 def create_sequences(data, sequence_length):
     x, y = [], []
     for i in range(len(data) - sequence_length):
-        x.append(data[i:i+sequence_length])
-        y.append(data[i+sequence_length, 3])  # 预测的是 'close' 收盘价（特征列表中的索引 3）
+        x.append(data[i:i+sequence_length])  # Use past `sequence_length` days as input
+        y.append(data[i+sequence_length, 0])  # Predict the `close` value of day `sequence_length+1`
     return np.array(x), np.array(y)
 
 sequence_length = 50
 x, y = create_sequences(scaled_data, sequence_length)
 
-# 划分训练集和测试集
-split_ratio = 0.8
-split_index = int(len(x) * split_ratio)
-x_train, x_test = x[:split_index], x[split_index:]
-y_train, y_test = y[:split_index], y[split_index:]
+# Split the data into training and testing sets (80% training, 20% testing)
+train_size = int(len(x) * 0.8)
+x_train, x_test = x[:train_size], x[train_size:]
+y_train, y_test = y[:train_size], y[train_size:]
 
-# 构建 LSTM 模型
+# **3. Build and train the LSTM model**
 model = Sequential([
-    LSTM(200, return_sequences=True, input_shape=(x_train.shape[1], x_train.shape[2])),  # 增加神经元数量
-    Dropout(0.4),
-    LSTM(200, return_sequences=False),
-    Dropout(0.4),
-    Dense(100),
+    LSTM(50, return_sequences=True, input_shape=(x_train.shape[1], x_train.shape[2])),
+    Dropout(0.2),
+    LSTM(50, return_sequences=False),
+    Dropout(0.2),
     Dense(1)
 ])
 
-# 编译模型
+# Compile the model
 model.compile(optimizer='adam', loss='mean_squared_error')
 
-# 使用 EarlyStopping 防止过拟合
-from tensorflow.keras.callbacks import EarlyStopping
-early_stopping = EarlyStopping(monitor='loss', patience=10)
+# Train the model
+model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=32, verbose=1)
 
-# 增加训练轮数
-model.fit(x_train, y_train, batch_size=32, epochs=100, callbacks=[early_stopping])
-
-# 预测测试集数据
+# **4. Predict and visualize results**
+# Predict the test set
 predicted_prices = model.predict(x_test)
 
-# 只反归一化 'close' 列（特征列表中的索引 3）
-scaler_partial = MinMaxScaler()
-scaler_partial.min_, scaler_partial.scale_ = scaler.min_[3], scaler.scale_[3]
-predicted_prices = scaler_partial.inverse_transform(predicted_prices.reshape(-1, 1))
+# Rescale the predictions and test values back to the original scale
+predicted_prices = scaler.inverse_transform(predicted_prices)
+y_test_actual = scaler.inverse_transform(y_test.reshape(-1, 1))
 
-# 反归一化 y_test
-y_test_inverse = scaler_partial.inverse_transform(y_test.reshape(-1, 1))
-
-# 绘制预测结果
+# Plot the results
 plt.figure(figsize=(14, 8))
-plt.plot(df.index[-len(y_test_inverse):], y_test_inverse, label="Actual Price", color='blue')
-plt.plot(df.index[-len(predicted_prices):], predicted_prices, label="Predicted Price", color='orange')
-plt.title("AAPL Stock Price Prediction")
-plt.xlabel("Date")
-plt.ylabel("Close Price (USD)")
+plt.plot(df.index[-len(y_test_actual):], y_test_actual, label='Actual Price', color='blue')
+plt.plot(df.index[-len(predicted_prices):], predicted_prices, label='Predicted Price', color='orange')
+plt.title('AAPL Stock Price Prediction Using LSTM')
+plt.xlabel('Date')
+plt.ylabel('Close Price (USD)')
 plt.legend()
 plt.grid(True)
+plt.savefig('AAPL_stock_prediction.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 
