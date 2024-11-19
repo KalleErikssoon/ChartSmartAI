@@ -7,6 +7,17 @@
 ALPACA_API_KEY=YOUR_API_KEY
 ALPACA_SECRET_KEY=YOUR_SECRET_KEY
 ```
+3. Populate Database (as needed):
+```sh
+python clear_db.py # clear SQLite db
+python populate_db.py # populate SQLite db with data requested from Alpaca API
+```
+4. Run Django server:
+```sh
+python manage.py makemigrations # if you apply changes to model, make migrations file
+python manage.py migrate # apply migrations to database
+python manage.py runserver # run Django server, optionally add 0.0.0.0:8000 for IP and port
+```
 
 ## Getting started
 
