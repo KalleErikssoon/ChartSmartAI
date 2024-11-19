@@ -4,8 +4,8 @@
 1. Create a '.env' file in the root of the Django project (same level as 'manage.py')
 2. Add the following to '.env':
 ```
-    ALPACA_API_KEY="YOUR_API_KEY"
-    ALPACA_SECRET_KEY="YOUR_SECRET_KEY"
+ALPACA_API_KEY=YOUR_API_KEY
+ALPACA_SECRET_KEY=YOUR_SECRET_KEY
 ```
 
 ## Getting started
