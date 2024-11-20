@@ -1,6 +1,11 @@
 # Group 2 - Stock market prediction system
 
 ## Configuring Django project - Environment Variables (API keys)
+0. Obtain dependencies:
+```
+conda env create -f environment.yml
+conda activate django-env
+```
 1. Create a '.env' file in the root of the Django project (same level as 'manage.py')
 2. Add the following to '.env':
 ```
