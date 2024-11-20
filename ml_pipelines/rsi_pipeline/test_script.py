@@ -68,7 +68,7 @@ df.set_index('timestamp', inplace=True)
 df.fillna(method='bfill', inplace=True)
 
 # Feature selection
-df = df[['close']]  # Using 'close' for prediction
+df = df[['open', 'high', 'low', 'close', 'volume']]  # Using 'close' for prediction
 
 # Normalize the features
 scaler = MinMaxScaler(feature_range=(0, 1))
@@ -79,7 +79,7 @@ def create_sequences(data, sequence_length):
     x, y = [], []
     for i in range(len(data) - sequence_length):
         x.append(data[i:i+sequence_length])  # Use past `sequence_length` days as input
-        y.append(data[i+sequence_length, 0])  # Predict the `close` value of day `sequence_length+1`
+        y.append(data[i+sequence_length, 3])  # Predict the `close` value of day `sequence_length+1`
     return np.array(x), np.array(y)
 
 sequence_length = 50
@@ -105,23 +105,26 @@ model.compile(optimizer='adam', loss='mean_squared_error')
 # Train the model
 model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, batch_size=32, verbose=1)
 
-# **4. Predict and visualize results**
-# Predict the test set
-predicted_prices = model.predict(x_test)
+# **4. # Predict and inverse transform
+y_pred = model.predict(x_test)
+full_shape = np.zeros((len(y_pred), scaled_data.shape[1]))
+full_shape[:, 3] = y_pred.flatten()
+inversed_data = scaler.inverse_transform(full_shape)
+predicted_close = inversed_data[:, 3]
 
-# Rescale the predictions and test values back to the original scale
-predicted_prices = scaler.inverse_transform(predicted_prices)
-y_test_actual = scaler.inverse_transform(y_test.reshape(-1, 1))
+full_shape_test = np.zeros((len(y_test), scaled_data.shape[1]))
+full_shape_test[:, 3] = y_test.flatten()  
+y_test_actual = scaler.inverse_transform(full_shape_test)[:, 3]
 
-# Plot the results
+# plot
 plt.figure(figsize=(14, 8))
-plt.plot(df.index[-len(y_test_actual):], y_test_actual, label='Actual Price', color='blue')
-plt.plot(df.index[-len(predicted_prices):], predicted_prices, label='Predicted Price', color='orange')
-plt.title('AAPL Stock Price Prediction Using LSTM')
-plt.xlabel('Date')
-plt.ylabel('Close Price (USD)')
-plt.legend()
-plt.grid(True)
+plt.plot(df.index[-len(y_test_actual):], y_test_actual, label='Actual Price', color='blue', linewidth=2)
+plt.plot(df.index[-len(predicted_close):], predicted_close, label='Predicted Price', color='orange', linestyle='--', linewidth=2)
+plt.title('AAPL Stock Price Prediction Using LSTM', fontsize=16)
+plt.xlabel('Date', fontsize=14)
+plt.ylabel('Close Price (USD)', fontsize=14)
+plt.legend(fontsize=12)
+plt.grid(True, linestyle='--', alpha=0.6)
 plt.savefig('AAPL_stock_prediction.png', dpi=300, bbox_inches='tight')
 plt.show()
 
