@@ -1,61 +1,90 @@
 import pandas as pd
 import sqlite3
 
-conn = sqlite3.connect('stock_project/db.sqlite3')
+class Labeler:
 
-# query to get the table to DataFrame
-query = "SELECT * FROM stock_app_stockdata"
-data = pd.read_sql_query(query, conn)
+    def __init__(self, csv_file_path="ml_pipelines/ema_pipeline/ema_data.csv", db_path="stock_project/db.sqlite3", table_name="stock_app_stockdata_ema", threshold=0.01):
+        self.csv_file_path = csv_file_path
+        self.db_path = db_path
+        self.table_name = table_name
+        self.threshold = threshold
 
-def create_label(data, threshold=0.01):
-    """
-    Label data as 'Buy (0)' , 'Sell(2)', or 'Hold(1)' based on the next day
-    Args:
-        data (pd.DataFrame): Stock data with a 'close' column.
-        threshold (float): Percentage change threshold for labeling.
-    Returns:
-        pd.DataFrame: Original data with an added 'label' column.
-    """
-    labels = []
-    for i in range(len(data) - 1):
-        current_close = data.loc[i, 'close']
-        next_close = data.loc[i + 1, 'close']
-        change = (next_close - current_close) 
+    def load_data(self):
+        #load CSV 
+        self.data = pd.read_csv(self.csv_file_path)
+        print(f"Loaded data from {self.csv_file_path}")
 
-        if change >= threshold:
-            labels.append("0")  # Buy
-        elif change <= -threshold:
-            labels.append("2")  # Sell
-        else:
-            labels.append("1")  # Hold
-    
-    labels.append(None)  #last data point has no next day price
-    data['label'] = labels
-    return data
+    def create_label(self):
+        #label data as 'Buy (0)' 'Sell (2)' or 'Hold (1)' based on the next days price.
+        labels = []
+        for i in range(len(self.data) - 1):
+            current_close = self.data.loc[i, 'close']
+            next_close = self.data.loc[i + 1, 'close']
+            change = (next_close - current_close)
 
-# add Labels to Data
-labeled_data = create_label(data)
+            if change >= self.threshold:
+                labels.append("0")  # Buy
+            elif change <= -self.threshold:
+                labels.append("2")  # Sell
+            else:
+                labels.append("1")  # Hold
+        
+        labels.append(None)  # last data point has no next day price
+        self.data['label'] = labels
+        print("Labels created for the data.")
 
-# database with Labels
-cursor = conn.cursor()
+    def save_to_database(self):
+        """Save the labeled data into the SQLite database."""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
 
-# add a lbel column 
-try:
-    cursor.execute("ALTER TABLE stock_app_stockdata ADD COLUMN label TEXT")
-except sqlite3.OperationalError:
-    # if already exists
-    pass
+        # make the table 
+        try:
+            cursor.execute(f"""
+                CREATE TABLE {self.table_name} (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    symbol TEXT,
+                    timestamp TEXT,
+                    open REAL,
+                    high REAL,
+                    low REAL,
+                    close REAL,
+                    volume INTEGER,
+                    trade_count INTEGER,
+                    vwap REAL,
+                    label TEXT
+                )
+            """)
+            print(f"Table {self.table_name} created successfully.")
+        except sqlite3.OperationalError:
+            print(f"Table {self.table_name} already exists.")
 
-# updat each row in the database with the new labels
-for index, row in labeled_data.iterrows():
-    if row['label'] is not None:  # Skip rows with None as the label
-        cursor.execute(
-            "UPDATE stock_app_stockdata SET label = ? WHERE id = ?",
-            (row['label'], row['id'])  # Update the 'label' column based on 'id'
-        )
+        # insert data to table
+        for _, row in self.data.iterrows():
+            cursor.execute(f"""
+                INSERT INTO {self.table_name} (
+                    symbol, timestamp, open, high, low, close, volume, trade_count, vwap, label
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                row['symbol'],
+                row['timestamp'],
+                row['open'],
+                row['high'],
+                row['low'],
+                row['close'],
+                row['volume'],
+                row['trade_count'],
+                row['vwap'],
+                row['label']
+            ))
+        
+        conn.commit()
+        conn.close()
+        print(f"Data successfully saved to the {self.table_name} table in the database.")
 
-# commit ot database and close connection
-conn.commit()
-conn.close()
-
-print("Database updated successfully with labels.")
+    def label_data(self):
+        """Execute the entire piplinep load data, label it and save it to the database."""
+        self.load_data()
+        self.create_label()
+        self.save_to_database()
+        print("Labeled successfully.")
