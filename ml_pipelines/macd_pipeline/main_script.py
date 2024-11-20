@@ -1,12 +1,16 @@
 from data_collection import DataCollector
+from labelling import DataLabeler
 
 def runpipeline():
     print("Starting pipeline...")
 
     # Step 1: Data Collection
     collector = DataCollector()
-    collecteddata = collector.collect_data()
+    collector.collect_data()
 
-    # Continue with subsequent pipeline steps...
+    #Step 2: Data Labeling
+    labeler = DataLabeler()
+    labeler.calcLabelsAndInsert()
+    
 
 runpipeline()
