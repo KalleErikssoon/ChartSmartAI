@@ -20,6 +20,9 @@ class Labeler:
         #price change percentage
         self.data['price_change'] = (self.data['future_price'] - self.data['close']) / self.data['close']
 
+        #change in ema value over time
+        self.data['ema_change'] =  (self.data['ema']) - self.data['ema'].shift(1)
+
         def label_function(row):
             if pd.isna(row['price_change']):
                 return None  # if there are no future price then return none
@@ -27,10 +30,12 @@ class Labeler:
             price_above_ema = row['close'] > row['ema']
             future_price_increasing = row['price_change'] > self.threshold
             future_price_decreasing = row['price_change'] < -self.threshold
+            ema_increasing = row['ema_change'] > 0
+            ema_decreasing = row['ema_change'] < 0
 
-            if price_above_ema and future_price_increasing:
+            if (price_above_ema or ema_increasing) and future_price_increasing:
                 return "0"  #buy
-            elif not price_above_ema and future_price_decreasing:
+            elif (not price_above_ema or ema_decreasing) and future_price_decreasing:
                 return "2"  #sell
             else:
                 return "1"  #hold
@@ -40,7 +45,7 @@ class Labeler:
         print("labels created for the data.")
 
         #drop columns that are not needed
-        self.data.drop(['future_price', 'price_change'], axis=1, inplace=True)
+        self.data.drop(['future_price', 'price_change', 'ema_change'], axis=1, inplace=True)
 
     def save_to_csv(self):
         self.data.to_csv(self.csv_file_path, index=False)
