@@ -3,10 +3,19 @@ from alpaca.data import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
-# Additional imports
+
 from datetime import datetime
 import pandas as pd
+
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Get the API key from the environment variable
+ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
+ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+
 
 
 class AlpacaDataCollector:
@@ -87,9 +96,7 @@ class AlpacaDataCollector:
 
 # Main script
 if __name__ == "__main__":
-    # Alpaca API credentials
-    ALPACA_API_KEY = "your_api_key_here"
-    ALPACA_SECRET_KEY = "your_secret_key_here"
+    
 
     # Stock symbols to fetch
     stock_symbols = ["NVDA", "AAPL", "MSFT", "AMZN", "GOOG", "META", "TSLA", "BRK.B", "TSM", "AVGO"]
