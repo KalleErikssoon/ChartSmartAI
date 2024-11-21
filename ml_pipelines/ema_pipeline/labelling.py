@@ -31,6 +31,10 @@ class Labeler:
         self.data['label'] = labels
         print("Labels created for the data.")
 
+    def save_to_csv(self):
+        self.data.to_csv(self.csv_file_path, index=False)
+        print(f"Data successfully saved to {self.csv_file_path}.")
+    
     # def save_to_database(self):
     #     """Save the labeled data into the SQLite database."""
     #     conn = sqlite3.connect(self.db_path)
@@ -84,4 +88,5 @@ class Labeler:
         """Execute the entire pipline load data, label it and save it to the database."""
         self.load_data()
         self.create_label()
+        self.save_to_csv()
         print("Labeled successfully.")
