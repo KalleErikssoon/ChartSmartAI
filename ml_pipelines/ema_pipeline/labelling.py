@@ -47,6 +47,10 @@ class Labeler:
         #drop columns that are not needed
         self.data.drop(['future_price', 'price_change', 'ema_change'], axis=1, inplace=True)
 
+    def data_cleaning(self):
+        self.data.dropna(subset=['label', 'ema'], inplace=True)
+        print("Removed values with missing label or EMA value.")
+
     def save_to_csv(self):
         self.data.to_csv(self.csv_file_path, index=False)
         print(f"data successfully saved to {self.csv_file_path}.")
@@ -55,5 +59,6 @@ class Labeler:
         """Load data, label it and save it to csv."""
         self.load_data()
         self.create_label()
+        self.data_cleaning()
         self.save_to_csv()
         print("Labeled successfully.")

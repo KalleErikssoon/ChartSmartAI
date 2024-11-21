@@ -20,6 +20,8 @@ def runpipeline():
     labeler= Labeler()
     labeler.label_data()
 
+    #step 4: send the csv to django project via API
+
     file_path = "ml_pipelines/ema_pipeline/ema_data.csv"
 
     # API endpoint
