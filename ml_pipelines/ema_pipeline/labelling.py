@@ -11,6 +11,24 @@ class Labeler:
         self.data = pd.read_csv(self.csv_file_path)
         print(f"Loaded data from {self.csv_file_path}")
 
+
+    def label_function(self, row):
+        if pd.isna(row['price_change']):
+            return None  # if there are no future price then return none
+
+        price_above_ema = row['close'] > row['ema']
+        future_price_increasing = row['price_change'] > self.threshold
+        future_price_decreasing = row['price_change'] < -self.threshold
+        ema_increasing = row['ema_change'] > 0
+        ema_decreasing = row['ema_change'] < 0
+
+        if (price_above_ema or ema_increasing) and future_price_increasing:
+            return "0"  #buy
+        elif (not price_above_ema or ema_decreasing) and future_price_decreasing:
+            return "2"  #sell
+        else:
+            return "1"  #hold
+
     def create_label(self):
         if 'ema' not in self.data.columns:
             raise ValueError("The 'ema' column is missing.")
@@ -23,25 +41,8 @@ class Labeler:
         #change in ema value over time
         self.data['ema_change'] =  (self.data['ema']) - self.data['ema'].shift(1)
 
-        def label_function(row):
-            if pd.isna(row['price_change']):
-                return None  # if there are no future price then return none
-
-            price_above_ema = row['close'] > row['ema']
-            future_price_increasing = row['price_change'] > self.threshold
-            future_price_decreasing = row['price_change'] < -self.threshold
-            ema_increasing = row['ema_change'] > 0
-            ema_decreasing = row['ema_change'] < 0
-
-            if (price_above_ema or ema_increasing) and future_price_increasing:
-                return "0"  #buy
-            elif (not price_above_ema or ema_decreasing) and future_price_decreasing:
-                return "2"  #sell
-            else:
-                return "1"  #hold
-
         # apply the labels to rows
-        self.data['label'] = self.data.apply(label_function, axis=1)
+        self.data['label'] = self.data.apply(self.label_function, axis=1)
         print("labels created for the data.")
 
         #drop columns that are not needed
