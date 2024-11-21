@@ -28,7 +28,7 @@ class DataLabeler:
                 if pd.isna(row['price_change']):
                     return None 
 
-                macd_above_signal = row['MACD'] > row['SignalLine']
+                macd_above_signal = row['macd'] > row['signal_line']
                 future_price_increasing = row['price_change'] > price_threshold
                 future_price_decreasing = row['price_change'] < -price_threshold
 

@@ -33,10 +33,10 @@ class FeatureEngineering:
             longEMA = symbol_data['close'].ewm(span=long_window, adjust=False).mean() 
 
             # Calculate MACD
-            symbol_data['MACD'] = shortEMA - longEMA
+            symbol_data['macd'] = shortEMA - longEMA
 
             #Calculate signal line
-            symbol_data['SignalLine'] = symbol_data['MACD'].ewm(span=signal_window, adjust=False).mean()
+            symbol_data['signal_line'] = symbol_data['macd'].ewm(span=signal_window, adjust=False).mean()
 
             symbol_data = symbol_data.iloc[26:]
             #Append to dataframe

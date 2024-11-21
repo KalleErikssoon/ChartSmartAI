@@ -14,10 +14,9 @@ class StockData(models.Model):
     vwap = models.FloatField()  # Volume-weighted average price
     trade_count = models.IntegerField()  # Number of trades
 
-
 class MACD_Data(models.Model):
-    timestamp = models.DateTimeField()  # Using DateTimeField for date and time
     symbol = models.CharField(max_length=10)  # Stock ticker symbol
+    timestamp = models.DateTimeField()  # Using DateTimeField for date and time
     open = models.FloatField()  # Opening price
     high = models.FloatField()  # Highest price
     low = models.FloatField()  # Lowest price
