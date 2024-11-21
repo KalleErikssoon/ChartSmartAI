@@ -1,6 +1,6 @@
 from data_collection import DataCollector
 from labelling import Labeler
-from feature_engineering import RSI_Calculator
+from feature_engineering import RSIIndicator
 import requests
 
 def runpipeline():
@@ -8,12 +8,11 @@ def runpipeline():
 
     # Step 1: Data Collection
     collector = DataCollector()
-    collecteddata = collector.collect_data()
+    collector.collect_data()
 
-    #Step 2 : ema column 
-    #Call the feature_engineering.py
-    emaCalculator = RSI_Calculator
-    emaCalculator.run_pipeline()
+    #Step 2: Feature Engineering
+    rsiCalculator = RSIIndicator
+    rsiCalculator.run_pipeline()
     
 
     #step 3 : data labelling
