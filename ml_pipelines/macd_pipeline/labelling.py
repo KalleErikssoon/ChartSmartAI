@@ -45,6 +45,9 @@ class DataLabeler:
             # make sure labels are integers
             group['label'] = group['label'].astype('Int64')
 
+            # Drop unwanted columns
+            group = group.drop(columns=['future_price', 'price_change'])
+
             return group
 
         # process each stock (symbol) separately

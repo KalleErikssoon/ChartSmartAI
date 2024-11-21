@@ -27,5 +27,4 @@ class MACD_Data(models.Model):
     trade_count = models.IntegerField()  # Number of trades
     macd = models.FloatField(null=True, blank=True) # MACD
     signal_line = models.FloatField(null=True, blank=True) # singal line
-    macd_histogram = models.FloatField(null=True, blank=True) # MACD - signal line
     label = models.IntegerField(null=True, blank=True)  # Class Label from Future - Buy, Hold, or Sell (0, 1, 2)
