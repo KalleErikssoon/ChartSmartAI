@@ -5,3 +5,8 @@ urlpatterns = [
     path('', views.home, name='home'), # Render home html page
     path('db_updates/', api_views.upload_csv, name='upload_csv') # endpoint for uploading macd data
 ]
+
+urlpatterns = [
+    path('', views.home, name='home'), # Render home html page
+    path('db_updates/ema/', api_views.upload_ema, name='upload_ema')
+]
