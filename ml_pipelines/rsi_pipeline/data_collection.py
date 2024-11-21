@@ -18,7 +18,7 @@ ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 
 
 
-class AlpacaDataCollector:
+class DataCollector:
     def __init__(self, api_key, secret_key, output_dir="stock_data", combined_output_file="combined_data.csv"):
         """
         Initialize the data collector with Alpaca API credentials and output paths.
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     end_date = datetime(2024, 11, 19)
 
     # Initialize the collector
-    collector = AlpacaDataCollector(
+    collector = DataCollector(
         api_key=ALPACA_API_KEY,
         secret_key=ALPACA_SECRET_KEY,
         output_dir="stock_data",
