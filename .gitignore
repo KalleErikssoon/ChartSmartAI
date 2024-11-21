@@ -2,3 +2,5 @@
 .env
 # Ignore temp python files
 **/__pycache__/
+# Ignore macd data for now
+**/macd_data.csv
