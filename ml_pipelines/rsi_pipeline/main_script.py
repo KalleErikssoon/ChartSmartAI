@@ -1,6 +1,6 @@
 from data_collection import DataCollector
 from labelling import Labeler
-from feature_engineering import RSIIndicator
+from feature_engineering import process_stock_data
 import requests
 
 def runpipeline():
@@ -11,7 +11,7 @@ def runpipeline():
     collector.collect_data()
 
     #Step 2: Feature Engineering
-    rsiCalculator = RSIIndicator
+    rsiCalculator = process_stock_data
     rsiCalculator.run_pipeline()
     
 
