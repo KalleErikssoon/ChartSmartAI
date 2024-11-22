@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
@@ -39,8 +39,6 @@ def upload_csv(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-
-
 @csrf_exempt
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
@@ -72,3 +70,32 @@ def upload_ema(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+# GET endpoint to get the processed data for the ML model
+@api_view(['GET'])
+def get_macd_data(request):
+    try:
+        # Get data from SQLite DB
+        macd_data = MACD_Data.objects.all()
+
+        # Convert results above to a list of dictionaries
+        data = list(macd_data.values(
+            'symbol', 'timestamp', 'open', 'high', 'low', 
+            'close', 'volume', 'trade_count', 'vwap', 
+            'macd', 'signal_line', 'label'
+        ))
+
+        df = pd.DataFrame(data)
+
+        # create CSV response
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="macd_data.csv"'
+
+        # Write dataframe to the response as CSV
+        df.to_csv(path_or_buf=response, index=False)
+
+        return response
+
+    except Exception as e:
+        # handle exceptions and return an error response
+        return HttpResponse(f"Error: {str(e)}", content_type="text/plain", status=500)
