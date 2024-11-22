@@ -27,3 +27,17 @@ class MACD_Data(models.Model):
     macd = models.FloatField(null=True, blank=True) # MACD
     signal_line = models.FloatField(null=True, blank=True) # singal line
     label = models.IntegerField(null=True, blank=True)  # Class Label from Future - Buy, Hold, or Sell (0, 1, 2)
+
+    
+class EMA_Data(models.Model):
+    symbol = models.CharField(max_length=10)  # Stock ticker symbol
+    timestamp = models.DateTimeField()  # Using DateTimeField for date and time
+    open = models.FloatField()  # Opening price
+    high = models.FloatField()  # Highest price
+    low = models.FloatField()  # Lowest price
+    close = models.FloatField()  # Closing price
+    volume = models.IntegerField()  # Volume of stocks traded
+    vwap = models.FloatField()  # Volume-weighted average price
+    trade_count = models.IntegerField()  # Number of trades
+    ema = models.FloatField(null=True, blank=True) # EMA
+    label = models.IntegerField(null=True, blank=True)  # Class Label from Future - Buy, Hold, or Sell (0, 1, 2)
