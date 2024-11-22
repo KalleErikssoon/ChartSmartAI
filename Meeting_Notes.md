@@ -74,7 +74,7 @@
 * Further discussed specific implementation details for the training phase.
 * Discussed division of initial issues, such as data cleaning, the website and the model training section
 * 3 initial issues, 1 for each invesment strategy (RSI, MACD, EMA)
-* 
+
 
 **TODO:** Finish writing Assignment 1, start working  on data cleaning
 
