@@ -1,6 +1,6 @@
 from data_collection import DataCollector
 from labelling import Labeler
-from feature_engineering import process_stock_data
+from feature_engineering import StockDataProcessor
 import requests
 
 def runpipeline():
@@ -11,20 +11,20 @@ def runpipeline():
     collector.collect_data()
 
     #Step 2: Feature Engineering
-    rsiCalculator = process_stock_data
-    rsiCalculator.run_pipeline()
+    rsiCalculator = StockDataProcessor()
+    rsiCalculator.process()
     
 
     #step 3 : data labelling
     labeler= Labeler()
-    labeler.label_data()
+    labeler.process()
 
     #step 4: send the csv to django project via API
 
-    file_path = "ml_pipelines/rsi_pipeline/rsi_stock_data.csv"
+    file_path = "rsi_stock_data.csv"
 
     # API endpoint
-    url = "http://127.0.0.1:8000/db_updates/ema/"
+    url = "http://127.0.0.1:8000/db_updates/"
 
     # Prepare the file for upload
     with open(file_path, 'rb') as f:

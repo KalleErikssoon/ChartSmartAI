@@ -2,51 +2,101 @@ import pandas as pd
 from ta.momentum import RSIIndicator
 from sklearn.preprocessing import MinMaxScaler
 
-def process_stock_data(input_csv, output_csv, rsi_period=14):
+
+class StockDataProcessor:
     """
-    Processes stock data by calculating the RSI and normalizing specified features.
-
-    Parameters:
-    - input_csv (str): Path to the input CSV file containing stock data.
-    - output_csv (str): Path to save the processed CSV file.
-    - rsi_period (int): Period for RSI calculation. Default is 14.
-
-    Returns:
-    - None. The processed data is saved to the specified output CSV file.
+    A class to process stock data, including calculating the RSI and normalizing specified features.
     """
-    # Load the stock data
-    data = pd.read_csv(input_csv, parse_dates=['timestamp'])
 
-    # Initialize an empty list to store DataFrames
-    rsi_dataframes = []
+    def __init__(self, input_csv= "rsi_stock_data.csv", output_csv = "rsi_stock_data.csv", rsi_period=14):
+        """
+        Initialize the StockDataProcessor with file paths and configuration.
 
-    # Group by 'symbol' and calculate RSI for each group
-    grouped = data.groupby('symbol')
-    for symbol, group in grouped:
-        # Ensure the group is sorted by 'timestamp'
-        group = group.sort_values('timestamp')
+        Parameters:
+        - input_csv (str): Path to the input CSV file containing stock data.
+        - output_csv (str): Path to save the processed CSV file.
+        - rsi_period (int): Period for RSI calculation. Default is 14.
+        """
+        self.input_csv = input_csv
+        self.output_csv = output_csv
+        self.rsi_period = rsi_period
+
+    def load_data(self):
+        """
+        Load stock data from the input CSV file.
+
+        Returns:
+        - DataFrame: A Pandas DataFrame containing the stock data.
+        """
+        print(f"Loading data from {self.input_csv}...")
+        return pd.read_csv(self.input_csv, parse_dates=['timestamp'])
+
+    def calculate_rsi(self, data):
+        """
+        Calculate the RSI for the stock data grouped by symbol.
+
+        Parameters:
+        - data (DataFrame): A Pandas DataFrame containing the stock data.
+
+        Returns:
+        - DataFrame: A DataFrame with RSI values calculated.
+        """
+        print("Calculating RSI...")
+        rsi_dataframes = []
+
+        grouped = data.groupby('symbol')
+        for symbol, group in grouped:
+            group = group.sort_values('timestamp')
+            rsi_indicator = RSIIndicator(close=group['close'], window=self.rsi_period)
+            group['RSI'] = rsi_indicator.rsi()
+            rsi_dataframes.append(group)
+
+        return pd.concat(rsi_dataframes)
+
+    def normalize_features(self, data):
+        """
+        Normalize specified features using MinMaxScaler.
+
+        Parameters:
+        - data (DataFrame): A Pandas DataFrame containing the stock data.
+
+        Returns:
+        - DataFrame: A DataFrame with normalized features.
+        """
+        print("Normalizing features...")
+        features_to_normalize = ['open', 'high', 'low', 'close', 'volume', 'trade_count', 'vwap', 'RSI']
+
+        scaler = MinMaxScaler()
+        data[features_to_normalize] = scaler.fit_transform(data[features_to_normalize])
+        return data
+
+    def save_data(self, data):
+        """
+        Save the processed stock data to the output CSV file.
+
+        Parameters:
+        - data (DataFrame): A Pandas DataFrame containing the processed stock data.
+        """
+        print(f"Saving processed data to {self.output_csv}...")
+        data.to_csv(self.output_csv, index=False)
+
+    def process(self):
+        """
+        Main method to process stock data by calculating RSI and normalizing features.
+        """
+        # Load the data
+        data = self.load_data()
 
         # Calculate RSI
-        rsi_indicator = RSIIndicator(close=group['close'], window=rsi_period)
-        group['RSI'] = rsi_indicator.rsi()
+        data_with_rsi = self.calculate_rsi(data)
 
-        # Append the DataFrame to the list
-        rsi_dataframes.append(group)
+        # Drop rows with NaN values in the 'RSI' column
+        data_with_rsi = data_with_rsi.dropna(subset=['RSI'])
 
-    # Concatenate all DataFrames
-    data_with_rsi = pd.concat(rsi_dataframes)
+        # Normalize features
+        normalized_data = self.normalize_features(data_with_rsi)
 
-    # Drop rows with NaN values in the 'RSI' column
-    data_with_rsi = data_with_rsi.dropna(subset=['RSI'])
+        # Save the processed data
+        self.save_data(normalized_data)
 
-    # Select features to normalize
-    features_to_normalize = ['open', 'high', 'low', 'close', 'volume', 'trade_count', 'vwap', 'RSI']
-
-    # Initialize the scaler
-    scaler = MinMaxScaler()
-
-    # Apply normalization
-    data_with_rsi[features_to_normalize] = scaler.fit_transform(data_with_rsi[features_to_normalize])
-
-    # Save the DataFrame to a new CSV file
-    data_with_rsi.to_csv(output_csv, index=False)
+        print("Stock data processing complete.")
