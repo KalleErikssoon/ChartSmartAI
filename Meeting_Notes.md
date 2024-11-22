@@ -82,9 +82,10 @@
 
 ### Meeting 6 - Friday, 22-11-24
 **Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
-* 
-* 
+* ML pipeline standardization: 
+* ML model training: 
+* Front-end development: 
 
-**TODO:** 
+**TODO:** TA meeting on Tuesday at 1:30pm. Discussed metadata (scripts, JSON) & deployment plans (K8s, Docker) after training is complete. Start A2.
 
 ---
