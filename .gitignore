@@ -4,3 +4,4 @@
 **/__pycache__/
 # Ignore macd data for now
 **/macd_data.csv
+**/ema_data.csv

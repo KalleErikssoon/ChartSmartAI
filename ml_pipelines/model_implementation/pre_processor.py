@@ -6,7 +6,7 @@ from io import StringIO
 
 class Preprocessor:
     def __init__(self, test_size=0.2, random_state=None):
-        self.api_url = "http://127.0.0.1:8000/db_updates/"  
+        self.api_url = "http://127.0.0.1:8000/get_database/macd/"  
         self.test_size = test_size
         self.random_state = random_state
 
@@ -15,10 +15,18 @@ class Preprocessor:
         response = requests.get(self.api_url)
 
         if response.status_code == 200:
+            print("Response text:", response.text[:500])  # Print the first 500 characters of the response
             # Load the CSV response into a dataframe
-            csv_data = StringIO(response.text) 
-            data = pd.read_csv(csv_data)
-            return data
+            csv_data = StringIO(response.text)
+            try:
+                data = pd.read_csv(csv_data)
+                if data.empty:
+                    raise ValueError("No data found in the CSV file.")
+                return data
+            except pd.errors.EmptyDataError:
+                raise ValueError("The CSV file is empty.")
+            except Exception as e:
+                raise ValueError(f"Failed to parse CSV data: {e}")
         else:
             # Handle errors
             raise Exception(f"Failed to fetch data: {response.status_code} - {response.text}")
