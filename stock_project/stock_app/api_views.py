@@ -77,7 +77,6 @@ def get_macd_data(request):
     try:
         # Get data from SQLite DB
         macd_data = MACD_Data.objects.all()
-
         # Convert results above to a list of dictionaries
         data = list(macd_data.values(
             'symbol', 'timestamp', 'open', 'high', 'low', 
