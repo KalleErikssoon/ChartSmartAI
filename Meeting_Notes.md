@@ -7,6 +7,7 @@
 | 2024-11-11 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finalize slides for pitch meeting                                            |
 | 2024-11-14 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches                                                |
 | 2024-11-18 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches and data, evaluation methods                   |
+| 2024-11-22 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches and data, evaluation methods                   |
 
 ---
 
@@ -15,12 +16,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅✅            |                      |
-| Malte    | ✅✅✅✅✅            |                      |
-| Isaac    | ✅✅✅✅✅            |                      |
-| Nas      | ✅✅✅✅✅            |                      |
-| Jessie   | ✅✅✅✅✅            |                      |
-| Asim     | ✅✅✅✅✅            |                      |
+| Kalle    | ✅✅✅✅✅            |✅                      |
+| Malte    | ✅✅✅✅✅            |✅                      |
+| Isaac    | ✅✅✅✅✅            |✅                      |
+| Nas      | ✅✅✅✅✅            |✅                      |
+| Jessie   | ✅✅✅✅✅            |✅                      |
+| Asim     | ✅✅✅✅✅            |✅                      |
 
 
 ---
@@ -76,5 +77,14 @@
 * 
 
 **TODO:** Finish writing Assignment 1, start working  on data cleaning
+
+---
+
+### Meeting 6 - Friday, 22-11-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* 
+* 
+
+**TODO:** 
 
 ---
