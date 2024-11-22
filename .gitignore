@@ -3,4 +3,7 @@
 
 # Ignore temp python files
 **/__pycache__/
-rsi_stock_data.csv
+**/rsi_stock_data.csv
+# Ignore macd data for now
+**/macd_data.csv
+**/ema_data.csv
