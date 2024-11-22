@@ -5,8 +5,8 @@ import requests
 from io import StringIO 
 
 class Preprocessor:
-    def __init__(self, test_size=0.2, random_state=None):
-        self.api_url = "http://127.0.0.1:8000/get_database/macd/"  
+    def __init__(self, api_url, test_size=0.2, random_state=None):
+        self.api_url = api_url
         self.test_size = test_size
         self.random_state = random_state
 
@@ -15,7 +15,6 @@ class Preprocessor:
         response = requests.get(self.api_url)
 
         if response.status_code == 200:
-            print("Response text:", response.text[:500])  # Print the first 500 characters of the response
             # Load the CSV response into a dataframe
             csv_data = StringIO(response.text)
             try:
@@ -31,6 +30,6 @@ class Preprocessor:
             # Handle errors
             raise Exception(f"Failed to fetch data: {response.status_code} - {response.text}")
 
-    def split_data(self, X, y):
-        # split data into training and testing sets
-        return train_test_split(X, y, test_size=self.test_size, random_state=self.random_state)
+    def split_data(self, X, y, stratify=None):
+      # split data into training and testing sets with stratification (splitting evenly between different stocks for better generalization)
+      return train_test_split(X, y, test_size=self.test_size, random_state=self.random_state, stratify=stratify)
