@@ -1,4 +1,6 @@
 # Ignore environment variables file
 .env
+
 # Ignore temp python files
 **/__pycache__/
+rsi_stock_data.csv
