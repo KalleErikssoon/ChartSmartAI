@@ -1,6 +1,7 @@
 import pandas as pd
 from ta.momentum import RSIIndicator
 from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
 
 class StockDataProcessor:
@@ -52,24 +53,7 @@ class StockDataProcessor:
             rsi_dataframes.append(group)
 
         return pd.concat(rsi_dataframes)
-
-    def normalize_features(self, data):
-        """
-        Normalize specified features using MinMaxScaler.
-
-        Parameters:
-        - data (DataFrame): A Pandas DataFrame containing the stock data.
-
-        Returns:
-        - DataFrame: A DataFrame with normalized features.
-        """
-        print("Normalizing features...")
-        features_to_normalize = ['open', 'high', 'low', 'close', 'volume', 'trade_count', 'vwap', 'RSI']
-
-        scaler = MinMaxScaler()
-        data[features_to_normalize] = scaler.fit_transform(data[features_to_normalize])
-        return data
-
+    
     def save_data(self, data):
         """
         Save the processed stock data to the output CSV file.
@@ -90,13 +74,10 @@ class StockDataProcessor:
         # Calculate RSI
         data_with_rsi = self.calculate_rsi(data)
 
-        # Drop rows with NaN values in the 'RSI' column
-        data_with_rsi = data_with_rsi.dropna(subset=['RSI'])
-
         # Normalize features
-        normalized_data = self.normalize_features(data_with_rsi)
+        #normalized_data = self.normalize_features(data_with_rsi)
 
         # Save the processed data
-        self.save_data(normalized_data)
+        self.save_data(data_with_rsi)
 
         print("Stock data processing complete.")
