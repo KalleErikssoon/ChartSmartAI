@@ -95,7 +95,7 @@ class Labelling:
         data = self.load_data()
 
         # Generate labels
-        labeled_data = self.generate_labels(data, rsi_buy_threshold, rsi_sell_threshold, volume_window)
+        labeled_data = self.labels(data, rsi_buy_threshold, rsi_sell_threshold, volume_window)
 
         # Save the labeled data
         self.save_data(labeled_data)
