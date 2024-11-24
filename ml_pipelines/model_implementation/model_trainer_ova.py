@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
-
+#Class that trains models with One Vs All Logistic Regression (Multi Class models)
 class ModelTrainer:
     def __init__(self, train_data_path, test_data_path, model_output_path):
         self.train_data_path = train_data_path
