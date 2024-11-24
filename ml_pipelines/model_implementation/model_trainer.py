@@ -1,5 +1,9 @@
 import numpy as np
 import pandas as pd
+from logregression_utils import LogisticRegressionUtils
+from scipy.optimize import minimize
+from sklearn.metrics import accuracy_score, precision_score, recall_score, classification_report
+
 
 
 class ModelTrainer:
@@ -55,6 +59,26 @@ class ModelTrainer:
         print(f"Accuracy: {accuracy_score(y_test, predictions):.4f}")
         print(f"Precision: {precision_score(y_test, predictions, average='weighted'):.4f}")
         print(f"Recall: {recall_score(y_test, predictions, average='weighted'):.4f}")
+
+    def save_model(self):
+        #Save the weights to a file
+        joblib.dump(self.weights, self.model_output_path)
+        print(f"Model weights saved to {self.model_output_path}")
+
+    def run_class_pipeline(self):
+        print("Starting model training pipeline...")
+        X_train, X_test, y_train, y_test = self.load_data()
+        print("Data loaded successfully.")
+        
+        print("Training the model...")
+        self.train(X_train, y_train)
+        
+        print("Evaluating the model...")
+        self.evaluate(X_test, y_test)
+        
+        print("Saving the model...")
+        self.save_model()
+        print("Pipeline completed successfully.")
 
     
 
