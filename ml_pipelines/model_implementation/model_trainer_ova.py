@@ -42,4 +42,36 @@ class ModelTrainer:
             else:
                 raise ValueError(f"Optimization failed for class {c}.")
 
-    
+    def predict_one_vs_all(self, X_test):
+        X_test = np.concatenate([np.ones((X_test.shape[0], 1)), X_test.values], axis=1)
+        probabilities = {}
+        for c, weights in self.models.items():
+            probabilities[c] = LogisticRegressionUtils.sigmoid(X_test @ weights)
+        # Assign the class with the highest probability
+        predictions = np.array([max(probabilities, key=lambda c: probabilities[c][i]) for i in range(X_test.shape[0])])
+        return predictions
+
+    def evaluate(self, X_test, y_test):
+        predictions = self.predict_one_vs_all(X_test)
+        print("Classification Report:")
+        print(classification_report(y_test, predictions))
+        print(f"Accuracy: {accuracy_score(y_test, predictions):.4f}")
+
+    def save_models(self):
+        joblib.dump(self.models, self.model_output_path)
+        print(f"Models saved to {self.model_output_path}")
+
+    def run_pipeline(self):
+        print("Starting model training pipeline...")
+        X_train, X_test, y_train, y_test = self.load_data()
+        print("Data loaded successfully.")
+        
+        print("Training one-vs-all models...")
+        self.train_one_vs_all(X_train, y_train)
+        
+        print("Evaluating the model...")
+        self.evaluate(X_test, y_test)
+        
+        print("Saving the models...")
+        self.save_models()
+        print("Pipeline completed successfully.")
