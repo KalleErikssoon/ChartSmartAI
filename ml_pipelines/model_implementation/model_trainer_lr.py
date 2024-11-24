@@ -3,6 +3,7 @@ import pandas as pd
 from logregression_utils import LogisticRegressionUtils
 from scipy.optimize import minimize
 from sklearn.metrics import accuracy_score, precision_score, recall_score, classification_report
+import joblib
 
 
 
