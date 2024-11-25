@@ -73,6 +73,35 @@ def upload_ema(request):
 
 # GET endpoint to get the processed data for the ML model
 @api_view(['GET'])
+def get_ema_data(request):
+    try:
+        # Get data from SQLite DB
+        macd_data = EMA_Data.objects.all()
+        # Convert results above to a list of dictionaries
+        data = list(macd_data.values(
+            'symbol', 'timestamp', 'open', 'high', 'low', 
+            'close', 'volume', 'vwap', 'trade_count',
+            'ema', 'label'
+        ))
+
+        df = pd.DataFrame(data)
+
+        # create CSV response
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="ema_data.csv"'
+
+        # Write dataframe to the response as CSV
+        df.to_csv(path_or_buf=response, index=False)
+
+        return response
+
+    except Exception as e:
+        # handle exceptions and return an error response
+        return HttpResponse(f"Error: {str(e)}", content_type="text/plain", status=500)
+
+
+# GET endpoint to get the processed data for the ML model
+@api_view(['GET'])
 def get_macd_data(request):
     try:
         # Get data from SQLite DB

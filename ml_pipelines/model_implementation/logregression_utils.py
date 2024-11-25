@@ -13,20 +13,31 @@ class LogisticRegressionUtils:
         return g
     
     @staticmethod
-    def costFunction(w, X, y):
+    def costFunction(w, X, y, lambda_=1.0):
         m = y.size  # number of training examples
-        
-        # Add intercept term to X
+
+        # add intercept term to X
         X = np.concatenate([np.ones((m, 1)), X], axis=1)
 
-        J = 0
-        grad = np.zeros(w.shape)
-
+        # compute hypothesis
         h = LogisticRegressionUtils.sigmoid(X @ w)
+
+        # cost function without regularization
         term1 = y * np.log(h)
         term2 = (1 - y) * np.log(1 - h)
         J = -(1 / m) * np.sum(term1 + term2)
-        
-        error = h - y 
-        grad = (1 / m) * (X.T @ error) 
+
+        # Add regularization term to the cost (excluding the bias term)
+        reg_term = (lambda_ / (2 * m)) * np.sum(w[1:] ** 2)
+        J += reg_term
+
+        # compute gradient without regularization
+        error = h - y
+        grad = (1 / m) * (X.T @ error)
+
+        # add regularization term to the gradient (excluding the bias term)
+        reg_grad = (lambda_ / m) * w
+        reg_grad[0] = 0 
+        grad += reg_grad
+
         return J, grad

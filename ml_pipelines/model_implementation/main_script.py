@@ -6,7 +6,7 @@ def runpipeline():
     print("Starting pipeline...")
 
     # fetch data
-    preprocessor = Preprocessor(api_url="http://127.0.0.1:8000/get_database/macd/")
+    preprocessor = Preprocessor(api_url="http://127.0.0.1:8000/get_database/ema/")
     data = preprocessor.fetch_data()
     print("Data fetched successfully")
 
