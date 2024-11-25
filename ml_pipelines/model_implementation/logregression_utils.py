@@ -1,17 +1,8 @@
-import numpy as np
-import os
 
 # Scientific and vector computation for python
 import numpy as np
 
-# Plotting library
-from matplotlib import pyplot
 
-# Optimization module in scipy
-from scipy import optimize
-
-# library written for this exercise providing additional functions
-import utils
 
 class LogisticRegressionUtils:
 
@@ -23,10 +14,10 @@ class LogisticRegressionUtils:
     
     @staticmethod
     def costFunction(w, X, y):
-
+        m = y.size  # number of training examples
+        
         # Add intercept term to X
         X = np.concatenate([np.ones((m, 1)), X], axis=1)
-        m = y.size  # number of training examples
 
         J = 0
         grad = np.zeros(w.shape)

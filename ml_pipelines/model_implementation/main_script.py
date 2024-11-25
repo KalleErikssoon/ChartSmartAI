@@ -1,5 +1,6 @@
 
 from pre_processor import Preprocessor
+from model_trainer_ova import ModelTrainer
 
 def runpipeline():
     print("Starting pipeline...")
@@ -10,7 +11,7 @@ def runpipeline():
     print("Data fetched successfully")
 
     # separate features and label
-    feature_columns = [col for col in data.columns if col not in ['label', 'symbol']]
+    feature_columns = [col for col in data.columns if col not in ['label', 'symbol', 'timestamp']]
     X = data[feature_columns]
     y = data['label'] 
 
@@ -24,6 +25,14 @@ def runpipeline():
     y_test.to_csv("ml_pipelines/model_implementation/y_test.csv", index=False)
 
     print("Data successfully split and saved to CSV files.")
+
+    #Instantiate and run the modeltrainer class
+    trainer = ModelTrainer(
+        train_data_path="ml_pipelines/model_implementation/", 
+        test_data_path="ml_pipelines/model_implementation", 
+        model_output_path="ml_pipelines/model_implementation/trained_models/macd/logistic_ova_models.pkl"
+    )
+    trainer.run_pipeline()
 
 
 runpipeline()
