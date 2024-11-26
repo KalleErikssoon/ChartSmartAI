@@ -54,7 +54,7 @@ class RSI_Data(models.Model):
     trade_count = models.IntegerField()  # Number of trades
     rsi = models.FloatField(null=True, blank=True) # RSI value - eg. 14 day RSI
     #signal = models.FloatField(null=True, blank=True) # singal
-    label = models.IntegerField(null=True, blank=True)  # Class Label from Future - Buy, Hold, or Sell (1, 0, -1)
+    label = models.IntegerField(null=True, blank=True)  # Class Label from Future - Buy, Hold, or Sell (0, 1, 2)
 
     # Should we do binary classifiers instead?
     #label_buy = models.IntegerField() # Class Label from Future - Buy or Not Buy
