@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,7 +47,7 @@
         }
 
         .top-section .indicators button:hover {
-            background-color: #3E8E41; /* Darker green on hover */
+            background-color: #808080;
             color: white;
         }
 
@@ -106,7 +107,7 @@
         }
 
         .stock-list li button:hover {
-            background-color: #3E8E41;
+            background-color: #808080;
             color: white;
         }
 
@@ -179,7 +180,7 @@
             resize: none;
         }
 
-        .stockHeader {
+        .stock-header {
             font-size: 20px;
             font-weight: bold;
             margin: 0;
@@ -203,22 +204,22 @@
             <!-- Stock List -->
             <div class="stock-list">
                 <ul>
-                    <li><button>Nvidia</button></li>
-                    <li><button>Apple</button></li>
-                    <li><button>Microsoft</button></li>
-                    <li><button>Amazon</button></li>
-                    <li><button>Google</button></li>
-                    <li><button>Meta</button></li>
-                    <li><button>Tesla</button></li>
-                    <li><button>Berkshire Hathaway</button></li>
-                    <li><button>Taiwan Semiconductors</button></li>
-                    <li><button>Broadcom</button></li>
+                    <li><button stock-name="Nvidia">Nvidia</button></li>
+                    <li><button stock-name="Apple">Apple</button></li>
+                    <li><button stock-name="Microsoft">Microsoft</button></li>
+                    <li><button stock-name="Amazon">Amazon</button></li>
+                    <li><button stock-name="Google">Google</button></li>
+                    <li><button stock-name="Meta">Meta</button></li>
+                    <li><button stock-name="Tesla">Tesla</button></li>
+                    <li><button stock-name="Berkshire Hathaway">Berkshire Hathaway</button></li>
+                    <li><button stock-name="Taiwan Semiconductors">Taiwan Semiconductors</button></li>
+                    <li><button stock-name="Broadcom">Broadcom</button></li>
                 </ul>
             </div>
 
             <!-- Second Main Section -->
             <div class="second-main">
-                <div class="stockHeader">Apple</div>
+                <div class="stock-header" id="stock-header">Apple</div>
                 <!-- Chart and Buttons Row -->
                 <div class="chart-buttons-row">
                     <!-- Chart Section -->
@@ -246,5 +247,6 @@
             </div>
         </div>
     </div>
+    <script src="{% static 'stock_app/home.js' %}"></script>
 </body>
 </html>
