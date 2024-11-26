@@ -16,12 +16,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅✅            |✅                      |
-| Malte    | ✅✅✅✅✅            |✅                      |
-| Isaac    | ✅✅✅✅✅            |✅                      |
-| Nas      | ✅✅✅✅✅            |✅                      |
-| Jessie   | ✅✅✅✅✅            |✅                      |
-| Asim     | ✅✅✅✅✅            |✅                      |
+| Kalle    | ✅✅✅✅✅            |✅✅                 |
+| Malte    | ✅✅✅✅✅            |✅✅                 |
+| Isaac    | ✅✅✅✅✅            |✅✅                 |
+| Nas      | ✅✅✅✅✅            |✅✅                 |
+| Jessie   | ✅✅✅✅✅            |✅✅                 |
+| Asim     | ✅✅✅✅✅            |✅✅                 |
 
 
 ---
@@ -87,5 +87,15 @@
 * Front-end development: 
 
 **TODO:** TA meeting on Tuesday at 1:30pm. Discussed metadata (scripts, JSON) & deployment plans (K8s, Docker) after training is complete. Start A2.
+
+---
+
+### Meeting 7 - Tuesday, 22-11-26
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Frontend development: What it should contain and not. How we want to approach different user roles
+* Model training: Which evaluation metric do we value higher? Recall or Precision? And why?
+* Deployment: Discussed kubernetes, docker, what the best way to deploy is 
+
+**TODO:** TA meeting on Tuesday at 1:30pm. Finish model training pipeline for now. Start work on the report. Start looking into deployment.
 
 ---
