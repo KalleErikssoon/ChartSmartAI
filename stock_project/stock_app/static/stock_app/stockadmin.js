@@ -34,17 +34,43 @@ function getSelectedStrategies() {
 
 // Confirm  button for Retrain
 function confirmRetrain() {
-    if (!validateDates()) {
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const dateValidationMessage = document.getElementById('date-validation-message');
+
+    //get selected strategies
+    const strategies = Array.from(document.querySelectorAll('.strategy-options input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.value);
+
+    //validate dates
+    const startDate = startDateInput.value;
+    const endDate = endDateInput.value;
+    if (!startDate || !endDate) {
+        dateValidationMessage.textContent = 'Both Start Date and End Date must be entered.';
+        dateValidationMessage.style.display = 'block';
         return;
     }
-    const strategies = getSelectedStrategies();
+    if (new Date(startDate) >= new Date(endDate)) {
+        dateValidationMessage.textContent = 'Start Date must be before End Date.';
+        dateValidationMessage.style.display = 'block';
+        return;
+    }
+    dateValidationMessage.style.display = 'none'; // Clear validation message
+
+    //validate strategies
     if (strategies.length === 0) {
         alert('Please select at least one strategy.');
         return;
     }
-    showModal('Confirm Retrain', `Are you sure you want to retrain the model with strategies: ${strategies.join(', ')}?`, () => {
-        startRetraining(strategies);
-    });
+
+    //show confirmation modal
+    showModal(
+        'Confirm Retrain',
+        `Are you sure you want to retrain the model with strategies: ${strategies.join(', ')}?`,
+        () => {
+            startRetraining(strategies);
+        }
+    );
 }
 
 function startRetraining(strategies) {
