@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv() 
 FILE_PATH = os.getenv('FILE_PATH')
+URL = os.getenv('URL')
 
 def runpipeline():
     print("Starting pipeline...")
@@ -27,7 +28,7 @@ def runpipeline():
     file_path = FILE_PATH
 
     # API endpoint
-    url = "http://127.0.0.1:8000/db_updates/"
+    url = URL
 
     # Prepare the file for upload
     with open(file_path, 'rb') as f:
