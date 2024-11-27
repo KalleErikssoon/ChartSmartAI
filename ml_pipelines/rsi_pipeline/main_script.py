@@ -2,6 +2,10 @@ from data_collection import DataCollector
 from labelling import Labelling
 from feature_engineering import StockDataProcessor
 import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
+URL = os.getenv('URL')
 
 def runpipeline():
     print("Starting pipeline...")
@@ -23,7 +27,7 @@ def runpipeline():
     file_path = "rsi_stock_data.csv"
 
     # API endpoint
-    url = "http://127.0.0.1:8000/db_updates/rsi/"
+    url = URL
 
     # Prepare the file for upload
     with open(file_path, 'rb') as f:
