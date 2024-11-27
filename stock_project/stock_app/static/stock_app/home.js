@@ -7,7 +7,7 @@ function setupStockListButtons() {
     // Add event listener for each button
     stockListButtons.forEach((button) => {
         button.addEventListener("click", function () {
-            // Update selected button state for coloring
+            // Update selected button color state
             stockListButtons.forEach((btn) => btn.classList.remove("selected"));
             button.classList.add("selected");
 
@@ -28,6 +28,16 @@ function setIndicator(indicator) {
     // Getters
     const infoBox = document.getElementById("info-box-text");
     const infoHeader = document.getElementById("info-header");
+    const indicatorButtons = document.querySelectorAll(".top-section .indicators button");
+
+    // Update the selected color state for the indicator buttons
+    indicatorButtons.forEach((button) => {
+        if (button.textContent == indicator) {
+            button.classList.add("selected");
+        } else {
+            button.classList.remove("selected");
+        }
+    });
 
     // Update the info box depending on what indicator is selected
     if (indicator == 'RSI') {

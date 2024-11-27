@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChartSmart AI</title>
@@ -19,6 +20,7 @@
             color: black; /* Text color for contrast */
             padding: 20px;
             text-align: center;
+            border-bottom: 2px solid;
         }
 
         .top-section .header {
@@ -47,6 +49,11 @@
         }
 
         .top-section .indicators button:hover {
+            background-color: #808080;
+            color: white;
+        }
+
+        .top-section .indicators button.selected {
             background-color: #808080;
             color: white;
         }
@@ -129,7 +136,7 @@
         }
 
         .chart {
-            width: 100%;
+            width: 875px;
             height: 400px;
             max-height: 400px;
         }
@@ -235,12 +242,33 @@
 
             <!-- Second Main Section -->
             <div class="second-main">
-                <div class="stock-header" id="stock-header">Apple</div>
+                <div class="stock-header" id="stock-header">Select Stock From List</div>
                 <!-- Chart and Buttons Row -->
                 <div class="chart-buttons-row">
                     <!-- Chart Section -->
                     <div class="chart-container">
-                        <canvas id="stockChart" class="chart"></canvas>
+                        <div class="tradingview-widget-container">
+                            <div id="tradingview_apple"></div>
+                            <script type="text/javascript">
+                                new TradingView.widget({
+                                    "width": 875,
+                                    "height": 400,
+                                    "symbol": "NASDAQ:AAPL",
+                                    "interval": "D",
+                                    "range": "12M",
+                                    "theme": "light",
+                                    "style": "1",
+                                    "enable_publishing": false,
+                                    "withdateranges": true,
+                                    "hide_top_toolbar": true,
+                                    "hide_side_toolbar": true,
+                                    "allow_symbol_change": false,
+                                    "studies": ["MACD@tv-basicstudies"],
+                                    "container_id": "tradingview_apple"
+                                });
+                            </script>
+                        </div>
+                        
                     </div>
     
                     <!-- Buy/Hold/Sell -->
@@ -256,10 +284,8 @@
 
                 <!-- Info Box -->
                 <div class="info-box">
-                    <div class="info-box-header" id="info-header">Indicator</div>
-                    <textarea id="info-box-text" readonly>
-                        Info about the selected indicator, stock, and ML model will appear here.
-                    </textarea>
+                    <div class="info-box-header" id="info-header">Select Indicator</div>
+                    <textarea id="info-box-text" readonly></textarea>
                 </div>
             </div>
         </div>
