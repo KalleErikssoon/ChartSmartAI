@@ -1,0 +1,310 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Page - Model Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F2F2F2; 
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: rgba(168, 230, 207, 0.33);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #000;
+        }
+
+ 
+        .container {
+            padding: 20px;
+            max-width: 1200px; 
+            margin: 0 auto;    
+        }
+
+
+        .section {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #003366;
+        }
+
+
+        .date-range {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; 
+        }
+
+        .date-range label {
+            flex: 1;
+            min-width: 200px; 
+        }
+
+        .date-range input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .button {
+            background-color: #003366; 
+            color: #fff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .button:hover {
+            background-color: #808080; 
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+            display: none; 
+        }
+
+        .progress-bar-inner {
+            height: 20px;
+            width: 0%;
+            background-color: #003366;
+            transition: width 0.5s;
+        }
+
+        .logs {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            height: 150px;
+            overflow-y: scroll;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            display: none; 
+        }
+
+        .metrics {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; 
+        }
+
+        .metric-card {
+            flex: 1;
+            min-width: 200px; 
+            background-color: rgba(168, 230, 207, 0.33); 
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-card h3 {
+            margin-top: 0;
+        }
+
+
+        .deployment-options {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .deployment-options select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+            border-radius: 10px;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+        }
+
+        .modal-buttons {
+            text-align: right;
+        }
+
+        .modal-buttons .button {
+            margin-left: 10px;
+        }
+
+        /* Validation Message */
+        #date-validation-message {
+            color: red;
+            display: none;
+            margin-top: 10px;
+        }
+
+        #verification-result {
+            margin-top: 10px;
+        }
+
+
+        .strategy-selection {
+            margin-top: 20px;
+        }
+
+        .strategy-selection label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .strategy-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .strategy-options input {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Admin Dashboard - Model Management</h1>
+    </div>
+
+    <!-- Main contanier -->
+    <div class="container">
+        <!-- dates -->
+        <div class="section">
+            <h2>Training Date Range</h2>
+            <div class="date-range">
+                <label>
+                    Start Date:
+                    <input type="date" id="start-date">
+                </label>
+                <label>
+                    End Date:
+                    <input type="date" id="end-date">
+                </label>
+            </div>
+            <p id="date-validation-message">Start date must be before end date.</p>
+        </div>
+
+        <!--training controls -->
+        <div class="section">
+            <h2>Model Training Controls</h2>
+            <button class="button" onclick="confirmRetrain()">Retrain Model</button>
+
+            <!-- Progress Indicator -->
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress-bar-inner" id="progress-bar-inner"></div>
+            </div>
+
+            <!-- Logs -->
+            <div class="logs" id="logs"></div>
+        </div>
+
+        <!--  -->
+        <div class="section">
+            <h2>Model Performance Evaluation</h2>
+            <!-- Metrics dashboard -->
+            <div class="metrics">
+                <div class="metric-card">
+                    <h3>Accuracy</h3>
+                    <p id="accuracy">--%</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Precision</h3>
+                    <p id="precision">--%</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Recall</h3>
+                    <p id="recall">--%</p>
+                </div>
+                <div class="metric-card">
+                    <h3>F1 Score</h3>
+                    <p id="f1-score">--%</p>
+                </div>
+            </div>
+
+            <!-- I dont know if we can put a chart about the precision recall and accurcacy-->
+            <canvas id="performance-chart" width="400" height="200" style="margin-top: 20px;"></canvas>
+
+            <!-- Verify model button -->
+            <button class="button" onclick="verifyModel()">Verify Model</button>
+            <p id="verification-result"></p>
+        </div>
+
+        <!-- deploy the model-->
+        <div class="section">
+            <h2>Model Deployment</h2>
+            <button class="button" onclick="deployModel()">Deploy New Model</button>
+
+            <!-- Rollback TO PREV VERS -->
+            <div class="deployment-options">
+                <label for="model-version">Select Previous Model:</label>
+                <select id="model-version">
+                    <!-- EXAMPLE -->
+                    <option value="v1.0">v1.0 - 2023-09-01</option>
+                    <option value="v1.1">v1.1 - 2023-10-15</option>
+                </select>
+                <button class="button" onclick="confirmRollback()">Rollback Model</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- confirmation pop up -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Confirm Action</h3>
+            <p id="modal-message">Are you sure you want to proceed?</p>
+            <div class="modal-buttons">
+                <button class="button" onclick="closeModal()">Cancel</button>
+                <button class="button" id="modal-confirm-button">Confirm</button>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'stock_app/stockadmin.js' %}"></script>
+
+</body>
+</html>

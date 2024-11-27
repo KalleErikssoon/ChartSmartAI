@@ -4,3 +4,7 @@ from django.shortcuts import render
 # Home view
 def home(request):
     return render(request, "stock_project/home.html", {})
+
+
+def admin(request):
+    return render(request, "stock_project/stockadmin.html", {})
