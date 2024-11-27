@@ -30,7 +30,7 @@ def runpipeline():
     file_path = FILE_PATH
 
     # API endpoint
-    url = "http://127.0.0.1:8000/db_updates/ema/"
+    url = URL
 
     # Prepare the file for upload
     with open(file_path, 'rb') as f:
