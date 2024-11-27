@@ -16,10 +16,11 @@ import pandas as pd  # To handle data storage
 load_dotenv()  # Load the .env file
 ALPACA_API_KEY = os.getenv('ALPACA_API_KEY')
 ALPACA_SECRET_KEY = os.getenv('ALPACA_SECRET_KEY')
+FILE_PATH = os.getenv('FILE_PATH')
 
 
 class DataCollector:
-    def __init__(self, api_key=ALPACA_API_KEY, secret_key=ALPACA_SECRET_KEY, output_path="ml_pipelines/macd_pipeline/macd_data.csv"):
+    def __init__(self, api_key=ALPACA_API_KEY, secret_key=ALPACA_SECRET_KEY, output_path=FILE_PATH):
         """
         Initialize the DataCollector with Alpaca API credentials and output file path.
         """

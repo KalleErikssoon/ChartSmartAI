@@ -1,7 +1,11 @@
 import pandas as pd
+import os
+from dotenv import load_dotenv
 
+load_dotenv() 
+FILE_PATH = os.getenv('FILE_PATH')
 class DataLabeler:
-    def __init__(self, input_path="ml_pipelines/macd_pipeline/macd_data.csv", output_path="ml_pipelines/macd_pipeline/macd_data.csv"):
+    def __init__(self, input_path=FILE_PATH, output_path=FILE_PATH):
         self.input_path = input_path
         self.output_path = output_path
 
