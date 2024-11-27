@@ -233,8 +233,15 @@
         <!--training controls -->
         <div class="section">
             <h2>Model Training Controls</h2>
+            <div class="strategy-selection">
+                <label>Select Strategy:</label>
+                <div class="strategy-options">
+                    <label><input type="checkbox" value="RSI"> RSI</label>
+                    <label><input type="checkbox" value="MACD"> MACD</label>
+                    <label><input type="checkbox" value="EMA"> EMA</label>
+                </div>
+            </div>
             <button class="button" onclick="confirmRetrain()">Retrain Model</button>
-
             <!-- Progress Indicator -->
             <div class="progress-bar" id="progress-bar">
                 <div class="progress-bar-inner" id="progress-bar-inner"></div>
@@ -304,6 +311,8 @@
             </div>
         </div>
     </div>
+    <!-- this can be aded to put some charts -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="{% static 'stock_app/stockadmin.js' %}"></script>
 
 </body>

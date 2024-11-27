@@ -1,4 +1,4 @@
-// Date Validation
+//aate Validation
 function validateDates() {
     const startDateInput = document.getElementById('start-date');
     const endDateInput = document.getElementById('end-date');
@@ -20,7 +20,7 @@ function validateDates() {
     return false;
 }
 
-// Get Selected Strategies
+
 function getSelectedStrategies() {
     const checkboxes = document.querySelectorAll('.strategy-options input[type="checkbox"]');
     const selectedStrategies = [];
@@ -32,7 +32,7 @@ function getSelectedStrategies() {
     return selectedStrategies;
 }
 
-// Confirm Retrain Model
+// Confirm  button for Retrain
 function confirmRetrain() {
     if (!validateDates()) {
         return;
@@ -47,7 +47,6 @@ function confirmRetrain() {
     });
 }
 
-// Start Retraining Process
 function startRetraining(strategies) {
     closeModal();
     const progressBar = document.getElementById('progress-bar');
@@ -58,7 +57,7 @@ function startRetraining(strategies) {
     logs.style.display = 'block';
     logs.innerHTML = '';
 
-    // Simulate training progress
+    // training bar
     let progress = 0;
     const interval = setInterval(() => {
         progress += 10;
@@ -74,16 +73,14 @@ function startRetraining(strategies) {
     }, 500);
 }
 
-// Verify Model
+
 function verifyModel() {
-    // Simulate model verification
     const verificationResult = document.getElementById('verification-result');
     verificationResult.style.display = 'block';
     verificationResult.innerText = 'Model verification in progress...';
 
     setTimeout(() => {
         verificationResult.innerText = 'New model meets performance thresholds.';
-        // Update metrics
         document.getElementById('accuracy').innerText = '95%';
         document.getElementById('precision').innerText = '93%';
         document.getElementById('recall').innerText = '92%';
@@ -92,7 +89,7 @@ function verifyModel() {
     }, 2000);
 }
 
-// Deploy Model
+// confirm deployment
 function deployModel() {
     showModal('Confirm Deployment', 'Are you sure you want to deploy the new model?', () => {
         closeModal();
@@ -107,11 +104,10 @@ function confirmRollback() {
     showModal('Confirm Rollback', `Are you sure you want to rollback to ${selectedVersion}?`, () => {
         closeModal();
         alert(`Model rolled back to ${selectedVersion}.`);
-        // Add rollback logic here
+        //rollback logic here
     });
 }
 
-// Modal Functions
 function showModal(title, message, confirmCallback) {
     document.getElementById('modal-title').innerText = title;
     document.getElementById('modal-message').innerText = message;
@@ -123,6 +119,58 @@ function closeModal() {
     document.getElementById('confirmation-modal').style.display = 'none';
 }
 
-// Event Listeners for Date Inputs
+//event Listeners for Date Inputs
 document.getElementById('start-date').addEventListener('change', validateDates);
 document.getElementById('end-date').addEventListener('change', validateDates);
+
+
+// window.onload = function() {
+//     // Get the context of the canvas element we want to select
+//     var ctx = document.getElementById('performance-chart').getContext('2d');
+
+//     // For the purpose of this example, we will use some dummy data
+//     // In practice, you would retrieve these values from the server or calculate them
+//     var accuracy = 85;
+//     var precision = 80;
+//     var recall = 75;
+//     var f1Score = 77;
+
+//     // Update the DOM elements with the actual values
+//     document.getElementById('accuracy').textContent = accuracy + '%';
+//     document.getElementById('precision').textContent = precision + '%';
+//     document.getElementById('recall').textContent = recall + '%';
+//     document.getElementById('f1-score').textContent = f1Score + '%';
+
+//     // Create the chart
+//     var myChart = new Chart(ctx, {
+//         type: 'bar',
+//         data: {
+//             labels: ['Accuracy', 'Precision', 'Recall', 'F1 Score'],
+//             datasets: [{
+//                 label: 'Model Performance (%)',
+//                 data: [accuracy, precision, recall, f1Score],
+//                 backgroundColor: [
+//                     'rgba(75, 192, 192, 0.2)', // Accuracy
+//                     'rgba(54, 162, 235, 0.2)', // Precision
+//                     'rgba(255, 206, 86, 0.2)', // Recall
+//                     'rgba(153, 102, 255, 0.2)' // F1 Score
+//                 ],
+//                 borderColor: [
+//                     'rgba(75, 192, 192, 1)', // Accuracy
+//                     'rgba(54, 162, 235, 1)', // Precision
+//                     'rgba(255, 206, 86, 1)', // Recall
+//                     'rgba(153, 102, 255, 1)' // F1 Score
+//                 ],
+//                 borderWidth: 1
+//             }]
+//         },
+//         options: {
+//             scales: {
+//                 y: {
+//                     beginAtZero: true,
+//                     max: 100
+//                 }
+//             }
+//         }
+//     });
+// };
