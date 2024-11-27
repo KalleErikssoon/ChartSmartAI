@@ -55,23 +55,26 @@ function startRetraining(strategies) {
 
     progressBar.style.display = 'block';
     logs.style.display = 'block';
-    logs.innerHTML = '';
+    logs.innerHTML = ''; 
 
-    // training bar
+    // Training bar
     let progress = 0;
     const interval = setInterval(() => {
         progress += 10;
         progressBarInner.style.width = progress + '%';
-        logs.innerHTML += `Training progress: ${progress}% with strategies: ${strategies.join(', ')}\n`;
+        
+        // Overwrite the log content with the current progress
+        logs.innerHTML = `Training progress: ${progress}% with strategies: ${strategies.join(', ')}`;
         logs.scrollTop = logs.scrollHeight;
 
         if (progress >= 100) {
             clearInterval(interval);
-            logs.innerHTML += 'Training completed successfully.\n';
+            logs.innerHTML = 'Training completed successfully.';
             progressBar.style.display = 'none';
         }
     }, 500);
 }
+
 
 
 function verifyModel() {

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Page - Model Management</title>
+    <title>Admin Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,26 +11,20 @@
             margin: 0;
             padding: 0;
         }
-
         .header {
             background-color: rgba(168, 230, 207, 0.33);
             padding: 20px;
             text-align: center;
         }
-
         .header h1 {
             margin: 0;
             color: #000;
         }
-
- 
         .container {
             padding: 20px;
             max-width: 1200px; 
             margin: 0 auto;    
         }
-
-
         .section {
             background-color: #fff;
             border: 1px solid #ccc;
@@ -38,32 +32,26 @@
             margin-bottom: 20px;
             padding: 20px;
         }
-
         .section h2 {
             margin-top: 0;
             color: #003366;
         }
-
-
         .date-range {
             display: flex;
-            gap: 20px;
+            gap: 29px;
             flex-wrap: wrap; 
         }
-
         .date-range label {
             flex: 1;
             min-width: 200px; 
         }
-
         .date-range input {
-            width: 100%;
+            width: 90%;
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 20px;
         }
-
         .button {
             background-color: #003366; 
             color: #fff;
@@ -75,11 +63,9 @@
             font-weight: bold;
             margin-right: 10px;
         }
-
         .button:hover {
             background-color: #808080; 
         }
-
         .progress-bar {
             width: 100%;
             background-color: #ccc;
@@ -88,31 +74,22 @@
             margin-top: 10px;
             display: none; 
         }
-
         .progress-bar-inner {
             height: 20px;
             width: 0%;
             background-color: #003366;
             transition: width 0.5s;
         }
-
         .logs {
-            background-color: #f9f9f9;
-            border: 1px solid #ccc;
-            height: 150px;
-            overflow-y: scroll;
             padding: 10px;
             font-family: monospace;
             font-size: 12px;
-            display: none; 
         }
-
         .metrics {
             display: flex;
             gap: 20px;
             flex-wrap: wrap; 
         }
-
         .metric-card {
             flex: 1;
             min-width: 200px; 
@@ -121,12 +98,9 @@
             border-radius: 10px;
             text-align: center;
         }
-
         .metric-card h3 {
             margin-top: 0;
         }
-
-
         .deployment-options {
             display: flex;
             align-items: center;
@@ -134,13 +108,11 @@
             flex-wrap: wrap;
             margin-top: 20px;
         }
-
         .deployment-options select {
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
-
         .modal {
             display: none; 
             position: fixed;
@@ -153,7 +125,6 @@
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
         }
-
         .modal-content {
             background-color: #fff;
             margin: auto;
@@ -162,46 +133,35 @@
             width: 40%;
             border-radius: 10px;
         }
-
         .modal-content h3 {
             margin-top: 0;
         }
-
         .modal-buttons {
             text-align: right;
         }
-
         .modal-buttons .button {
             margin-left: 10px;
         }
-
-        /* Validation Message */
         #date-validation-message {
             color: red;
             display: none;
             margin-top: 10px;
         }
-
         #verification-result {
             margin-top: 10px;
         }
-
-
         .strategy-selection {
             margin-top: 20px;
         }
-
         .strategy-selection label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-
         .strategy-options {
             display: flex;
             gap: 10px;
         }
-
         .strategy-options input {
             margin-right: 5px;
         }
@@ -209,7 +169,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Admin Dashboard - Model Management</h1>
+        <h1>Admin Dashboard</h1>
     </div>
 
     <!-- Main contanier -->
@@ -220,11 +180,11 @@
             <div class="date-range">
                 <label>
                     Start Date:
-                    <input type="date" id="start-date">
+                    <input type="datetime-local" id="start-date">
                 </label>
                 <label>
                     End Date:
-                    <input type="date" id="end-date">
+                    <input type="datetime-local" id="end-date">
                 </label>
             </div>
             <p id="date-validation-message">Start date must be before end date.</p>
@@ -242,12 +202,10 @@
                 </div>
             </div>
             <button class="button" onclick="confirmRetrain()">Retrain Model</button>
-            <!-- Progress Indicator -->
             <div class="progress-bar" id="progress-bar">
                 <div class="progress-bar-inner" id="progress-bar-inner"></div>
             </div>
-
-            <!-- Logs -->
+<!-- this is the training bar that is hidden -->
             <div class="logs" id="logs"></div>
         </div>
 
