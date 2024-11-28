@@ -28,7 +28,10 @@ stocks = ["NVDA", "AAPL", "MSFT", "AMZN", "GOOG", "META", "TSLA", "BRK.B", "TSM"
 metadata = {
     "name of file": os.path.basename(__file__),
     "commit hash": get_last_commit_hash(),
-    "description": "Raw data with model columns: ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count']",
+    "model": "StockData",
+    "description": "Raw stock data for the top-10 stocks",
+    "schema" : ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count'],
+    "stocks": stocks,
     "origin": f"Alpaca API, library version: {version('alpaca-py') if version('alpaca-py') else 'unknown'}",
     "date of stockmarket data": str((datetime.now() - timedelta(1)).date()),
     "date collected": str(datetime.now())
@@ -59,7 +62,7 @@ for symbol in stocks:
         )
 
 # Write metadata to a JSON file
-metadata_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_metadata.json")
+metadata_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "metadata_StockData.json")
 with open(metadata_file_path, "w") as metadata_file:
     json.dump(metadata, metadata_file, indent=4)
 

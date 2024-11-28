@@ -1,8 +1,0 @@
-{
-    "name of file": "populate_db.py",
-    "commit hash": "a98291260de9693111c7d5a7deb9a18db18df164",
-    "description": "Raw data with model columns: ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count']",
-    "origin": "Alpaca API, library version: 0.33.0",
-    "date of stockmarket data": "2024-11-27",
-    "date collected": "2024-11-28 14:31:21.717004"
-}
