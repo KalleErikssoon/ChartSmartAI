@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import django
 from django.conf import settings  # Import settings for access to API keys
 from importlib.metadata import version
+from commit_hash import get_last_commit_hash
 
 # Add the project root to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -26,8 +27,9 @@ stocks = ["NVDA", "AAPL", "MSFT", "AMZN", "GOOG", "META", "TSLA", "BRK.B", "TSM"
 # Metadata preparation
 metadata = {
     "name of file": os.path.basename(__file__),
+    "commit hash": get_last_commit_hash(),
     "description": "Raw data with model columns: ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count']",
-    "origin": f"Alpaca API, python library version: {version('alpaca-py') if version('alpaca-py') else 'unknown'}",
+    "origin": f"Alpaca API, library version: {version('alpaca-py') if version('alpaca-py') else 'unknown'}",
     "date of stockmarket data": str((datetime.now() - timedelta(1)).date()),
     "date collected": str(datetime.now())
 }
