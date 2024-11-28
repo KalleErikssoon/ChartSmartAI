@@ -1,9 +1,13 @@
 
 from pre_processor import Preprocessor
 from model_trainer_ova import ModelTrainer
+import os
 
-def runpipeline():
-    print("Starting pipeline...")
+def runpipeline(strategy):
+    print("Starting pipeline for strategy: {strategy}...")
+
+    model_base_path = f"ml_pipelines/model_implementation/trained_models/{strategy}"
+    model_output_path = f"{model_base_path}/logistic_ova_models.pkl"
 
     # fetch data
     preprocessor = Preprocessor(
@@ -22,20 +26,20 @@ def runpipeline():
     X_train, X_test, y_train, y_test = preprocessor.split_and_preprocess_data(X, y, stratify=data['symbol'])
 
     # save to csv files
-    X_train.to_csv("ml_pipelines/model_implementation/X_train.csv", index=False)
-    X_test.to_csv("ml_pipelines/model_implementation/X_test.csv", index=False)
-    y_train.to_csv("ml_pipelines/model_implementation/y_train.csv", index=False)
-    y_test.to_csv("ml_pipelines/model_implementation/y_test.csv", index=False)
+    X_train.to_csv(f"{model_base_path}/X_train.csv", index=False)
+    X_test.to_csv(f"{model_base_path}/X_test.csv", index=False)
+    y_train.to_csv(f"{model_base_path}/y_train.csv", index=False)
+    y_test.to_csv(f"{model_base_path}/y_test.csv", index=False)
 
-    print("Data successfully split and saved to CSV files.")
+    print(f"Data successfully split and saved for {strategy}.")
 
     #Instantiate and run the modeltrainer class
     trainer = ModelTrainer(
-        train_data_path="ml_pipelines/model_implementation/", 
-        test_data_path="ml_pipelines/model_implementation", 
-        model_output_path="ml_pipelines/model_implementation/trained_models/ema/logistic_ova_models.pkl"
+        train_data_path=model_base_path, 
+        test_data_path=model_base_path, 
+        model_output_path=model_output_path
     )
     trainer.run_pipeline()
 
 
-runpipeline()
+runpipeline(strategy="ema")
