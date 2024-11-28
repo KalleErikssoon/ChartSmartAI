@@ -2,6 +2,7 @@ import pandas as pd
 from ta.momentum import RSIIndicator
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
+import os
 
 
 class StockDataProcessor:
@@ -9,7 +10,23 @@ class StockDataProcessor:
     A class to process stock data, including calculating the RSI and normalizing specified features.
     """
 
-    def __init__(self, input_csv= "rsi_stock_data.csv", output_csv = "rsi_stock_data.csv", rsi_period=14):
+    # def __init__(self, input_csv= "rsi_stock_data.csv", output_csv = "rsi_stock_data.csv", rsi_period=14):
+    #     """
+    #     Initialize the StockDataProcessor with file paths and configuration.
+
+    #     Parameters:
+    #     - input_csv (str): Path to the input CSV file containing stock data.
+    #     - output_csv (str): Path to save the processed CSV file.
+    #     - rsi_period (int): Period for RSI calculation. Default is 14.
+    #     """
+    #     self.input_csv = input_csv
+    #     self.output_csv = output_csv
+    #     self.rsi_period = rsi_period
+
+    FILE_PATH = os.getenv('FILE_PATH')
+
+
+    def __init__(self, input_csv=FILE_PATH, output_csv = FILE_PATH, rsi_period=14):
         """
         Initialize the StockDataProcessor with file paths and configuration.
 
@@ -22,15 +39,24 @@ class StockDataProcessor:
         self.output_csv = output_csv
         self.rsi_period = rsi_period
 
-    def load_data(self):
-        """
-        Load stock data from the input CSV file.
+    # def load_data(self):
+    #     """
+    #     Load stock data from the input CSV file.
 
-        Returns:
-        - DataFrame: A Pandas DataFrame containing the stock data.
-        """
+    #     Returns:
+    #     - DataFrame: A Pandas DataFrame containing the stock data.
+    #     """
+    #     print(f"Loading data from {self.input_csv}...")
+    #     return pd.read_csv(self.input_csv, parse_dates=['timestamp'])
+
+    def load_data(self):
+
+        #Load data from the CSV file. Raise an exception if the file is not found.
+        if not os.path.exists(self.input_csv):
+            raise FileNotFoundError(f"Input file not found: {self.input_csv}")
         print(f"Loading data from {self.input_csv}...")
         return pd.read_csv(self.input_csv, parse_dates=['timestamp'])
+
 
     def calculate_rsi(self, data):
         """
@@ -49,7 +75,7 @@ class StockDataProcessor:
         for symbol, group in grouped:
             group = group.sort_values('timestamp')
             rsi_indicator = RSIIndicator(close=group['close'], window=self.rsi_period)
-            group['RSI'] = rsi_indicator.rsi()
+            group['rsi'] = rsi_indicator.rsi()
             rsi_dataframes.append(group)
 
         return pd.concat(rsi_dataframes)

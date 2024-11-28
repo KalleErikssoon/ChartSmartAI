@@ -97,7 +97,7 @@ def upload_rsi(request):
                 volume=row['volume'],
                 trade_count=row['trade_count'],
                 vwap=row['vwap'],
-                rsi=row['RSI'],
+                rsi=row['rsi'],
                 label=row['label']
             )
         return JsonResponse({'message': 'Data successfully uploaded'}, status=201)
@@ -105,7 +105,7 @@ def upload_rsi(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-# GET endpoint to get the processed data for the ML model
+# GET endpoint to get the processed data for the ML model for EMA
 @api_view(['GET'])
 def get_ema_data(request):
     try:
@@ -134,7 +134,7 @@ def get_ema_data(request):
         return HttpResponse(f"Error: {str(e)}", content_type="text/plain", status=500)
 
 
-# GET endpoint to get the processed data for the ML model
+# GET endpoint to get the processed data for the ML model for MACD
 @api_view(['GET'])
 def get_macd_data(request):
     try:
@@ -152,6 +152,36 @@ def get_macd_data(request):
         # create CSV response
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="macd_data.csv"'
+
+        # Write dataframe to the response as CSV
+        df.to_csv(path_or_buf=response, index=False)
+
+        return response
+
+    except Exception as e:
+        # handle exceptions and return an error response
+        return HttpResponse(f"Error: {str(e)}", content_type="text/plain", status=500)
+    
+
+
+    # GET endpoint to get the processed data for the ML model for RSI
+@api_view(['GET'])
+def get_rsi_data(request):
+    try:
+        # Get data from SQLite DB
+        rsi_Data = RSI_Data.objects.all()
+        # Convert results above to a list of dictionaries
+        data = list(rsi_Data.values(
+            'timestamp', 'symbol', 'open', 'high', 'low', 
+            'close', 'volume', 'vwap', 'trade_count',
+            'rsi', 'label'
+        ))
+
+        df = pd.DataFrame(data)
+
+        # create CSV response
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="rsi_data.csv"'
 
         # Write dataframe to the response as CSV
         df.to_csv(path_or_buf=response, index=False)

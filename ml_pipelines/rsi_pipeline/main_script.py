@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 URL = os.getenv('URL')
+FILE_PATH = os.getenv('FILE_PATH')
+
 
 def runpipeline():
     print("Starting pipeline...")
@@ -24,7 +26,7 @@ def runpipeline():
     labeler.process()
 
     #step 4: send the csv to django project via API
-    file_path = "rsi_stock_data.csv"
+    file_path = FILE_PATH
 
     # API endpoint
     url = URL
