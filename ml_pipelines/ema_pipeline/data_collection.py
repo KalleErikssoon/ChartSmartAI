@@ -15,7 +15,7 @@ import pandas as pd  # To handle data storage
 load_dotenv()  # Load the .env file
 ALPACA_API_KEY = os.getenv('ALPACA_API_KEY')
 ALPACA_SECRET_KEY = os.getenv('ALPACA_SECRET_KEY')
-FILE_PATH = os.getenv('FILE_PATH')
+FILE_PATH = os.getenv('EMA_FILE_PATH')
 
 
 

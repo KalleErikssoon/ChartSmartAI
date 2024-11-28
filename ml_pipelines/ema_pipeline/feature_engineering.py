@@ -5,7 +5,7 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 load_dotenv()
-FILE_PATH = os.getenv('FILE_PATH')
+FILE_PATH = os.getenv('EMA_FILE_PATH')
 
 class EmaCalculator: 
 

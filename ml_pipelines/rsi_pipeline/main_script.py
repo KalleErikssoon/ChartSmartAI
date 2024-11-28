@@ -5,8 +5,8 @@ import requests
 import os
 from dotenv import load_dotenv
 load_dotenv()
-URL = os.getenv('URL')
-FILE_PATH = os.getenv('FILE_PATH')
+URL = os.getenv('RSI_URL')
+FILE_PATH = os.getenv('RSI_FILE_PATH')
 
 
 def runpipeline():

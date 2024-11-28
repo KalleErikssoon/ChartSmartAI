@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-FILE_PATH = os.getenv('FILE_PATH')
+FILE_PATH = os.getenv('RSI_FILE_PATH')
 
 
 class Labelling:

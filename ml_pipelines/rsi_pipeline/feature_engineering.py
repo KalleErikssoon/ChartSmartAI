@@ -23,7 +23,7 @@ class StockDataProcessor:
     #     self.output_csv = output_csv
     #     self.rsi_period = rsi_period
 
-    FILE_PATH = os.getenv('FILE_PATH')
+    FILE_PATH = os.getenv('RSI_FILE_PATH')
 
 
     def __init__(self, input_csv=FILE_PATH, output_csv = FILE_PATH, rsi_period=14):

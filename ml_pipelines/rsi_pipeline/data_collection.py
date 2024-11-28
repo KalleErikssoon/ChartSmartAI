@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 # Load environment variables
 load_dotenv()
 
-FILE_PATH = os.getenv('FILE_PATH')
+FILE_PATH = os.getenv('RSI_FILE_PATH')
 
 
 

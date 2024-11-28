@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv() 
-FILE_PATH = os.getenv('FILE_PATH')
+FILE_PATH = os.getenv('MACD_FILE_PATH')
 
 class FeatureEngineering:
     def __init__(self, input_path=FILE_PATH, output_path=FILE_PATH):
