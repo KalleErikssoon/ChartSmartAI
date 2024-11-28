@@ -2,7 +2,7 @@ import pandas as pd
 
 class Labeler:
 
-    def __init__(self, csv_file_path="ml_pipelines/ema_pipeline/ema_data.csv", threshold=0.01, prediction_window=1):
+    def __init__(self, csv_file_path="ml_pipelines/ema_pipeline/ema_data.csv", threshold=0.001, prediction_window=1):
         self.csv_file_path = csv_file_path
         self.threshold = threshold
         self.prediction_window = prediction_window  # this is number of days to predict

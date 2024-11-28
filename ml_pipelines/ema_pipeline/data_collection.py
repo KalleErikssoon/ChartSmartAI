@@ -47,9 +47,9 @@ class DataCollector:
                 # Request parameters: daily stock data for the past year
                 request_params = StockBarsRequest(
                     symbol_or_symbols=symbol,
-                    start=datetime(2023, 11, 20),
-                    end=datetime(2024, 11, 19),
-                    timeframe=TimeFrame.Day
+                    start=datetime(2024, 10, 19),
+                    end=datetime(2024, 11, 20),
+                    timeframe=TimeFrame.Hour
                 )
 
                 # Retrieve stock data

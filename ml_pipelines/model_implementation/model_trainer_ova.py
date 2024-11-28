@@ -30,7 +30,7 @@ class ModelTrainer:
 
             # Optimize cost function
             res = minimize(
-                fun=lambda w: LogisticRegressionUtils.costFunction(w, X_train.values, y_binary),
+                fun=lambda w: LogisticRegressionUtils.costFunction(w, X_train.values, y_binary, lambda_=1.0),
                 x0=initial_w,
                 jac=True,
                 method='TNC'
