@@ -47,7 +47,11 @@ function loadStockChart(symbol) {
     const container = document.getElementById("tradingview");
     container.innerHTML = ""; 
 
-    // Initialize new widget
+    // Initialize new widget (JSON Format)
+    // To add indicators to chart 
+    //      "studies": ["MACD@tv-basicstudies"]
+    //      "studies": ["RSI@tv-basicstudies"]
+    //      "studies": ["EMA@tv-basicstudies"]
     new TradingView.widget({
         "width": 875,
         "height": 400,
@@ -61,7 +65,6 @@ function loadStockChart(symbol) {
         "hide_top_toolbar": true,
         "hide_side_toolbar": true,
         "allow_symbol_change": false,
-        "studies": ["MACD@tv-basicstudies"],
         "container_id": "tradingview"
     });
 }
