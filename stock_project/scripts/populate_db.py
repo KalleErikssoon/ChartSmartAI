@@ -62,7 +62,7 @@ for symbol in stocks:
         )
 
 # Write metadata to a JSON file
-metadata_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "metadata_StockData.json")
+metadata_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../metadata/metadata_StockData.json")
 with open(metadata_file_path, "w") as metadata_file:
     json.dump(metadata, metadata_file, indent=4)
 
