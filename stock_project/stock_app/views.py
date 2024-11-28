@@ -6,7 +6,6 @@ def home(request):
     return render(request, "stock_project/home.html", {})
 
 
-
 # Data validation view
 import json
 from datetime import datetime, timedelta
@@ -14,21 +13,35 @@ from django.utils import timezone
 from django.http import JsonResponse
 from stock_app.models import StockData
 
+# Disclaimer: These tests were created using ChatGPT to cross-check database against metadata
 def validate_stock_data(request):
     try:
         # Load the metadata from the JSON file
         with open('./metadata/metadata_StockData.json', 'r') as file:
             metadata = json.load(file)
         
+        results = []
+
+        # Test 1: Validate that 'origin' key contains "Alpaca API"
+        if "origin" not in metadata or "Alpaca API" not in metadata["origin"]:
+            results.append({
+                "test": "origin_contains_alpaca_api",
+                "status": "failed",
+                "message": "'origin' key does not contain 'Alpaca API'"
+            })
+        else:
+            results.append({
+                "test": "origin_contains_alpaca_api",
+                "status": "passed"
+            })
+
         # Extract the stock market date from the metadata
         stockmarket_data_date = datetime.strptime(metadata['date of stockmarket data'], "%Y-%m-%d")
 
         # Convert the date to a timezone-aware datetime object
         stockmarket_data_date = timezone.make_aware(stockmarket_data_date)
 
-        results = []
-
-        # Test 1: Ensure no timestamps exceed the metadata date
+        # Test 2: Ensure no timestamps exceed the metadata date
         threshold_date = stockmarket_data_date + timedelta(days=1)
         invalid_entries = StockData.objects.filter(timestamp__gt=threshold_date)
         if invalid_entries.count() > 0:
@@ -43,7 +56,7 @@ def validate_stock_data(request):
                 "status": "passed"
             })
 
-        # Test 2: Validate the schema of the StockData model
+        # Test 3: Validate the schema of the StockData model
         expected_schema = ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count']
         actual_schema = [field.name for field in StockData._meta.get_fields() if field.name != 'id']
         if actual_schema != expected_schema:
@@ -58,7 +71,7 @@ def validate_stock_data(request):
                 "status": "passed"
             })
 
-        # Test 3: Ensure each stock symbol has at least one entry
+        # Test 4: Ensure each stock symbol has at least one entry
         stock_symbols = metadata['stocks']
         for symbol in stock_symbols:
             stock_count = StockData.objects.filter(symbol=symbol).count()
