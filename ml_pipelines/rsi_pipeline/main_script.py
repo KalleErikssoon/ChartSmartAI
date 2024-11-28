@@ -1,11 +1,10 @@
 from data_collection import DataCollector
-from labelling import Labeler
-from feature_engineering import EmaCalculator
+from labelling import Labelling
+from feature_engineering import StockDataProcessor
 import requests
 import os
 from dotenv import load_dotenv
 load_dotenv()
-FILE_PATH = os.getenv('FILE_PATH')
 URL = os.getenv('URL')
 
 def runpipeline():
@@ -13,21 +12,19 @@ def runpipeline():
 
     # Step 1: Data Collection
     collector = DataCollector()
-    collecteddata = collector.collect_data()
+    collector.collect_data()
 
-    #Step 2 : ema column 
-    #Call the feature_engineering.py
-    emaCalculator = EmaCalculator()
-    emaCalculator.run_pipeline()
+    #Step 2: Feature Engineering
+    rsiCalculator = StockDataProcessor()
+    rsiCalculator.process()
     
 
     #step 3 : data labelling
-    labeler= Labeler()
-    labeler.label_data()
+    labeler= Labelling()
+    labeler.process()
 
     #step 4: send the csv to django project via API
-
-    file_path = FILE_PATH
+    file_path = "rsi_stock_data.csv"
 
     # API endpoint
     url = URL

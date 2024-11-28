@@ -33,6 +33,7 @@ dependencies:
   - defusedxml=0.7.1
   - django=5.1
   - django-crispy-forms=2.3
+  - djangorestframework=3.15.2
   - entrypoints=0.4
   - executing=0.8.3
   - expat=2.6.3
@@ -139,6 +140,7 @@ dependencies:
   - sqlparse=0.4.4
   - sseclient-py=1.8.0
   - stack_data=0.2.0
+  - ta=0.11.0
   - tbb=2021.8.0
   - terminado=0.17.1
   - threadpoolctl=3.5.0
@@ -160,3 +162,4 @@ dependencies:
   - yaml=0.2.5
   - zeromq=4.3.5
   - zlib=1.2.13
+prefix: /home/nas/miniconda3/envs/django-env

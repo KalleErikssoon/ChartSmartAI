@@ -1,11 +1,15 @@
 import pandas as pd
+import os
+from dotenv import load_dotenv
 
+load_dotenv() 
+FILE_PATH = os.getenv('FILE_PATH')
 class DataLabeler:
-    def __init__(self, input_path="ml_pipelines/macd_pipeline/macd_data.csv", output_path="ml_pipelines/macd_pipeline/macd_data.csv"):
+    def __init__(self, input_path=FILE_PATH, output_path=FILE_PATH):
         self.input_path = input_path
         self.output_path = output_path
 
-    def label_data(self, prediction_window=3, price_threshold=0.02):
+    def label_data(self, prediction_window=3, price_threshold=0.01):
         """
         Label the dataset based on MACD, Signal Line, and future price.
         Parameters:
@@ -17,36 +21,41 @@ class DataLabeler:
 
         # group by stock name (symbol) and apply calculations independently for each stock
         def process_group(group):
-            # calculate future price for the group
+            # Calculate future price for the group
             group['future_price'] = group['close'].shift(-prediction_window)
 
-            # calculate price change percentage
+            # Calculate price change percentage
             group['price_change'] = (group['future_price'] - group['close']) / group['close']
 
-            # apply labels based on MACD/signal line and future price
+            # Precompute shifted MACD and Signal Line for the group
+            group['macd_shifted'] = group['macd'].shift(1)
+            group['signal_line_shifted'] = group['signal_line'].shift(1)
+
+            # Apply labels based on MACD/signal line and future price
             def label_function(row):
                 if pd.isna(row['price_change']):
                     return None 
-
-                macd_above_signal = row['macd'] > row['signal_line']
+                # Use precomputed shifted values
+                macd_above_signal = (row['macd'] > row['signal_line']) and (row['macd_shifted'] <= row['signal_line_shifted'])
+                macd_below_signal = (row['macd'] < row['signal_line']) and (row['macd_shifted'] >= row['signal_line_shifted'])
                 future_price_increasing = row['price_change'] > price_threshold
                 future_price_decreasing = row['price_change'] < -price_threshold
 
                 if macd_above_signal and future_price_increasing:
                     return 0  # buy
-                elif not macd_above_signal and future_price_decreasing:
+                elif macd_below_signal and future_price_decreasing:
                     return 2  # sell
                 else:
                     return 1  # hold
 
-            # apply labeling logic
+            # Apply labeling logic
             group['label'] = group.apply(label_function, axis=1)
             
-            # make sure labels are integers
+            # Make sure labels are integers
             group['label'] = group['label'].astype('Int64')
 
             # Drop unwanted columns
-            group = group.drop(columns=['future_price', 'price_change'])
+            group = group.drop(columns=['future_price', 'price_change', 'macd_shifted', 'signal_line_shifted'])
 
             return group
 

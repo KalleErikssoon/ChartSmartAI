@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  django_server:
+    build:
+      context: ./stock_project
+    container_name: django_server
+    ports:
+      - "8000:8000"
+    networks:
+      - stock_project_network
+    environment:
+      - ALLOWED_HOSTS=127.0.0.1,172.18.0.1,*
+      - DEBUG=1
+
+  macd_pipeline:
+    build:
+      context: ./ml_pipelines/macd_pipeline
+    container_name: macd_pipeline
+    depends_on:
+      - django_server
+    networks:
+      - stock_project_network
+    volumes:
+      - shared_data:/app/shared_data
+    command: sh -c "python main_script.py && touch /app/shared_data/macd_done"
+
+  ema_pipeline:
+    build:
+      context: ./ml_pipelines/ema_pipeline
+    container_name: ema_pipeline
+    depends_on:
+      - django_server
+    networks:
+      - stock_project_network
+    volumes:
+      - shared_data:/app/shared_data
+    command: sh -c "while [ ! -f /app/shared_data/macd_done ]; do sleep 1; done; python main_script.py && touch /app/shared_data/ema_done"
+
+  rsi_pipeline:
+    build:
+      context: ./ml_pipelines/rsi_pipeline
+    container_name: rsi_pipeline
+    depends_on:
+      - django_server
+    networks:
+      - stock_project_network
+    volumes:
+      - shared_data:/app/shared_data
+    command: sh -c "while [ ! -f /app/shared_data/ema_done ]; do sleep 1; done; python main_script.py"
+
+networks:
+  stock_project_network:
+
+volumes:
+  shared_data:

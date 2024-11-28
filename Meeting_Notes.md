@@ -7,6 +7,7 @@
 | 2024-11-11 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finalize slides for pitch meeting                                            |
 | 2024-11-14 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches                                                |
 | 2024-11-18 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches and data, evaluation methods                   |
+| 2024-11-22 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed ML pipeline standardization approaches, training, front-end development, metadata & deployment plans                   |
 
 ---
 
@@ -15,12 +16,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅✅            |                      |
-| Malte    | ✅✅✅✅✅            |                      |
-| Isaac    | ✅✅✅✅✅            |                      |
-| Nas      | ✅✅✅✅✅            |                      |
-| Jessie   | ✅✅✅✅✅            |                      |
-| Asim     | ✅✅✅✅✅            |                      |
+| Kalle    | ✅✅✅✅✅            |✅✅                 |
+| Malte    | ✅✅✅✅✅            |✅✅                 |
+| Isaac    | ✅✅✅✅✅            |✅✅                 |
+| Nas      | ✅✅✅✅✅            |✅✅                 |
+| Jessie   | ✅✅✅✅✅            |✅✅                 |
+| Asim     | ✅✅✅✅✅            |✅✅                 |
 
 
 ---
@@ -73,8 +74,28 @@
 * Further discussed specific implementation details for the training phase.
 * Discussed division of initial issues, such as data cleaning, the website and the model training section
 * 3 initial issues, 1 for each invesment strategy (RSI, MACD, EMA)
-* 
+
 
 **TODO:** Finish writing Assignment 1, start working  on data cleaning
+
+---
+
+### Meeting 6 - Friday, 22-11-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* ML pipeline standardization: 
+* ML model training: 
+* Front-end development: 
+
+**TODO:** TA meeting on Tuesday at 1:30pm. Discussed metadata (scripts, JSON) & deployment plans (K8s, Docker) after training is complete. Start A2.
+
+---
+
+### Meeting 7 - Tuesday, 22-11-26
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Frontend development: What it should contain and not. How we want to approach different user roles
+* Model training: Which evaluation metric do we value higher? Recall or Precision? And why?
+* Deployment: Discussed kubernetes, docker, what the best way to deploy is 
+
+**TODO:** TA meeting on Tuesday at 1:30pm. Finish model training pipeline for now. Start work on the report. Start looking into deployment.
 
 ---
