@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 from alpaca.data import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
@@ -36,13 +36,20 @@ class DataCollector:
         stocks = ["NVDA", "AAPL", "MSFT", "AMZN", "GOOG", "META", "TSLA", "BRK.B", "TSM", "AVGO"]
         stock_data = []
 
+        # calculate yesterday's date
+        today = datetime.now()
+        endDate = (today - timedelta(days=1)).date()
+
+        # calculate start date
+        startDate = endDate.replace(year=endDate.year - 1)
+
         for symbol in stocks:
             print(f"Collecting data for {symbol}...")
             try:
                 request_params = StockBarsRequest(
                     symbol_or_symbols=symbol,
-                    start=datetime(2023, 11, 20),
-                    end=datetime(2024, 11, 19),
+                    start=startDate,
+                    end=endDate,
                     timeframe=TimeFrame.Day
                 )
                 bars = self.data_client.get_stock_bars(request_params)
