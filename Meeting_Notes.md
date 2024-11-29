@@ -8,7 +8,7 @@
 | 2024-11-14 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches                                                |
 | 2024-11-18 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches and data, evaluation methods                   |
 | 2024-11-22 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed ML pipeline standardization approaches, training, front-end development, metadata & deployment plans                   |
-
+| 2024-11-26 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed about what the frontend should include, decided whether recall or precision is more important for model training and looked at the ways to deploy using Kubernetes and Docker.                  |
 ---
 
 # Attendance Tracker
@@ -90,7 +90,7 @@
 
 ---
 
-### Meeting 7 - Tuesday, 22-11-26
+### Meeting 7 - Tuesday, 26-11-24
 **Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
 * Frontend development: What it should contain and not. How we want to approach different user roles
 * Model training: Which evaluation metric do we value higher? Recall or Precision? And why?
