@@ -13,9 +13,12 @@ logging.basicConfig(level=logging.DEBUG)
 # Load environment variables
 load_dotenv()
 
+FILE_PATH = os.getenv('RSI_FILE_PATH')
+
+
 
 class DataCollector:
-    def __init__(self, api_key=None, secret_key=None, output_path="rsi_stock_data.csv"):
+    def __init__(self, api_key=None, secret_key=None, output_path=FILE_PATH):
         print("Initializing DataCollector...")
         self.api_key = api_key or os.getenv('ALPACA_API_KEY')
         self.secret_key = secret_key or os.getenv('ALPACA_SECRET_KEY')
