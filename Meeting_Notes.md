@@ -9,6 +9,7 @@
 | 2024-11-18 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches and data, evaluation methods                   |
 | 2024-11-22 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed ML pipeline standardization approaches, training, front-end development, metadata & deployment plans                   |
 | 2024-11-26 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed about what the frontend should include, decided whether recall or precision is more important for model training and looked at the ways to deploy using Kubernetes and Docker.                  |
+| 2024-11-29 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Merged branches, created new issues. Divide tasks |
 ---
 
 # Attendance Tracker
@@ -16,12 +17,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅✅            |✅✅                 |
-| Malte    | ✅✅✅✅✅            |✅✅                 |
-| Isaac    | ✅✅✅✅✅            |✅✅                 |
-| Nas      | ✅✅✅✅✅            |✅✅                 |
-| Jessie   | ✅✅✅✅✅            |✅✅                 |
-| Asim     | ✅✅✅✅✅            |✅✅                 |
+| Kalle    | ✅✅✅✅✅            |✅✅✅               |
+| Malte    | ✅✅✅✅✅            |✅✅✅               |
+| Isaac    | ✅✅✅✅✅            |✅✅✅               |
+| Nas      | ✅✅✅✅✅            |✅✅✅               |
+| Jessie   | ✅✅✅✅✅            |✅✅✅               |
+| Asim     | ✅✅✅✅✅            |✅✅✅               |
 
 
 ---
@@ -97,5 +98,15 @@
 * Deployment: Discussed kubernetes, docker, what the best way to deploy is 
 
 **TODO:** TA meeting on Tuesday at 1:30pm. Finish model training pipeline for now. Start work on the report. Start looking into deployment.
+
+---
+
+
+### Meeting 8 - Friday, 29-11-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Merge branches and solve merge conflicts
+* Create new issues
+* Divide tasks among team members
+**TODO:** Work on individual tasks. 
 
 ---
