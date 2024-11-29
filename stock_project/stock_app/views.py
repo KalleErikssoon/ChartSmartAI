@@ -5,6 +5,8 @@ from django.shortcuts import render
 def home(request):
     return render(request, "stock_project/home.html", {})
 
+def admin(request):
+    return render(request, "stock_project/stockadmin.html", {})
 
 # Data validation view
 import json
