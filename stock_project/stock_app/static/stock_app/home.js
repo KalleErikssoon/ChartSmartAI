@@ -52,9 +52,11 @@ function loadStockChart(symbol) {
     //      "studies": ["MACD@tv-basicstudies"]
     //      "studies": ["RSI@tv-basicstudies"]
     //      "studies": ["EMA@tv-basicstudies"]
+
+    // width 875, height 400
     new TradingView.widget({
-        "width": 875,
-        "height": 400,
+        "width": "100%",
+        "height": "100%",
         "symbol": symbol,
         "interval": "D",
         "range": "12M",
