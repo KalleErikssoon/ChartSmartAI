@@ -2,10 +2,14 @@
 import numpy as np
 import os
 import pandas as pd
+import os
+from dotenv import load_dotenv
+load_dotenv()
+FILE_PATH = os.getenv('EMA_FILE_PATH')
 
 class EmaCalculator: 
 
-    def __init__(self, file_path="ml_pipelines/ema_pipeline/ema_data.csv", period=10):
+    def __init__(self, file_path=FILE_PATH, period=10):
         
         self.file_path=os.path.abspath(file_path)
         self.period = period
