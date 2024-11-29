@@ -1,15 +1,13 @@
-# 0. calc EMA
-# 1. calc macd & insert
-# 2. calc signal line & insert
-# 3. calc histogram & insert
-# 4. insert new columns into csv file
+import pandas as pd  
 
-# Additional imports
-import pandas as pd  # To handle data storage
+import os
+from dotenv import load_dotenv
 
+load_dotenv() 
+FILE_PATH = os.getenv('MACD_FILE_PATH')
 
 class FeatureEngineering:
-    def __init__(self, input_path="ml_pipelines/macd_pipeline/macd_data.csv", output_path="ml_pipelines/macd_pipeline/macd_data.csv"):
+    def __init__(self, input_path=FILE_PATH, output_path=FILE_PATH):
         
         self.output_path = output_path
         self.input_path = input_path
@@ -19,7 +17,7 @@ class FeatureEngineering:
         long_window = 26
         signal_window = 9
 
-        df =  pd.read_csv("ml_pipelines/macd_pipeline/macd_data.csv")
+        df =  pd.read_csv(FILE_PATH)
         macd_results = []
         symbols = df['symbol'].unique()
 

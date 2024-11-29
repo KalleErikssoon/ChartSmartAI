@@ -2,6 +2,12 @@ from data_collection import DataCollector
 from feature_engineering import FeatureEngineering
 from labelling import DataLabeler
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv() 
+FILE_PATH = os.getenv('MACD_FILE_PATH')
+URL = os.getenv('MACD_URL')
 
 def runpipeline():
     print("Starting pipeline...")
@@ -19,10 +25,10 @@ def runpipeline():
     labeler.label_data()
 
     #Step 4: Post CSV file to Django backend
-    file_path = "ml_pipelines/macd_pipeline/macd_data.csv"
+    file_path = FILE_PATH
 
     # API endpoint
-    url = "http://127.0.0.1:8000/db_updates/"
+    url = URL
 
     # Prepare the file for upload
     with open(file_path, 'rb') as f:
