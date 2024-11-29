@@ -7,5 +7,7 @@ urlpatterns = [
     path('db_updates/ema/', api_views.upload_ema, name='upload_ema'),
     path('db_updates/rsi/', api_views.upload_rsi, name='upload_rsi'), 
     path('get_database/macd/', api_views.get_macd_data, name='get_macd'), 
-    path('validate-stock-data/', views.validate_stock_data, name='validate_stock_data'),
+    path('get_database/ema/', api_views.get_ema_data, name='get_ema'),
+    path('get_database/rsi/', api_views.get_rsi_data, name='get_rsi'),
+    path('validate-stock-data/', views.validate_stock_data, name='validate_stock_data'),    
 ]
