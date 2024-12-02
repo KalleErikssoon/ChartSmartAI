@@ -10,7 +10,8 @@ urlpatterns = [
     path('get_database/macd/', api_views.get_macd_data, name='get_macd'), 
     path('get_database/ema/', api_views.get_ema_data, name='get_ema'),
     path('get_database/rsi/', api_views.get_rsi_data, name='get_rsi'),
-    path('validate-stock-data/', views.validate_stock_data, name='validate_stock_data'),    
+    path('validate-stock-data/', views.validate_stock_data, name='validate_stock_data'),
+    path('upload_model/', api_views.upload_model, name='upload_model'),  #for th epickle file  
 ]
 
 # urlpatterns = [

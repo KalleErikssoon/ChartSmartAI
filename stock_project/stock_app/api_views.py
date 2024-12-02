@@ -6,6 +6,8 @@ import pandas as pd
 from stock_app.models import MACD_Data 
 from stock_app.models import EMA_Data
 from stock_app.models import RSI_Data
+import os
+from django.conf import settings
 
 @csrf_exempt
 @api_view(['POST'])
@@ -191,3 +193,30 @@ def get_rsi_data(request):
     except Exception as e:
         # handle exceptions and return an error response
         return HttpResponse(f"Error: {str(e)}", content_type="text/plain", status=500)
+
+
+
+@csrf_exempt
+@api_view(['POST'])
+@parser_classes([MultiPartParser])
+def upload_model(request):
+    if 'file' not in request.FILES:
+        return JsonResponse({'error': 'No file uploaded'}, status=400)
+
+    try:
+        pkl_file = request.FILES['file']
+        file_name = pkl_file.name
+
+        # path to save the file
+        save_path = os.path.join(settings.BASE_DIR, 'trained-models', file_name)
+        # make the directory if doesnt exist
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        # Save the file
+        with open(save_path, 'wb') as f:
+            for chunk in pkl_file.chunks():
+                f.write(chunk)
+
+        return JsonResponse({'message': 'File successfully uploaded'}, status=201)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
