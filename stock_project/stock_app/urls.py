@@ -14,7 +14,3 @@ urlpatterns = [
     path('upload_model/', api_views.upload_model, name='upload_model'),  #for th epickle file  
 ]
 
-# urlpatterns = [
-#     path('', views.home, name='home'), # Render home html page
-#     path('db_updates/ema/', api_views.upload_ema, name='upload_ema')
-# ]

@@ -208,10 +208,10 @@ def upload_model(request):
         file_name = pkl_file.name
 
         # path to save the file
-        save_path = os.path.join(settings.BASE_DIR, 'trained-models', file_name)
+        save_path = os.path.join(settings.BASE_DIR, 'models', file_name)
         # make the directory if doesnt exist
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        # Save the file
+        #save
         with open(save_path, 'wb') as f:
             for chunk in pkl_file.chunks():
                 f.write(chunk)
