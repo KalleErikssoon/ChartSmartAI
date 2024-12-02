@@ -3,12 +3,12 @@ from pre_processor import Preprocessor
 from model_trainer_ova import ModelTrainer
 import sys
 import os
-
-def runpipeline(strategy):
+from datetime import datetime 
+def runpipeline(strategy, current_datetime):
     print("Starting pipeline for strategy: {strategy}...")
 
     model_base_path = f"ml_pipelines/model_implementation/trained_models/{strategy}"
-    model_output_path = f"{model_base_path}/logistic_ova_models.pkl"
+    model_output_path = f"{model_base_path}/ova_{strategy}_{current_datetime}.pkl"
 
     # fetch data
     preprocessor = Preprocessor(
@@ -52,5 +52,6 @@ if __name__ == "__main__":
         print("Usage: python main_script.py <strategy>")
         sys.exit(1)
     strategy = sys.argv[1]
-    runpipeline(strategy)
+    current_datetime = datetime.now().strftime("%Y%m%d_%H-%M--%S")
+    runpipeline(strategy, current_datetime)
 
