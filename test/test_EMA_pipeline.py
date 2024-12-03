@@ -116,6 +116,12 @@ class TestEmaCalculator(unittest.TestCase):
         self.assertIsInstance(calculator.ema_data, pd.DataFrame)
         self.assertListEqual(list(calculator.ema_data.columns), ['timestamp', 'symbol', 'close'])
 
+# test caluclate ema function if add ema clounm to the data
+    def test_calculate_ema(self):
+        calculator = EmaCalculator(file_path=self.file_path, period=3)
+        calculator.calculate_ema()
+        self.assertIn('ema', calculator.ema_data.columns)
+
 
 
 
