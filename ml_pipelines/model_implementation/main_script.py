@@ -3,16 +3,21 @@ from pre_processor import Preprocessor
 from model_trainer_ova import ModelTrainer
 import sys
 import os
+from dotenv import load_dotenv
+
+load_dotenv() 
+FILE_PATH = os.getenv('FILE_PATH')
+URL = os.getenv('URL')
 
 def runpipeline(strategy):
     print("Starting pipeline for strategy: {strategy}...")
 
-    model_base_path = f"ml_pipelines/model_implementation/trained_models/{strategy}"
+    model_base_path = f"{FILE_PATH}/trained_models/{strategy}"
     model_output_path = f"{model_base_path}/logistic_ova_models.pkl"
 
     # fetch data
     preprocessor = Preprocessor(
-        api_url=f"http://127.0.0.1:8000/get_database/{strategy}",
+        api_url=f"{URL}/get_database/{strategy}",
         apply_smote=True,
         apply_scaling=True)
     data = preprocessor.fetch_data()
@@ -53,4 +58,3 @@ if __name__ == "__main__":
         sys.exit(1)
     strategy = sys.argv[1]
     runpipeline(strategy)
-

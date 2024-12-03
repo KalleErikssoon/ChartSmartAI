@@ -1,0 +1,8 @@
+numpy
+pandas
+scikit-learn
+requests
+imbalanced-learn
+scipy
+joblib
+python-dotenv
