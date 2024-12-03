@@ -21,6 +21,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from ml_pipelines.ema_pipeline.data_collection import DataCollector
+from ml_pipelines.ema_pipeline.feature_engineering import EmaCalculator
 
 
 class TestDataCollector(unittest.TestCase):
@@ -87,7 +88,25 @@ class TestDataCollector(unittest.TestCase):
         self.assertIn("symbol", saved_df.columns)
         self.assertEqual(saved_df["symbol"].iloc[0], "NVDA")
 
-   
+# Mock test feature engineering
+class TestEmaCalculator(unittest.TestCase):
+    def setUp(self):
+        # Create temporary files and directories
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.file_path = os.path.join(self.temp_dir.name, "test.csv")
+        self.sample_data = pd.DataFrame({
+            'timestamp': ['2024-01-01', '2024-01-02', '2024-01-03', '2024-01-04', '2024-01-05'],
+            'symbol': ['GOOG', 'GOOG', 'GOOG', 'GOOG', 'GOOG'],
+            'close': [1500, 1520, 1510, 1530, 1550]
+        })
+        self.sample_data.to_csv(self.file_path, index=False)
+
+    def test_initialization(self):
+        calculator = EmaCalculator(file_path=self.file_path, period=10)
+        self.assertEqual(calculator.file_path, os.path.abspath(self.file_path))
+        self.assertEqual(calculator.period, 10)
+
+
 
 
 if __name__ == "__main__":
