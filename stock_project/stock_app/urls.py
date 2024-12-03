@@ -12,7 +12,6 @@ urlpatterns = [
     path('get_database/rsi/', api_views.get_rsi_data, name='get_rsi'),
     path('validate-stock-data/', views.validate_stock_data, name='validate_stock_data'),
     path('upload_metadata/', api_views.upload_metadata, name='upload_metadata'),
-    path('echo_message/', api_views.echo_message, name='echo_message'),
 ]
 
 # urlpatterns = [

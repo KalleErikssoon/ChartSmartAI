@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import django
 from django.conf import settings  # Import settings for access to API keys
 from importlib.metadata import version
-from commit_hash import get_last_commit_hash
 
 # Add the project root to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -24,12 +23,15 @@ data_client = StockHistoricalDataClient(settings.ALPACA_API_KEY, settings.ALPACA
 # Array of top-10 stocks
 stocks = ["NVDA", "AAPL", "MSFT", "AMZN", "GOOG", "META", "TSLA", "BRK.B", "TSM", "AVGO"]
 
+startDate=datetime(2024, 11, 13)
+endDate=datetime.now() - timedelta(1)
+
 for symbol in stocks:
     # Request Parameters
     request_params = StockBarsRequest(
         symbol_or_symbols=symbol,
-        start=datetime(2024, 11, 13),
-        end=datetime.now() - timedelta(1),  # Updated to use yesterday's date
+        start=startDate,
+        end=endDate,  # Updated to use yesterday's date
         timeframe=TimeFrame.Hour
     )
     bars = data_client.get_stock_bars(request_params)
@@ -49,36 +51,7 @@ for symbol in stocks:
         )
 
 
-# Metadata preparation
-metadata = {
-    "name of file": os.path.basename(__file__),
-    "commit hash": get_last_commit_hash(),
-    "model": "StockData",
-    "description": "Raw stock data for the top-10 stocks",
-    "schema" : ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count'],
-    "stocks": stocks,
-    "origin": f"Alpaca API, library version: {version('alpaca-py') if version('alpaca-py') else 'unknown'}",
-    "date of stockmarket data": str((datetime.now() - timedelta(1)).date()),
-    "date collected": str(datetime.now())
-}
+import metadata_handler
 
-# Write metadata to a JSON file
-#metadata_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../metadata/metadata_StockData.json")
-metadata_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "metadata_StockData.json")
-with open(metadata_file_path, "w") as metadata_file:
-    json.dump(metadata, metadata_file, indent=4)
-
-print(f"Successfully inserted data and saved metadata to {metadata_file_path}")
-
-import requests
-
-url = "http://127.0.0.1:8000/upload_metadata/"  # Replace with your endpoint URL
-
-# Open the file in binary mode
-with open(metadata_file_path, 'rb') as f:
-    files = {'file': f}
-    response = requests.post(url, files=files)
-
-# Print the response
-print(f"Status Code: {response.status_code}")
-print(f"Response: {response.json()}")
+metadata_handler = metadata_handler.DataMetadata(stocks, startDate, endDate)
+metadata_handler.upload_metadata()

@@ -1,6 +1,6 @@
 {
-    "name of file": "populate_db.py",
-    "commit hash": "f8197c57f10ab6ee7c2c68055e2d251a375b2b63",
+    "name of file": "metadata_handler.py",
+    "commit hash": "1519095b0c6fa29e1604e92f89f659d7edbbb929",
     "model": "StockData",
     "description": "Raw stock data for the top-10 stocks",
     "schema": [
@@ -27,6 +27,7 @@
         "AVGO"
     ],
     "origin": "Alpaca API, library version: 0.33.1",
-    "date of stockmarket data": "2024-12-02",
-    "date collected": "2024-12-03 08:50:03.048893"
+    "start date": "2024-11-13",
+    "end date": "2024-12-02",
+    "date collected": "2024-12-03 09:10:02.472974"
 }

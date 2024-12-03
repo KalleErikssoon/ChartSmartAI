@@ -223,19 +223,3 @@ def upload_metadata(request):
         return JsonResponse({'message': 'File uploaded successfully', 'metadata': metadata}, status=201)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON file'}, status=400)
-
-@csrf_exempt
-@api_view(['POST'])
-def echo_message(request):
-    try:
-        # Get the message from the POST body
-        message = request.data.get('message', 'No message received')
-
-        # Log the message to the console
-        print(f"Received message: {message}")
-
-        # Return a response
-        return JsonResponse({'message': f"Echo: {message}"}, status=200)
-    except Exception as e:
-        print(f"Error: {e}")
-        return JsonResponse({'error': str(e)}, status=500)
