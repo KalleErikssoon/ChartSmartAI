@@ -6,8 +6,10 @@ from datetime import datetime, timedelta
 from importlib.metadata import version
 
 class DataMetadata:
-    def __init__(self, stocks, start, end, url="http://127.0.0.1:8000/upload_metadata/"):
+    def __init__(self, name, stocks, model, start, end, url="http://127.0.0.1:8000/upload_metadata/"):
+        self.name = name
         self.stocks = stocks
+        self.model = model
         self.start = start
         self.end = end
         self.url = url
@@ -23,9 +25,9 @@ class DataMetadata:
 
     def prepare_metadata(self):
         metadata = {
-            "name of file": os.path.basename(__file__),
+            "name of file": self.name,
             "commit hash": self.get_last_commit_hash(),
-            "model": "StockData",
+            "model": self.model,
             "description": "Raw stock data for the top-10 stocks",
             "schema": ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count'],
             "stocks": self.stocks,

@@ -53,5 +53,7 @@ for symbol in stocks:
 
 import metadata_handler
 
-metadata_handler = metadata_handler.DataMetadata(stocks, startDate, endDate)
+fileName = os.path.basename(__file__)
+dataModel = "StockData"
+metadata_handler = metadata_handler.DataMetadata(fileName, stocks, dataModel, startDate, endDate)
 metadata_handler.upload_metadata()
