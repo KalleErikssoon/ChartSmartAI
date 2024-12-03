@@ -122,6 +122,22 @@ class TestEmaCalculator(unittest.TestCase):
         calculator.calculate_ema()
         self.assertIn('ema', calculator.ema_data.columns)
 
+        #  check if  the EMA value is similar to the result calculated by Pandas
+        pandas_ema = calculator.ema_data['close'].ewm(span=3, adjust=False).mean()
+        self.assertTrue(
+            pd.Series(calculator.ema_data['ema'][2:]).round(2).equals(pandas_ema[2:].round(2))
+        )
+    
+    # test if save the data correctly
+    def test_save_data(self):
+        calculator = EmaCalculator(file_path=self.file_path, period=3)
+        calculator.calculate_ema()
+        calculator.save_data()
+
+        # Reload the saved file and validate the contents
+        saved_data = pd.read_csv(self.file_path)
+        self.assertIn('ema', saved_data.columns)
+
 
 
 
