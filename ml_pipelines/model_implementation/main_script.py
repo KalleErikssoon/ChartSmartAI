@@ -3,12 +3,13 @@ from pre_processor import Preprocessor
 from model_trainer_ova import ModelTrainer
 import sys
 import os
-
-def runpipeline(strategy):
+from datetime import datetime 
+import requests
+def runpipeline(strategy, current_datetime):
     print("Starting pipeline for strategy: {strategy}...")
 
     model_base_path = f"ml_pipelines/model_implementation/trained_models/{strategy}"
-    model_output_path = f"{model_base_path}/logistic_ova_models.pkl"
+    model_output_path = f"{model_base_path}/ova_{strategy}_{current_datetime}.pkl"
 
     # fetch data
     preprocessor = Preprocessor(
@@ -42,6 +43,16 @@ def runpipeline(strategy):
     )
     trainer.run_pipeline()
 
+    # this is to post the picke file to the django project
+    # we can move this to another place later on
+    with open(model_output_path, 'rb') as f:
+        response = requests.post('http://127.0.0.1:8000/upload_model/', files={'file': f})
+
+    if response.status_code == 201:
+        print("Pickle model file is posted successfully")
+    else:
+        print(f"Failed to upload file: {response.content}")
+
 #Run the mainscript pipeline. Currently hardcoded strategy, this will be dynamically received from the django project via http (from the admin page)
 #I.e admin sends a http message via an url endpoint that contains either "ema", "macd" or "rsi" instead of hardcoding it here
 #runpipeline(strategy="ema")
@@ -52,5 +63,6 @@ if __name__ == "__main__":
         print("Usage: python main_script.py <strategy>")
         sys.exit(1)
     strategy = sys.argv[1]
-    runpipeline(strategy)
+    current_datetime = datetime.now().strftime("%Y%m%d_%H-%M--%S")
+    runpipeline(strategy, current_datetime)
 
