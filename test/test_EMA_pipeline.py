@@ -5,13 +5,7 @@ from datetime import datetime
 import tempfile
 #from ml_pipelines.ema_pipeline.data_collection import DataCollector  
 
-'''
-Tests:
-1. Ensures "collect_data" correctly loops through all stock symbols and fetches their data.
-2. Validates the logic for saving data to a file.
-3. Checks for mismatches in API call count or file save parameters.
-4. Verifies that mocked API data with multiple fields is handled correctly.
-'''
+
 
 
 import sys
@@ -24,7 +18,7 @@ from ml_pipelines.ema_pipeline.data_collection import DataCollector
 from ml_pipelines.ema_pipeline.feature_engineering import EmaCalculator
 from ml_pipelines.ema_pipeline.labelling import Labeler
 
-
+# Mock test data colloection
 class TestDataCollector(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
