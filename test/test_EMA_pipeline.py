@@ -96,8 +96,8 @@ class TestEmaCalculator(unittest.TestCase):
         self.file_path = os.path.join(self.temp_dir.name, "test.csv")
         self.sample_data = pd.DataFrame({
             'timestamp': ['2024-01-01', '2024-01-02', '2024-01-03', '2024-01-04', '2024-01-05'],
-            'symbol': ['GOOG', 'GOOG', 'GOOG', 'GOOG', 'GOOG'],
-            'close': [1500, 1520, 1510, 1530, 1550]
+            'symbol': ["NVDA", "AAPL", "MSFT", "AMZN", "GOOG"],
+            'close': [500, 520, 510, 530, 550]
         })
         self.sample_data.to_csv(self.file_path, index=False)
 
@@ -105,6 +105,17 @@ class TestEmaCalculator(unittest.TestCase):
         calculator = EmaCalculator(file_path=self.file_path, period=10)
         self.assertEqual(calculator.file_path, os.path.abspath(self.file_path))
         self.assertEqual(calculator.period, 10)
+    
+    def test_file_not_found(self):
+        with self.assertRaises(FileNotFoundError):
+            EmaCalculator(file_path="non_existent_file.csv")
+
+    # test if load the data correctly
+    def test_load_data(self):
+        calculator = EmaCalculator(file_path=self.file_path)
+        self.assertIsInstance(calculator.ema_data, pd.DataFrame)
+        self.assertListEqual(list(calculator.ema_data.columns), ['timestamp', 'symbol', 'close'])
+
 
 
 
