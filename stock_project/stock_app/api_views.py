@@ -1,8 +1,10 @@
+import os
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 import pandas as pd
+import json
 from stock_app.models import MACD_Data 
 from stock_app.models import EMA_Data
 from stock_app.models import RSI_Data
@@ -191,3 +193,49 @@ def get_rsi_data(request):
     except Exception as e:
         # handle exceptions and return an error response
         return HttpResponse(f"Error: {str(e)}", content_type="text/plain", status=500)
+
+@csrf_exempt
+@api_view(['POST'])
+def upload_metadata(request):
+    if 'file' not in request.FILES:
+        return JsonResponse({'error': 'No file uploaded'}, status=400)
+
+    uploaded_file = request.FILES['file']
+
+    try:
+        # Read the file content and parse it as JSON
+        metadata = json.load(uploaded_file)
+
+        # Get the original file name
+        original_filename = uploaded_file.name
+
+        # Ensure the metadata directory exists
+        metadata_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../metadata")
+        os.makedirs(metadata_dir, exist_ok=True)
+
+        # Construct the full path using the original file name
+        metadata_file_path = os.path.join(metadata_dir, original_filename)
+
+        # Save the metadata to the specified file
+        with open(metadata_file_path, "w") as metadata_file:
+            json.dump(metadata, metadata_file, indent=4)
+
+        return JsonResponse({'message': 'File uploaded successfully', 'metadata': metadata}, status=201)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON file'}, status=400)
+
+@csrf_exempt
+@api_view(['POST'])
+def echo_message(request):
+    try:
+        # Get the message from the POST body
+        message = request.data.get('message', 'No message received')
+
+        # Log the message to the console
+        print(f"Received message: {message}")
+
+        # Return a response
+        return JsonResponse({'message': f"Echo: {message}"}, status=200)
+    except Exception as e:
+        print(f"Error: {e}")
+        return JsonResponse({'error': str(e)}, status=500)
