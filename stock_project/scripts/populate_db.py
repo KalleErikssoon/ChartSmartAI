@@ -50,10 +50,12 @@ for symbol in stocks:
             trade_count=bar.trade_count
         )
 
-
+### Metadata: Generate metadata and post to Django web server
 import metadata_handler
 
 fileName = os.path.basename(__file__)
-dataModel = "StockData"
-metadata_handler = metadata_handler.DataMetadata(fileName, stocks, dataModel, startDate, endDate)
+description = "Raw stock data for the top-10 stocks"
+model = "StockData"
+schema = ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count']
+metadata_handler = metadata_handler.DataMetadata(fileName, description, stocks, model, schema, startDate, endDate)
 metadata_handler.upload_metadata()

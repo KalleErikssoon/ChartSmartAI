@@ -6,10 +6,12 @@ from datetime import datetime, timedelta
 from importlib.metadata import version
 
 class DataMetadata:
-    def __init__(self, name, stocks, model, start, end, url="http://127.0.0.1:8000/upload_metadata/"):
+    def __init__(self, name, description, stocks, model, schema, start, end, url="http://127.0.0.1:8000/upload_metadata/"):
         self.name = name
+        self.description = description
         self.stocks = stocks
         self.model = model
+        self.schema = schema
         self.start = start
         self.end = end
         self.url = url
@@ -28,8 +30,8 @@ class DataMetadata:
             "name of file": self.name,
             "commit hash": self.get_last_commit_hash(),
             "model": self.model,
-            "description": "Raw stock data for the top-10 stocks",
-            "schema": ['timestamp', 'symbol', 'open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count'],
+            "description": self.description,
+            "schema": self.schema,
             "stocks": self.stocks,
             "origin": f"Alpaca API, library version: {version('alpaca-py') if version('alpaca-py') else 'unknown'}",
             "start date": str(self.start.date()),
