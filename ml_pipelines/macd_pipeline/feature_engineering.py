@@ -16,7 +16,7 @@ class FeatureEngineering:
         short_window = 12
         long_window = 26
         signal_window = 9
-
+        print(FILE_PATH)
         df =  pd.read_csv(FILE_PATH)
         macd_results = []
         symbols = df['symbol'].unique()

@@ -1,5 +1,28 @@
 # Group 2 - Stock market prediction system
 
+## Kubernetes, Docker, and Google cloud cheat sheet
+**Prerequisites:** Install kubectl, docker, and Google Cloud CLI
+### Google Cloud CLI commands
+- Login: `gcloud auth login`
+- Activate project: `gcloud config set project adroit-arcana-443708-m9`
+- Install plugin to authenticate **kubectl** with **GKE**: `gcloud components install gke-gcloud-auth-plugin`
+- Connect kubectl to cluster: `gcloud container clusters get-credentials stock-project-cluster --zone europe-north1`
+### Docker commands
+- Authenticate docker with Google Cloud: `gcloud auth configure-docker`
+- Tag docker image: `docker tag <IMAGE_NAME> gcr.io/<PROJECT_ID>/<IMAGE_NAME>:v1`
+- Push docker image: `docker push gcr.io/<PROJECT_ID>/<IMAGE_NAME>:v1`
+### kubectl commands
+- Check version and connection: `kubectl version`
+- List pods: `kubectl get pods`
+- List services: `kubectl get services`
+- List all contexts: `kubectl config get-contexts`
+- Switch context: `kubectl config use-context <context>`
+- Apply configuration to kubernetes yaml file: `kubectl apply -f <yaml file>`
+- Delete pod: `kubectl delete pod <pod-name>`
+- Delete deployment (to stop K8s from recreating pods): `kubectl delete deployment <deployment-name>`
+
+
+
 ## Configuring Django project - Environment Variables (API keys)
 0. Obtain dependencies:
 ```

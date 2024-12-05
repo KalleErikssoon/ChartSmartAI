@@ -11,7 +11,7 @@ class EmaCalculator:
 
     def __init__(self, file_path=FILE_PATH, period=10):
         
-        self.file_path=os.path.abspath(file_path)
+        self.file_path=file_path
         self.period = period
         self.ema_data = None #Placeholder for the dataframe
 
