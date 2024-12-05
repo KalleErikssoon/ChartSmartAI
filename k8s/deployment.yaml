@@ -1,35 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stock-app-deployment
+  name: django-server-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: stock-app
+      app: django-server
   template:
     metadata:
       labels:
-        app: stock-app
+        app: django-server
     spec:
       containers:
       - name: group2-django-server
         image: gcr.io/adroit-arcana-443708-m9/group2-django_server:v1
         ports:
-        - containerPort: 8080
-      - name: group2-ema-pipeline
-        image: gcr.io/adroit-arcana-443708-m9/group2-ema_pipeline:v1
-        ports:
-        - containerPort: 8081
-      - name: group2-rsi-pipeline
-        image: gcr.io/adroit-arcana-443708-m9/group2-rsi_pipeline:v1
-        ports:
-        - containerPort: 8082
-      - name: group2-macd-pipeline
-        image: gcr.io/adroit-arcana-443708-m9/group2-macd_pipeline:v1
-        ports:
-        - containerPort: 8083
-      - name: model-implementation
-        image: gcr.io/adroit-arcana-443708-m9/model_implementation:v1
-        ports:
-        - containerPort: 8084
+        - containerPort: 8000
