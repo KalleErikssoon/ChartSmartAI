@@ -1,11 +1,26 @@
 import pandas as pd
+import os
+
+FILE_PATH = os.getenv('RSI_FILE_PATH')
+
 
 class Labelling:
     """
     A class to generate buy/hold/sell labels based on future price prediction.
     """
 
-    def __init__(self, input_csv="rsi_stock_data.csv", output_csv="rsi_stock_data.csv"):
+    # def __init__(self, input_csv="rsi_stock_data.csv", output_csv="rsi_stock_data.csv"):
+    #     """
+    #     Initialize the LabellingProcessor with file paths.
+
+    #     Parameters:
+    #     - input_csv (str): Path to the input CSV file containing stock data.
+    #     - output_csv (str): Path to save the labeled CSV file.
+    #     """
+    #     self.input_csv = input_csv
+    #     self.output_csv = output_csv
+
+    def __init__(self, input_csv=FILE_PATH, output_csv=FILE_PATH):
         """
         Initialize the LabellingProcessor with file paths.
 
@@ -73,6 +88,11 @@ class Labelling:
                     data.at[group.index[i], 'label'] = 1  # Hold signal
 
         return data
+    
+    #Remove rows with missing label or rsi
+    def data_cleaning(self, data):
+        data.dropna(subset=['label', 'rsi'], inplace=True)
+        print("Removed values with missing label or RSI value.")
 
     def save_data(self, data):
         """
@@ -93,6 +113,9 @@ class Labelling:
 
         # Generate labels
         labeled_data = self.labels(data)
+
+        # REmove empty values from csv file
+        self.data_cleaning(labeled_data)
 
         # Save the labeled data
         self.save_data(labeled_data)

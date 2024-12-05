@@ -8,7 +8,9 @@
 | 2024-11-14 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches                                                |
 | 2024-11-18 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed Training approaches and data, evaluation methods                   |
 | 2024-11-22 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed ML pipeline standardization approaches, training, front-end development, metadata & deployment plans                   |
-
+| 2024-11-26 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed about what the frontend should include, decided whether recall or precision is more important for model training and looked at the ways to deploy using Kubernetes and Docker.                  |
+| 2024-11-29 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Merged branches, created new issues. Divide tasks |
+| 2024-12-03 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Prepared questions for TA. Evaluated remaining work. Divided tasks. |
 ---
 
 # Attendance Tracker
@@ -16,13 +18,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅✅            |✅✅                 |
-| Malte    | ✅✅✅✅✅            |✅✅                 |
-| Isaac    | ✅✅✅✅✅            |✅✅                 |
-| Nas      | ✅✅✅✅✅            |✅✅                 |
-| Jessie   | ✅✅✅✅✅            |✅✅                 |
-| Asim     | ✅✅✅✅✅            |✅✅                 |
-
+| Kalle    | ✅✅✅✅✅✅         |✅✅✅                |
+| Malte    | ✅✅✅✅✅✅         |✅✅✅                |
+| Isaac    | ✅✅✅✅✅✅         |✅✅✅                |
+| Nas      | ✅✅✅✅✅✅         |✅✅✅                |
+| Jessie   | ✅✅✅✅✅✅         |✅✅✅                |
+| Asim     | ✅✅✅✅✅✅         |✅✅✅                |
 
 ---
 
@@ -90,12 +91,32 @@
 
 ---
 
-### Meeting 7 - Tuesday, 22-11-26
+### Meeting 7 - Tuesday, 26-11-24
 **Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
 * Frontend development: What it should contain and not. How we want to approach different user roles
 * Model training: Which evaluation metric do we value higher? Recall or Precision? And why?
 * Deployment: Discussed kubernetes, docker, what the best way to deploy is 
 
 **TODO:** TA meeting on Tuesday at 1:30pm. Finish model training pipeline for now. Start work on the report. Start looking into deployment.
+
+---
+
+
+### Meeting 8 - Friday, 29-11-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Merge branches and solve merge conflicts
+* Create new issues
+* Divide tasks among team members
+**TODO:** Work on individual tasks. 
+
+---
+
+### Meeting 9 - Tuesday, 03-12-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Prepare questions for TA meeting
+* Divide new tasks between team members
+* Ensure every team member has a task to work on until the next meeting
+* Discuss what is left to do implementation-wise before work can commence on the report
+**TODO:** Work on individual tasks. 
 
 ---
