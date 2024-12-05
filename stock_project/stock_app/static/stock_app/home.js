@@ -99,3 +99,39 @@ function setIndicator(indicator) {
         infoBox.value = "EMA"
     }
 }
+
+//Function to check and run inference
+function checkAndRunInference() {
+    if(selectedStock && selectedIndicator) {
+        console.log(`Running inference for stock: ${selectedStock} and indicator: ${selectedIndicator}`);
+        checkAndRunInference(selectedStock, selectedIndicator);
+    } else {
+        console.log("Both stock and indicator need to be selected before running inference.");
+    }
+}
+
+//Function to call the backend API
+function runInference(stock, indicator) {
+    const apiUrl = `/predict/${indicator}/${stock}`;
+    fetch(apiUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Inference result:", data);
+            displayInferenceResult(data);
+        })
+        .catch((error) => {
+            console.error("Error during inference:", error);
+            alert("Failed to run inference. Please try again.");
+        });
+}
+
+//Function to display the inference result
+function displayInferenceResult(data) {
+    const resultBox = document.getElementById("result-box");
+    resultBox.textContent = `Prediction: ${data.predictions}`;
+}

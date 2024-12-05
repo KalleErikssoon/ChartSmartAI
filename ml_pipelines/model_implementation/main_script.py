@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime 
 import requests
+
 load_dotenv() 
 FILE_PATH = os.getenv('FILE_PATH')
 URL = os.getenv('URL')
