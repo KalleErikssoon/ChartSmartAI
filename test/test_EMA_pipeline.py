@@ -37,10 +37,13 @@ class TestDataCollector(unittest.TestCase):
     
 
     def test_initialization_missing_keys(self):
-        with self.assertRaises(ValueError):
-            DataCollector(output_path=self.output_path)
+    # If the api key and secret key are not provided, the default values should be used
+        collector = DataCollector(output_path=self.output_path)
 
-    
+    # Make sure you use the default values for the api key and secret key
+        self.assertIsNotNone(collector.api_key)
+        self.assertIsNotNone(collector.secret_key)
+
 
     @patch("ml_pipelines.ema_pipeline.data_collection.StockHistoricalDataClient")
     @patch("ml_pipelines.ema_pipeline.data_collection.pd.DataFrame.to_csv")
