@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render
+import os
 
 # Create your views here.
 # Home view
@@ -14,7 +16,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
 from stock_app.models import StockData
-from inference.inference import make_predictions, fetch_stock_data
+from stock_app.inference.inference import run_inference, fetch_stock_data
 
 # Disclaimer: These tests were created using ChatGPT to cross-check database against metadata
 def validate_stock_data(request):
@@ -95,24 +97,4 @@ def validate_stock_data(request):
 
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
-
-def predict_stock(request, strategy, stock):
-
-    try:
-        # Validate strategy
-        if strategy not in ["ema", "macd", "rsi"]:
-            return JsonResponse({"error": f"Invalid strategy: {strategy}"}, status=400)
-
-        # Fetch latest stock data
-        stock_data = fetch_stock_data(stock)  # Fetch stock data from Alpaca API or database
-        if stock_data.empty:
-            return JsonResponse({"error": f"No data found for stock: {stock}"}, status=404)
-
-        # Run inference
-        predictions = make_predictions(stock_data, strategy)
-
-        return JsonResponse({"predictions": predictions.tolist()})
-
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+    

@@ -1,3 +1,30 @@
+//variaböes to track selected stock and indicator
+let selectedStock = null;
+let selectedIndicator = null;
+
+// Updated function to set and validate both stock and strategy
+function setupSelectionListeners() {
+    // Listen for stock selection
+    const stockListButtons = document.querySelectorAll(".stock-list li button");
+    stockListButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            selectedStock = button.getAttribute("stock-name");
+            console.log(`Selected stock: ${selectedStock}`);
+            checkAndRunInference();
+        });
+    });
+
+    // Listen for indicator (strategy) selection
+    const indicatorButtons = document.querySelectorAll(".top-section .indicators button");
+    indicatorButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            selectedIndicator = button.textContent.trim();
+            console.log(`Selected strategy: ${selectedIndicator}`);
+            checkAndRunInference();
+        });
+    });
+}
+
 // Event listener function for stock list
 function setupStockListButtons() {
     // Getters
@@ -40,6 +67,27 @@ function setupStockListButtons() {
 }
 // Call the function to set up the event listener
 setupStockListButtons();
+
+// Function to set the selected indicator
+function setIndicator(indicator) {
+    const infoBox = document.getElementById("info-box-text");
+    const infoHeader = document.getElementById("info-header");
+    const indicatorButtons = document.querySelectorAll(".top-section .indicators button");
+
+    indicatorButtons.forEach((button) => {
+        if (button.textContent === indicator) {
+            button.classList.add("selected");
+        } else {
+            button.classList.remove("selected");
+        }
+    });
+
+    selectedIndicator = indicator; // Set the selected indicator
+    infoHeader.textContent = indicator;
+    infoBox.value = `Selected Indicator: ${indicator}`;
+
+    console.log(`Selected indicator: ${selectedIndicator}`);
+}
 
 // Function to initialize and update the Stock Chart
 function loadStockChart(symbol) {
@@ -100,19 +148,10 @@ function setIndicator(indicator) {
     }
 }
 
-//Function to check and run inference
-function checkAndRunInference() {
-    if(selectedStock && selectedIndicator) {
-        console.log(`Running inference for stock: ${selectedStock} and indicator: ${selectedIndicator}`);
-        checkAndRunInference(selectedStock, selectedIndicator);
-    } else {
-        console.log("Both stock and indicator need to be selected before running inference.");
-    }
-}
-
 //Function to call the backend API
 function runInference(stock, indicator) {
-    const apiUrl = `/predict/${indicator}/${stock}`;
+    console.log("runInference called with:", stock, indicator);
+    const apiUrl = `/predict/${indicator}/${stock}/`;
     fetch(apiUrl)
         .then((response) => {
             if (!response.ok) {
@@ -130,8 +169,60 @@ function runInference(stock, indicator) {
         });
 }
 
-//Function to display the inference result
+//Function to check and run inference
+function checkAndRunInference() {
+    if(selectedStock && selectedIndicator) {
+        console.log(`Running inference for stock: ${selectedStock} and indicator: ${selectedIndicator}`);
+        runInference(selectedStock, selectedIndicator);
+    } else {
+        console.log("Both stock and indicator need to be selected before running inference.");
+    }
+}
+
+setupSelectionListeners();
+
+
+// Function to display the inference result
 function displayInferenceResult(data) {
     const resultBox = document.getElementById("result-box");
-    resultBox.textContent = `Prediction: ${data.predictions}`;
+    const prediction = data.prediction;
+
+    console.log("Prediction received:", prediction);
+
+    // Highlight corresponding prediction (buy/hold/sell)
+    const buyButton = document.getElementById("buy-button");
+    const holdButton = document.getElementById("hold-button");
+    const sellButton = document.getElementById("sell-button");
+
+    console.log("Buy Button:", buyButton);
+    console.log("Hold Button:", holdButton);
+    console.log("Sell Button:", sellButton);
+
+    // Check if buttons exist
+    if (!buyButton || !holdButton || !sellButton) {
+        console.error("One or more prediction buttons are missing from the DOM.");
+        resultBox.textContent = "Prediction buttons not found. Please check the HTML.";
+        return;
+    }
+
+    // Normalize the prediction
+    const normalizedPrediction = prediction.toLowerCase();
+
+    // Reset button styles
+    [buyButton, holdButton, sellButton].forEach((button) =>
+        button.classList.remove("highlight")
+    );
+
+    // Highlight based on prediction
+    if (["Buy", "Hold", "Sell"].includes(prediction)) {
+        if (prediction === "Buy") {
+            buyButton.classList.add("highlight");
+        } else if (prediction === "Hold") {
+            holdButton.classList.add("highlight");
+        } else if (prediction === "Sell") {
+            sellButton.classList.add("highlight");
+        }
+    } else {
+        console.error("Unexpected prediction:", prediction);
+    }
 }

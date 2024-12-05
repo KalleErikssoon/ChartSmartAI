@@ -49,10 +49,21 @@ def runpipeline(strategy, current_datetime):
     )
     trainer.run_pipeline()
 
+
     # this is to post the picke file to the django project
     # we can move this to another place later on
+
+    #current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+    payload = {
+        "strategy": strategy.lower(),
+        "timestamp": current_datetime
+    }
     with open(model_output_path, 'rb') as f:
-        response = requests.post(f"{URL}/upload_model/", files={'file': f})
+        response = requests.post(
+            f"{URL}/upload_model/", 
+            files={'file': f},
+            data=payload
+        )
 
     if response.status_code == 201:
         print("Pickle model file is posted successfully")
