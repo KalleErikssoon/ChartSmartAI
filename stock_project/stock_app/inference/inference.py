@@ -19,42 +19,51 @@ alpaca_client = StockHistoricalDataClient(ALPACA_API_KEY, ALPACA_SECRET_KEY)
 
 def fetch_stock_data(stock_symbol, start_date=None, end_date=None, timeframe=TimeFrame.Hour):
     try:
-        # Ensure end_date is always yesterday
+        # Default: yesterday
         if end_date is None:
             end_date = (datetime.now() - timedelta(days=1)).date()
         if start_date is None:
             start_date = end_date - timedelta(days=5)  # Default range: last 5 days
-        
+
         print(f"Fetching stock data for {stock_symbol} from {start_date} to {end_date}")
-        
-        # Request parameters
-        request_params = StockBarsRequest(
-            symbol_or_symbols=stock_symbol,
-            start=start_date,
-            end=end_date,
-            timeframe=timeframe
-        )
-        bars = alpaca_client.get_stock_bars(request_params)
-        data = bars.df.reset_index()
-        
+
+        # Iteratively find the most recent available data (for cases where end_date is a weekend/holiday)
+        data = pd.DataFrame()
+        while data.empty and end_date >= (datetime.now() - timedelta(days=15)).date():
+            print(f"No data found for {end_date}, trying previous day...")
+            request_params = StockBarsRequest(
+                symbol_or_symbols=stock_symbol,
+                start=start_date,
+                end=end_date,
+                timeframe=timeframe
+            )
+            bars = alpaca_client.get_stock_bars(request_params)
+            data = bars.df.reset_index()
+            if not data.empty:
+                break  # Break loop once data is fetched
+            end_date -= timedelta(days=1)  # Move end_date one day back
+            start_date = end_date - timedelta(days=5)  # Adjust start_date accordingly
+
         # Ensure data is available
         if data.empty:
-            raise ValueError(f"No data fetched for {stock_symbol} from {start_date} to {end_date}.")
-        
-        # Filter for yesterday's data
-        yesterday = (datetime.now() - timedelta(days=1)).date()
+            raise ValueError(f"No data fetched for {stock_symbol} within the last 15 days.")
+
+        # Filter for the most recent day's data
         data['date'] = data['timestamp'].dt.date
-        yesterday_data = data[data['date'] == yesterday]
-        
-        if yesterday_data.empty:
-            raise ValueError(f"No data available for {stock_symbol} on {yesterday}.")
-        
-        # Select the last available datapoint for yesterday
-        last_datapoint = yesterday_data.iloc[-1:]
-        print(f"Last datapoint for {stock_symbol} on {yesterday}:\n", last_datapoint)
+        most_recent_date = data['date'].max()
+        most_recent_data = data[data['date'] == most_recent_date]
+
+        if most_recent_data.empty:
+            raise ValueError(f"No data available for {stock_symbol} on the most recent available date ({most_recent_date}).")
+
+        # Select the last available datapoint for the most recent date
+        last_datapoint = most_recent_data.iloc[-1:]
+        print(f"Last datapoint for {stock_symbol} on {most_recent_date}:\n", last_datapoint)
         return last_datapoint
+
     except Exception as e:
         raise ValueError(f"Error fetching stock data: {e}")
+
 
 
     
