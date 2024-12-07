@@ -325,7 +325,7 @@ def make_prediction(request, strategy, stock_symbol):
         print(f"Fetched stock data:\n{stock_data.head()}")
 
         # Preprocess the stock data
-        processed_data = preprocess_data(stock_data)
+        processed_data = preprocess_data(stock_data, strategy)
         print(f"Processed data:\n{processed_data}")
 
         # Run inference

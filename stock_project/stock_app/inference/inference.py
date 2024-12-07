@@ -9,6 +9,8 @@ from alpaca.data.timeframe import TimeFrame
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 import numpy as np
+from ta.momentum import RSIIndicator
+
 
 # Load Alpaca API keys from environment variables
 ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
@@ -17,20 +19,21 @@ ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
 #Initialise Alpaca client
 alpaca_client = StockHistoricalDataClient(ALPACA_API_KEY, ALPACA_SECRET_KEY)
 
-def fetch_stock_data(stock_symbol, start_date=None, end_date=None, timeframe=TimeFrame.Hour):
+def fetch_stock_data(stock_symbol, start_date=None, end_date=None, timeframe=TimeFrame.Hour, min_rows=14):
     try:
         # Default: yesterday
         if end_date is None:
             end_date = (datetime.now() - timedelta(days=1)).date()
         if start_date is None:
-            start_date = end_date - timedelta(days=5)  # Default range: last 5 days
+            start_date = end_date - timedelta(days=30)  # Fetch more days to ensure enough data
 
         print(f"Fetching stock data for {stock_symbol} from {start_date} to {end_date}")
 
-        # Iteratively find the most recent available data (for cases where end_date is a weekend/holiday)
+        # Initialize data storage
         data = pd.DataFrame()
-        while data.empty and end_date >= (datetime.now() - timedelta(days=15)).date():
-            print(f"No data found for {end_date}, trying previous day...")
+
+        # Continue fetching data until at least `min_rows` rows are available
+        while len(data) < min_rows and end_date >= (datetime.now() - timedelta(days=30)).date():
             request_params = StockBarsRequest(
                 symbol_or_symbols=stock_symbol,
                 start=start_date,
@@ -38,31 +41,26 @@ def fetch_stock_data(stock_symbol, start_date=None, end_date=None, timeframe=Tim
                 timeframe=timeframe
             )
             bars = alpaca_client.get_stock_bars(request_params)
-            data = bars.df.reset_index()
-            if not data.empty:
-                break  # Break loop once data is fetched
-            end_date -= timedelta(days=1)  # Move end_date one day back
-            start_date = end_date - timedelta(days=5)  # Adjust start_date accordingly
+            fetched_data = bars.df.reset_index()
+            
+            if not fetched_data.empty:
+                data = pd.concat([data, fetched_data]).drop_duplicates().reset_index(drop=True)
 
-        # Ensure data is available
-        if data.empty:
-            raise ValueError(f"No data fetched for {stock_symbol} within the last 15 days.")
+            end_date -= timedelta(days=1)  # Move end_date back
+            start_date = end_date - timedelta(days=30)  # Adjust start_date accordingly
 
-        # Filter for the most recent day's data
-        data['date'] = data['timestamp'].dt.date
-        most_recent_date = data['date'].max()
-        most_recent_data = data[data['date'] == most_recent_date]
+        # Ensure we have enough data
+        if len(data) < min_rows:
+            raise ValueError(f"Not enough data fetched for RSI calculation. Required: {min_rows}, Provided: {len(data)}")
 
-        if most_recent_data.empty:
-            raise ValueError(f"No data available for {stock_symbol} on the most recent available date ({most_recent_date}).")
-
-        # Select the last available datapoint for the most recent date
-        last_datapoint = most_recent_data.iloc[-1:]
-        print(f"Last datapoint for {stock_symbol} on {most_recent_date}:\n", last_datapoint)
-        return last_datapoint
+        # Sort by timestamp
+        data = data.sort_values(by='timestamp').reset_index(drop=True)
+        print(f"Fetched {len(data)} rows of data for {stock_symbol}")
+        return data
 
     except Exception as e:
         raise ValueError(f"Error fetching stock data: {e}")
+
 
 
 
@@ -99,6 +97,9 @@ def load_model(strategy):
     return joblib.load(model_path)
 
 
+
+
+#Calculate the ema for adding as a feature to the ema strategy
 def calculate_ema(prices, period=10):
     """
     Calculate the Exponential Moving Average (EMA).
@@ -117,20 +118,110 @@ def calculate_ema(prices, period=10):
     ema[:period - 1] = np.nan  # NaN for values where EMA cannot be computed
     return ema
 
-def preprocess_data(stock_data):
-    # Ensure required columns exist
-    required_columns = ['open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count']
-    if not all(col in stock_data.columns for col in required_columns):
-        raise ValueError(f"Stock data is missing required columns: {required_columns}")
 
-    # Calculate EMA and append it to the DataFrame
-    ema_period = 1  # Adjust based on the model
-    stock_data['ema'] = calculate_ema(stock_data['close'].values, period=ema_period)
+#Calculate macd and signal line for adding as features if the selected strategy is macd
+def calculate_macd(data, short_window=12, long_window=26, signal_window=9):
+    """
+    Calculate MACD and signal line for the given data.
+    Parameters:
+    - data: A pandas DataFrame with at least a 'close' column.
+    - short_window: The window size for the short-term EMA.
+    - long_window: The window size for the long-term EMA.
+    - signal_window: The window size for the signal line EMA.
+    Returns:
+    - data: The DataFrame with added 'macd' and 'signal_line' columns.
+    """
+    if 'close' not in data.columns:
+        raise KeyError("'close' column is required for MACD calculation.")
 
-    # Select the final set of features
-    feature_columns = ['open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count', 'ema']
-    processed_data = stock_data[feature_columns].dropna()  # Remove rows with NaN EMA values
+    # Calculate short-term and long-term EMAs
+    short_ema = data['close'].ewm(span=short_window, adjust=False).mean()
+    long_ema = data['close'].ewm(span=long_window, adjust=False).mean()
+
+    # Calculate MACD and signal line
+    data['macd'] = short_ema - long_ema
+    data['signal_line'] = data['macd'].ewm(span=signal_window, adjust=False).mean()
+
+    return data
+
+
+def calculate_rsi(data, period=14):
+    """
+    Calculate RSI for the provided stock data.
+    Parameters:
+    - data: A DataFrame containing a 'close' column.
+    - period: Period for RSI calculation (default is 14).
+    Returns:
+    - data: The DataFrame with an added 'rsi' column.
+    """
+    if 'close' not in data.columns:
+        raise KeyError("'close' column is required for RSI calculation.")
+
+    if len(data) < period:
+        raise ValueError(f"Not enough data to calculate RSI. Required: {period}, Provided: {len(data)}")
+
+    # Ensure the data is sorted by time
+    data = data.sort_values(by='timestamp')
+
+    # Calculate RSI using the `ta` library
+    rsi_indicator = RSIIndicator(close=data['close'], window=period)
+    data['rsi'] = rsi_indicator.rsi()  # Add the RSI column to the DataFrame
+
+    print(data[['timestamp', 'close', 'rsi']].tail())  # Debugging: Print the last few rows of RSI
+    return data
+
+
+
+
+
+def preprocess_data(stock_data, strategy):
+    """
+    Preprocess stock data for inference based on the selected strategy.
+    Parameters:
+    - stock_data: The raw stock data as a DataFrame.
+    - strategy: The selected strategy ('ema', 'macd', 'rsi').
+    Returns:
+    - processed_data: The processed data with strategy-specific features.
+    """
+    # Define required features for each strategy
+    required_features = {
+        'ema': ['open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count', 'ema'],
+        'macd': ['open', 'high', 'low', 'close', 'volume', 'trade_count', 'vwap', 'macd', 'signal_line'],
+        'rsi': ['open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count', 'rsi']
+    }
+
+    # Ensure the strategy is valid
+    if strategy not in required_features:
+        raise ValueError(f"Unknown strategy: {strategy}")
+
+    # Base required columns for all strategies
+    base_columns = ['open', 'high', 'low', 'close', 'volume', 'vwap', 'trade_count']
+    if not all(col in stock_data.columns for col in base_columns):
+        raise ValueError(f"Stock data is missing base columns: {base_columns}")
+
+    # Strategy-specific calculations
+    if strategy == 'ema':
+        ema_period = 10  # Adjust based on the model's training
+        stock_data['ema'] = calculate_ema(stock_data['close'].values, period=ema_period)
+
+    elif strategy == 'macd':
+        stock_data = calculate_macd(stock_data)
+
+    elif strategy == 'rsi':
+        rsi_period = 14 #Adjust this based on model training configuration
+        stock_data = calculate_rsi(stock_data, period=rsi_period)
+
+
+    # Final feature selection based on the strategy
+    final_columns = required_features[strategy]
+    if not all(col in stock_data.columns for col in final_columns):
+        missing = [col for col in final_columns if col not in stock_data.columns]
+        raise ValueError(f"Stock data is missing final columns for strategy {strategy}: {missing}")
+
+    # Filter and drop rows with NaN values in the final feature set
+    processed_data = stock_data[final_columns].dropna().iloc[-1:]
     return processed_data
+
 
 
 
