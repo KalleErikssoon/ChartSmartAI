@@ -63,9 +63,6 @@ def fetch_stock_data(stock_symbol, start_date=None, end_date=None, timeframe=Tim
 
 
 
-
-    
-
 #Model loading function
 def load_model(strategy):
     strategy = strategy.lower()
@@ -93,6 +90,10 @@ def load_model(strategy):
     # Load the most recent model
     model_path = os.path.join(strategy_dir, pkl_files[0])
     print(f"Loading model from: {model_path}")
+
+    model = joblib.load(model_path)
+    for cls, weights in model.items():
+        print(f"Class {cls} weights:\n{weights}")
 
     return joblib.load(model_path)
 
