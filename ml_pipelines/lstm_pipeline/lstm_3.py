@@ -13,6 +13,7 @@ from datetime import datetime
 import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 import torch.nn as NN
 import torch
@@ -95,8 +96,10 @@ class StockPriceLSTM(NN.Module):
         self.fc = NN.Linear(hidden_size, output_size)
     
     def forward(self, x):
-        _, (h_n, _) = self.lstm(x)
-        out = self.fc(h_n[-1])
+       # _, (h_n, _) = self.lstm(x)
+       # out = self.fc(h_n[-1])
+        out, (h_n, c_n) = self.lstm(x)  # Unpack outputs
+        out = self.fc(out[:, -1, :])  # Output only the last time step
         return out
 
 # Model parameters
@@ -122,7 +125,7 @@ train_loader = DataLoader(TensorDataset(X_train, y_train), batch_size=batch_size
 test_loader = DataLoader(TensorDataset(X_test, y_test), batch_size=batch_size, shuffle=False)
 
 # Training loop
-num_epochs = 40
+num_epochs = 30
 for epoch in range(num_epochs):
     model.train()
     for batch_X, batch_y in train_loader:
@@ -143,8 +146,54 @@ with torch.no_grad():
 predicted_prices = scaler.inverse_transform(predictions)
 actual_prices = scaler.inverse_transform(actual)
 
+
+last_input_window = data['timestamp'][-window_size:]  
+print("The time range corresponding to the last input window：")
+print(last_input_window)
+
+# Get the corresponding time predicted for the last 3 days of the model
+last_prediction_dates = data['timestamp'][-prediction_horizon:]  # The corresponding time predicted for the last 3 days of the model
+print("The corresponding time predicted for the last 3 days of the model：")
+print(last_prediction_dates)
+
+
 # Visualization
 time_index = data['timestamp'][-len(actual_prices):]
+
+# Function to classify changes
+def classify_changes(predicted_prices):
+    return np.where(predicted_prices > 0, 1, 0)  # 1: Up, 0: Down
+def classify_changes(predicted_prices, threshold=0.01):
+    return np.where(
+        predicted_prices > threshold, 1,  # Up
+        np.where(predicted_prices < -threshold, -1, 0)  # Down, Stable
+    )
+
+# Convert predictions and actual prices to classifications
+actual_changes = classify_changes(np.diff(actual_prices, axis=0).flatten())  # Convert actual prices to changes
+predicted_changes = classify_changes(np.diff(predicted_prices, axis=0).flatten())  # Convert predictions to changes
+
+# Ensure the arrays are 1D
+print("Actual changes shape:", actual_changes.shape)
+print("Predicted changes shape:", predicted_changes.shape)
+
+# Calculate evaluation metrics
+accuracy = accuracy_score(actual_changes, predicted_changes)
+precision = precision_score(actual_changes, predicted_changes, average='weighted')
+recall = recall_score(actual_changes, predicted_changes, average='weighted')
+f1 = f1_score(actual_changes, predicted_changes, average='weighted')
+
+# Print metrics
+print(f"Accuracy: {accuracy * 100:.2f}%")
+print(f"Precision: {precision * 100:.2f}%")
+print(f"Recall: {recall * 100:.2f}%")
+print(f"F1 Score: {f1 * 100:.2f}%")
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+#Evaluate the accuracy of price forecasts using regression metrics such as RMSE, MAEv
+rmse = mean_squared_error(actual_prices.flatten(), predicted_prices.flatten(), squared=False)
+mae = mean_absolute_error(actual_prices.flatten(), predicted_prices.flatten())
+print(f"RMSE: {rmse:.2f}, MAE: {mae:.2f}")
 
 plt.figure(figsize=(14, 8))
 for day in range(predicted_prices.shape[1]):  # Iterate over each predicted day
@@ -166,5 +215,5 @@ plt.xlabel('Date', fontsize=14)
 plt.ylabel('Close Price (USD)', fontsize=14)
 plt.legend(fontsize=12)
 plt.grid(True, linestyle='--', alpha=0.6)
-plt.savefig('LAST_3day_prediction.png', dpi=300, bbox_inches='tight')
+plt.savefig('LAST_3day01_prediction.png', dpi=300, bbox_inches='tight')
 plt.show()
