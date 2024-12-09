@@ -11,14 +11,15 @@ FILE_PATH = os.getenv('FILE_PATH')
 URL = os.getenv('URL')
 
 def runpipeline(strategy, current_datetime):
-    print("Starting pipeline for strategy: {strategy}...")
+    print(f"Starting pipeline for strategy: {strategy}...")  # Corrected f-string
 
     model_base_path = f"{FILE_PATH}/trained_models/{strategy}"
     model_output_path = f"{model_base_path}/ova_{strategy}_{current_datetime}.pkl"
-
+    os.makedirs(model_base_path, exist_ok=True)
+    
     # fetch data
     preprocessor = Preprocessor(
-        api_url=f"{URL}/get_database/{strategy}",
+        api_url=f"{URL}/get_database/{strategy}/",
         apply_smote=True,
         apply_scaling=True)
     data = preprocessor.fetch_data()
