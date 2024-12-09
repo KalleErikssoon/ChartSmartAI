@@ -108,6 +108,7 @@
 * Merge branches and solve merge conflicts
 * Create new issues
 * Divide tasks among team members
+
 **TODO:** Work on individual tasks. 
 
 ---
@@ -118,6 +119,7 @@
 * Divide new tasks between team members
 * Ensure every team member has a task to work on until the next meeting
 * Discuss what is left to do implementation-wise before work can commence on the report
+
 **TODO:** Work on individual tasks. 
 
 ---
@@ -126,6 +128,7 @@
 * Kalle and Isaac demo cloud and k8s setup
 * Everyone installed and setup environment for cloud development
 * Divide tasks among team members
+
 **TODO:** Work on individual tasks. 
 
 ---
