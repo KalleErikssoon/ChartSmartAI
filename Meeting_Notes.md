@@ -11,6 +11,7 @@
 | 2024-11-26 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Discussed about what the frontend should include, decided whether recall or precision is more important for model training and looked at the ways to deploy using Kubernetes and Docker.                  |
 | 2024-11-29 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Merged branches, created new issues. Divide tasks |
 | 2024-12-03 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Prepared questions for TA. Evaluated remaining work. Divided tasks. |
+| 2024-12-09 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Everyone setup environment for cloud development. Divided tasks |
 ---
 
 # Attendance Tracker
@@ -18,12 +19,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅✅✅         |✅✅✅                |
-| Malte    | ✅✅✅✅✅✅         |✅✅✅                |
-| Isaac    | ✅✅✅✅✅✅         |✅✅✅                |
-| Nas      | ✅✅✅✅✅✅         |✅✅✅                |
-| Jessie   | ✅✅✅✅✅✅         |✅✅✅                |
-| Asim     | ✅✅✅✅✅✅         |✅✅✅                |
+| Kalle    | ✅✅✅✅✅✅         |✅✅✅✅             |
+| Malte    | ✅✅✅✅✅✅         |✅✅✅✅             |
+| Isaac    | ✅✅✅✅✅✅         |✅✅✅✅             |
+| Nas      | ✅✅✅✅✅✅         |✅✅✅✅             |
+| Jessie   | ✅✅✅✅✅✅         |✅✅✅✅             |
+| Asim     | ✅✅✅✅✅✅         |✅✅✅✅             |
 
 ---
 
@@ -117,6 +118,14 @@
 * Divide new tasks between team members
 * Ensure every team member has a task to work on until the next meeting
 * Discuss what is left to do implementation-wise before work can commence on the report
+**TODO:** Work on individual tasks. 
+
+---
+### Meeting 10 - Monday, 09-12-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Kalle and Isaac demo cloud and k8s setup
+* Everyone installed and setup environment for cloud development
+* Divide tasks among team members
 **TODO:** Work on individual tasks. 
 
 ---
