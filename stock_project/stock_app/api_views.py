@@ -14,7 +14,7 @@ from django.conf import settings
 @csrf_exempt
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
-def upload_csv(request):
+def upload_macd(request):
     if 'file' not in request.FILES:
         return JsonResponse({'error': 'No file uploaded'}, status=400)
 

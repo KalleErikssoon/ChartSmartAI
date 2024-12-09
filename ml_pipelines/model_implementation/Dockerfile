@@ -13,5 +13,5 @@ COPY . .
 # install python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# set default command to execute model implementation script (allowing to pass argument)
-ENTRYPOINT ["python", "main_script.py"]
+# Start container 
+CMD ["echo", "Ready to train ML models!"]

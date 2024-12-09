@@ -12,6 +12,3 @@ COPY . .
 
 # install python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-
-# set command to execute pipeline script
-CMD ["python", "main_script.py"]
