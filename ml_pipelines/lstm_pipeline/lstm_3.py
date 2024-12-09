@@ -14,6 +14,7 @@ import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 import torch.nn as NN
 import torch
