@@ -190,7 +190,7 @@ print(f"Precision: {precision * 100:.2f}%")
 print(f"Recall: {recall * 100:.2f}%")
 print(f"F1 Score: {f1 * 100:.2f}%")
 
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+
 #Evaluate the accuracy of price forecasts using regression metrics such as RMSE, MAEv
 rmse = mean_squared_error(actual_prices.flatten(), predicted_prices.flatten(), squared=False)
 mae = mean_absolute_error(actual_prices.flatten(), predicted_prices.flatten())
