@@ -166,6 +166,8 @@ plt.ylabel('Close Price (USD)', fontsize=14)
 plt.legend(fontsize=12)
 plt.grid(True, linestyle='--', alpha=0.6)
 
+# Save the plot as a file
+plt.savefig('LAST02_prediction.png', dpi=300, bbox_inches='tight')
 # Show the plot
 plt.show()
 
