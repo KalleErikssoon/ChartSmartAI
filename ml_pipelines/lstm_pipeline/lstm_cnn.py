@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from sklearn.metrics import mean_squared_error
 
 import torch
@@ -167,24 +168,36 @@ actual_prices = scaler.inverse_transform(actual)
 rmse = mean_squared_error(actual_prices, predicted_prices, squared=False)
 print(f"Test RMSE: {rmse:.4f}")
 
-# Plot results
+# Extract the correct time_index with proper dates
+time_index = data['timestamp'][-len(actual_prices):]  # Replace with the correct timestamps column
+
+
+# Plot predicted vs. actual values
 plt.figure(figsize=(14, 8))
-for day in range(prediction_horizon):
+
+for day in range(predicted_prices.shape[1]):  # Iterate over each predicted day
     plt.plot(
-        range(len(actual_prices)),
-        actual_prices[:, day],
+        time_index,
+        actual_prices[:, day],  # Actual values for day `day`
         label=f'Actual Day {day+1}',
-        linestyle='-'
+        linestyle='-'  # Solid line for actual values
     )
     plt.plot(
-        range(len(predicted_prices)),
-        predicted_prices[:, day],
+        time_index,
+        predicted_prices[:, day],  # Predicted values for day `day`
         label=f'Predicted Day {day+1}',
-        linestyle='--'
+        linestyle='--'  # Dashed line for predicted values
     )
-plt.title('AAPL Stock Price Prediction - CNN + LSTM')
-plt.xlabel('Time')
-plt.ylabel('Price (USD)')
-plt.legend()
-plt.grid()
+# Set the title and labels
+plt.title('AAPL Stock Price Prediction - CNN + LSTM', fontsize=16)
+plt.xlabel('Date', fontsize=14)
+plt.ylabel('Close Price (USD)', fontsize=14)
+# Format the x-axis as dates
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))  # Format: YYYY-MM-DD
+plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))  # Major ticks every week
+plt.xticks(rotation=45, fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(True, linestyle='--', alpha=0.6)
+# Save the plot as an image
+plt.savefig('CNN_LSTM_Prediction.png', dpi=300, bbox_inches='tight')
 plt.show()
