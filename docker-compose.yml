@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   django_server:
     build:
@@ -23,7 +21,7 @@ services:
       - stock_project_network
     volumes:
       - shared_data:/app/shared_data
-    command: sh -c "python main_script.py && touch /app/shared_data/macd_done"
+    command: /bin/sh -c "python main_script.py"
 
   ema_pipeline:
     build:
@@ -35,7 +33,7 @@ services:
       - stock_project_network
     volumes:
       - shared_data:/app/shared_data
-    command: sh -c "while [ ! -f /app/shared_data/macd_done ]; do sleep 1; done; python main_script.py && touch /app/shared_data/ema_done"
+    command: /bin/sh -c "sleep 45 && python main_script.py"
 
   rsi_pipeline:
     build:
@@ -47,7 +45,22 @@ services:
       - stock_project_network
     volumes:
       - shared_data:/app/shared_data
-    command: sh -c "while [ ! -f /app/shared_data/ema_done ]; do sleep 1; done; python main_script.py"
+    command: /bin/sh -c "sleep 90 && python main_script.py"
+
+  model_implementation:
+    build:
+      context: ./ml_pipelines/model_implementation
+    container_name: model_implementation
+    depends_on:
+      - django_server
+    networks:
+      - stock_project_network
+    volumes:
+      - shared_data:/app/shared_data
+    command: /bin/sh -c "sleep 135 && 
+                  python main_script.py macd && 
+                  python main_script.py rsi && 
+                  python main_script.py ema"
 
 networks:
   stock_project_network:
