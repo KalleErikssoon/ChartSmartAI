@@ -2,7 +2,7 @@ import os
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import JSONParser, MultiPartParser
 import pandas as pd
 import json
 from stock_app.models import MACD_Data 
@@ -11,6 +11,9 @@ from stock_app.models import RSI_Data
 import os
 from django.conf import settings
 
+from rest_framework.response import Response
+from kubernetes import client, config
+import subprocess
 @csrf_exempt
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
@@ -251,3 +254,149 @@ def upload_model(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@parser_classes([JSONParser, MultiPartParser])
+def retrain(request):
+    data = request.data
+    strategy = data.get('strategy')
+
+    if not strategy:
+        return Response({'error': 'No strategy provided'}, status=400)
+
+    # If strategy is a list, just take the first for now (or handle multiple if needed)
+    if isinstance(strategy, list):
+        strategy = strategy[0]
+
+    # Load Kubernetes configuration
+    config.load_kube_config()
+
+    # Determine which strategy job to run
+    strategy_lower = strategy.lower()
+    if strategy_lower == "rsi":
+        run_rsi_strategy_job()
+    elif strategy_lower == "macd":
+        run_macd_strategy_job()
+    elif strategy_lower == "ema":
+        run_ema_strategy_job()
+    else:
+        return Response({'error': f'Unknown strategy: {strategy}'}, status=400)
+
+    # After running the specific strategy pipeline job, run the model job
+    run_model_job(strategy)
+    
+    return Response({'message': f'Retraining job for {strategy} created successfully'}, status=200)
+
+def run_rsi_strategy_job():
+    # RSI Job definition
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "rsi-pipeline-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "rsi-pipeline",
+                        "image": "gcr.io/adroit-arcana-443708-m9/rsi_pipeline:v1",
+                        "imagePullPolicy": "Always",
+                        "command": ["python", "main_script.py"] 
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+
+
+def run_macd_strategy_job():
+    # MACD Job definition
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "macd-pipeline-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "macd-pipeline",
+                        "image": "gcr.io/adroit-arcana-443708-m9/macd_pipeline:v1",
+                        "command": ["python", "main_script.py"]
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+
+
+def run_ema_strategy_job():
+    # EMA Job definition
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "ema-pipeline-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "ema-pipeline",
+                        "image": "gcr.io/adroit-arcana-443708-m9/ema_pipeline:v1",
+                        "imagePullPolicy": "Always",
+                        "command": ["python", "main_script.py"]
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+
+
+def run_model_job(strategy):
+    # Model Job definition that uses the chosen strategy
+    # subprocess.run(["python", "stock_project/scripts/clear_rsi_table.py"], check=True)
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "model-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "model-implementation",
+                        "image": "gcr.io/adroit-arcana-443708-m9/model_implementation:v1",
+                        "imagePullPolicy": "Always",
+                        "command": ["python", "main_script.py", strategy.lower()]
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+
