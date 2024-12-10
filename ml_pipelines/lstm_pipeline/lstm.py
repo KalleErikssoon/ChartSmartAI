@@ -1,6 +1,4 @@
-# This is a script that trains a LSTM model on the data and saves the model to a file
-
-# This is a script that trains an LSTM model on the data and saves the model to a file
+# This is a script that trains a LSTM model on the data 
 
 from alpaca.data import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
@@ -15,6 +13,7 @@ from datetime import datetime
 import numpy as np
 from datetime import datetime
 import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 import torch.nn as NN
 import torch
@@ -83,7 +82,7 @@ def create_sequences(data, window_size):
     y = np.array(y)
     return torch.tensor(X, dtype=torch.float32), torch.tensor(y, dtype=torch.float32)
 
-window_size = 60
+window_size = 7
 X, y = create_sequences(scaled_data, window_size)
 print(f"Input shape: {X.shape}, Output shape: {y.shape}")
 
@@ -101,7 +100,7 @@ class StockPriceLSTM(NN.Module):
 
 # Model parameters
 input_size = 1  # Number of features: close
-hidden_size = 50
+hidden_size = 100
 num_layers = 2
 output_size = 1
 
@@ -146,29 +145,40 @@ with torch.no_grad():
 predicted_prices = scaler.inverse_transform(predictions.reshape(-1, 1)).flatten()
 actual_prices = scaler.inverse_transform(actual.reshape(-1, 1)).flatten()
 
+# Calculate evaluation metrics
+rmse = np.sqrt(mean_squared_error(actual_prices, predicted_prices))
+mae = mean_absolute_error(actual_prices, predicted_prices)
+
+# Display metrics
+print(f"Model Evaluation:")
+print(f"RMSE: {rmse:.2f}")
+print(f"MAE: {mae:.2f}")
+
+# Optionally add more metrics
+def mean_absolute_percentage_error(y_true, y_pred): 
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+mape = mean_absolute_percentage_error(actual_prices, predicted_prices)
+print(f"MAPE: {mape:.2f}%")
+
+# Evaluate R^2 score
+from sklearn.metrics import r2_score
+r2 = r2_score(actual_prices, predicted_prices)
+print(f"R^2 Score: {r2:.2f}")
+
 # Set time series as x-axis
 time_index = data['timestamp'][-len(actual_prices):]
 
 plt.figure(figsize=(14, 8))
-
-# Plot actual prices
 plt.plot(time_index, actual_prices, label='Actual Prices', color='blue', linewidth=2)
-
-# Plot predicted prices
 plt.plot(time_index, predicted_prices, label='Predicted Prices', color='orange', linestyle='--', linewidth=2)
-
-# Add title and labels
 plt.title('AAPL Stock Price Prediction Using LSTM', fontsize=16)
 plt.xlabel('Date', fontsize=14)
 plt.ylabel('Close Price (USD)', fontsize=14)
-
-# Add legend and grid
 plt.legend(fontsize=12)
 plt.grid(True, linestyle='--', alpha=0.6)
-
 # Save the plot as a file
-plt.savefig('LAST02_prediction.png', dpi=300, bbox_inches='tight')
-# Show the plot
+plt.savefig('LAST03_prediction.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 
