@@ -24,7 +24,7 @@ load_dotenv()
 # Retrieve API keys
 ALPACA_API_KEY = os.getenv("ALPACA_API_KEY")
 ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
-# FILE_PATH = os.getenv("FILE_PATH")  # Optional: Path to save data
+FILE_PATH = os.getenv("FILE_PATH")  # Optional: Path to save data
 
 # Initialize Alpaca client
 client = StockHistoricalDataClient(ALPACA_API_KEY, ALPACA_SECRET_KEY)
