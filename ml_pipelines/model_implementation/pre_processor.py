@@ -35,17 +35,53 @@ class Preprocessor:
             # Handle errors
             raise Exception(f"Failed to fetch data: {response.status_code} - {response.text}")
 
-    # def split_data(self, X, y, stratify=None):
-    #   # split data into training and testing sets with stratification (splitting evenly between different stocks for better generalization)
-    #   return train_test_split(X, y, test_size=self.test_size, random_state=self.random_state, stratify=stratify)
+    
+    # def split_and_preprocess_data(self, X, y, stratify=None):
+    #     """
+    #     Split the data into training and test sets, apply SMOTE to balance the dataset, and scale features.
+    #     """
+    #     # Step 1: Split data into training and testing sets
+    #     X_train, X_test, y_train, y_test = train_test_split(
+    #         X, y, test_size=self.test_size, stratify=stratify, random_state=self.random_state
+    #     )
+
+    #     # Step 2: Apply SMOTE if enabled
+    #     if self.apply_smote:
+    #         print("Applying SMOTE to balance the dataset...")
+    #         smote = SMOTE(random_state=self.random_state)
+    #         X_train, y_train = smote.fit_resample(X_train, y_train)
+    #     else:
+    #         print("Skipping SMOTE...")
+
+    #     # Step 3: Apply scaling if enabled
+    #     if self.apply_scaling:
+    #         print("Scaling features...")
+    #         X_train = self.scaler.fit_transform(X_train)
+    #         X_test = self.scaler.transform(X_test)
+    #         # Convert scaled data back to DataFrame for consistency
+    #         X_train = pd.DataFrame(X_train, columns=X.columns)
+    #         X_test = pd.DataFrame(X_test, columns=X.columns)
+    #     else:
+    #         print("Skipping feature scaling...")
+
+    #     return X_train, X_test, y_train, y_test
 
     def split_and_preprocess_data(self, X, y, stratify=None):
         """
         Split the data into training and test sets, apply SMOTE to balance the dataset, and scale features.
         """
+        #apply scaling before the splitting
+        if self.apply_scaling:
+            X_scaled = self.scaler.fit_transform(X)
+            # scaler_mean = self.scaler.mean_
+            # scaler_scale = self.scaler.scale_
+
+        else:
+            print("Skipping feature scaling...")
+
         # Step 1: Split data into training and testing sets
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=self.test_size, stratify=stratify, random_state=self.random_state
+            X_scaled, y, test_size=self.test_size, stratify=stratify, random_state=self.random_state
         )
 
         # Step 2: Apply SMOTE if enabled
@@ -56,15 +92,15 @@ class Preprocessor:
         else:
             print("Skipping SMOTE...")
 
-        # Step 3: Apply scaling if enabled
-        if self.apply_scaling:
-            print("Scaling features...")
-            X_train = self.scaler.fit_transform(X_train)
-            X_test = self.scaler.transform(X_test)
-            # Convert scaled data back to DataFrame for consistency
-            X_train = pd.DataFrame(X_train, columns=X.columns)
-            X_test = pd.DataFrame(X_test, columns=X.columns)
-        else:
-            print("Skipping feature scaling...")
+        # # Step 3: Apply scaling if enabled
+        # if self.apply_scaling:
+        #     print("Scaling features...")
+        #     X_train = self.scaler.fit_transform(X_train)
+        #     X_test = self.scaler.transform(X_test)
+        #     # Convert scaled data back to DataFrame for consistency
+        X_train = pd.DataFrame(X_train, columns=X.columns)
+        X_test = pd.DataFrame(X_test, columns=X.columns)
+        # else:
+        #     print("Skipping feature scaling...")
 
         return X_train, X_test, y_train, y_test
