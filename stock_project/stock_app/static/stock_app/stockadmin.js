@@ -152,6 +152,35 @@ function closeModal() {
 document.getElementById('start-date').addEventListener('change', validateDates);
 document.getElementById('end-date').addEventListener('change', validateDates);
 
+function setupSingleSelectionCheckbox(className) {
+    // Select all checkboxes using the provided class name
+    const checkboxes = document.querySelectorAll(`.${className}`);
+    
+    // Attach an event listener to each checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                // If the current checkbox is checked, disable all others
+                checkboxes.forEach(otherCheckbox => {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.disabled = true;
+                    }
+                });
+            } else {
+                // If no checkbox is checked, enable all checkboxes
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                if (!anyChecked) {
+                    checkboxes.forEach(otherCheckbox => {
+                        otherCheckbox.disabled = false;
+                    });
+                }
+            }
+        });
+    });
+}
+
+// Call the function and pass the class name of the checkboxes
+setupSingleSelectionCheckbox('strategy-checkbox');
 
 // window.onload = function() {
 //     // Get the context of the canvas element we want to select
