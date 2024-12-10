@@ -6,8 +6,8 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv() 
-FILE_PATH = os.getenv('FILE_PATH')
-URL = os.getenv('URL')
+FILE_PATH = os.getenv('MACD_FILE_PATH')
+URL = os.getenv('MACD_URL')
 
 def runpipeline():
     print("Starting pipeline...")

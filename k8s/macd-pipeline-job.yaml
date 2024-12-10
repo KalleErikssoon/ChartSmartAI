@@ -1,0 +1,12 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: macd-pipeline-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: macd-pipeline
+        image: gcr.io/adroit-arcana-443708-m9/macd_pipeline:v1
+        command: ["python", "main_script.py"] 
+      restartPolicy: Never

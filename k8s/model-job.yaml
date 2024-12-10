@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: model-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: model-implementation
+        image: gcr.io/adroit-arcana-443708-m9/model_implementation:v1
+        imagePullPolicy: Always
+        command: ["python", "main_script.py", "ema"] 
+      restartPolicy: Never

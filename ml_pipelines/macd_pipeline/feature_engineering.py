@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv() 
-FILE_PATH = os.getenv('FILE_PATH')
+FILE_PATH = os.getenv('MACD_FILE_PATH')
 
 class FeatureEngineering:
     def __init__(self, input_path=FILE_PATH, output_path=FILE_PATH):
@@ -16,7 +16,7 @@ class FeatureEngineering:
         short_window = 12
         long_window = 26
         signal_window = 9
-
+        print(FILE_PATH)
         df =  pd.read_csv(FILE_PATH)
         macd_results = []
         symbols = df['symbol'].unique()

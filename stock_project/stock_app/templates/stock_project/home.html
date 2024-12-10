@@ -1,1 +1,314 @@
-<h1>Hello, World!</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChartSmart AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F2F2F2;
+        }
+
+        .top-section {
+            background-color: rgba(168, 230, 207, 0.33); /* Green color for the top section */
+            color: black; /* Black color for text */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid;
+            width: 100%;
+        }
+
+        .top-section .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .top-section .indicators {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .top-section .indicators button {
+            flex: 1 1 calc(33% - 20px); /* Distribute buttons evenly */
+            max-width: 280px;
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #003366; /* Navy blue buttons */ 
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .top-section .indicators button:hover {
+            background-color: #808080; /* Dark gray */
+            color: white;
+        }
+
+        .top-section .indicators button.selected {
+            background-color: #808080;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            display: flex;
+            width: 100%;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .chart-buttons-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stock-list {
+            background-color: rgba(168, 230, 207, 0.33); /* Match top section color */
+            padding: 10px;
+            width: 100%;
+            max-width: 150px;
+            height: 84vh;
+        }
+
+        .stock-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .stock-list li button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0px;
+            cursor: pointer;
+            text-align: left;
+            border: none;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .stock-list li button:hover {
+            background-color: #808080;
+            color: white;
+        }
+
+        .stock-list li button.selected {
+            background-color: #808080;
+            color: white;
+        }
+
+        .chart-container {
+            border: 5px solid #003366;
+            border-radius: 10px;
+            padding: 10px;
+            max-height: 380px;
+            width: 100%;
+        }
+
+        .ml-container {
+            border: 5px solid #003366;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 380px;
+            width: 30%;
+        }
+
+        .ml-header {
+            font-size: 14px;
+            font-weight: bold;
+            padding-bottom: 10px;
+            text-decoration: underline;
+        }
+
+        .ml-buttons {
+            justify-content: space-evenly;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .ml-buttons button {
+            width: 190px;
+            height: 80px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .info-box {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(168, 230, 207, 0.33);
+            border-radius: 10px;
+        }
+
+        .info-box-header {
+            font-size: 14px;
+            font-weight: bold;
+            resize: none;
+            background: none;
+            border: none;
+            padding-bottom: 5px;
+        }
+
+        .info-box textarea {
+            width: 100%;
+            height: 85px;
+            resize: none;
+            background: none;
+            border: none;
+            padding-top: 0px;
+        }
+
+        .stock-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        /* MEDIA QUERIES FOR RESPONSIVENESS*/
+        /* Phone */
+        @media (max-width: 767px) {
+            .ml-buttons {
+                flex-direction: row;
+            }
+            .chart-buttons-row {
+                flex-direction: column;
+            }
+            .ml-container {
+                width: 100%;
+                height: 100%;
+            }
+            .ml-buttons button {
+                width: 40px;
+                height: 20px;
+                padding: 0px 0px;
+                font-size: 12px;
+                justify-content: center;
+            }
+            .stock-list {
+                max-width: 70px;
+                height: 50vh;
+            }
+
+            .stock-list li button {
+                width: 100%;
+                padding: 5px;
+                margin: 5px 0px;
+                font-size: xx-small;
+            }
+
+            /* Info Box */
+            .info-box {
+                height: 260px;
+                width: 100%;
+            }
+            .info-box-header {
+                font-size: 14px;
+                font-weight: bold;
+                resize: none;
+                background: none;
+                border: none;
+                padding-bottom: 5px;
+            }
+
+            .info-box textarea {
+                width: 100%;
+                height: 100%;
+            }
+
+        }
+        /* Tablet */
+        @media (min-width: 768px) and (max-width: 1024px) {
+
+        }
+        /* Desktop */
+        @media (min-width: 1025px) {
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Section -->
+    <div class="top-section">
+        <div class="header">ChartSmart AI</div>
+        <div class="indicators">
+            <button onclick="setIndicator('RSI')">RSI</button>
+            <button onclick="setIndicator('MACD')">MACD</button>
+            <button onclick="setIndicator('EMA')">EMA</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Stock List -->
+            <div class="stock-list">
+                <ul>
+                    <li><button stock-name="Nvidia">Nvidia</button></li>
+                    <li><button stock-name="Apple">Apple</button></li>
+                    <li><button stock-name="Microsoft">Microsoft</button></li>
+                    <li><button stock-name="Amazon">Amazon</button></li>
+                    <li><button stock-name="Google">Google</button></li>
+                    <li><button stock-name="Meta">Meta</button></li>
+                    <li><button stock-name="Tesla">Tesla</button></li>
+                    <li><button stock-name="Berkshire Hathaway">Berkshire Hathaway</button></li>
+                    <li><button stock-name="Taiwan Semiconductors">Taiwan Semiconductors</button></li>
+                    <li><button stock-name="Broadcom">Broadcom</button></li>
+                </ul>
+            </div>
+            <!-- Dashboard (Chart, ML buttons, Infobox)-->
+            <div class="dashboard">
+                <div class="stock-header" id="stock-header">Select Stock From List</div>
+                <!-- Chart and ML buttons Row -->
+                <div class="chart-buttons-row">
+                    <!-- Chart Section -->
+                    <div class="chart-container">
+                        <div id="tradingview"></div>
+                    </div>
+                    <!-- ML buttons. Update when model is integrated -->
+                    <div class="ml-container">
+                        <div class="ml-header">AI-powered Insights</div>
+                        <div class="ml-buttons">
+                            <button>Buy</button>
+                            <button>Hold</button>
+                            <button>Sell</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Info Box -->
+                <div class="info-box">
+                    <div class="info-box-header" id="info-header">Welcome to ChartSmart AI!</div>
+                    <textarea id="info-box-text" readonly>ChartSmart AI is your trusted companion for smarter stock market analysis. Our service combines machine learning with technical indicators—RSI, MACD, and EMA—to deliver actionable insights for informed trading decisions. What sets our models apart is that the models are not only trained on the strategy of each indicator but are also optimized to predict future price movements, providing a comprehensive view for better decision-making. Select a stock from the list to get started!</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'stock_app/home.js' %}"></script>
+</body>
+</html>

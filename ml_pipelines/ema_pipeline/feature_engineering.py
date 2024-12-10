@@ -5,13 +5,13 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 load_dotenv()
-FILE_PATH = os.getenv('FILE_PATH')
+FILE_PATH = os.getenv('EMA_FILE_PATH')
 
 class EmaCalculator: 
 
     def __init__(self, file_path=FILE_PATH, period=10):
         
-        self.file_path=os.path.abspath(file_path)
+        self.file_path=file_path
         self.period = period
         self.ema_data = None #Placeholder for the dataframe
 

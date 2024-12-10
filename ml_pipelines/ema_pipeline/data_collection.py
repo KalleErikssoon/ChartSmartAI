@@ -3,21 +3,21 @@ from alpaca.data import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
+
 # For .env (API keys etc)
 import os
 from dotenv import load_dotenv
 
 # Additional imports
-from datetime import datetime   # for stock request_params
+from datetime import datetime, timedelta # for stock request_params
+from dateutil.relativedelta import relativedelta
 import pandas as pd  # To handle data storage
 
 # Load environment variables
 load_dotenv()  # Load the .env file
 ALPACA_API_KEY = os.getenv('ALPACA_API_KEY')
 ALPACA_SECRET_KEY = os.getenv('ALPACA_SECRET_KEY')
-FILE_PATH = os.getenv('FILE_PATH')
-
-
+FILE_PATH = os.getenv('EMA_FILE_PATH')
 
 class DataCollector:
     def __init__(self, api_key=ALPACA_API_KEY, secret_key=ALPACA_SECRET_KEY, output_path=FILE_PATH):
@@ -42,6 +42,12 @@ class DataCollector:
         # List to store all collected data
         stock_data = []
 
+        # calculate yesterday's date
+        today = datetime.now()
+        endDate = (today - timedelta(days=1)).date()
+
+        # calculate start date
+        startDate = endDate - relativedelta(months=1)
         # Iterate over top-10 stocks
         for symbol in stocks:
             print(f"Collecting data for {symbol}...")
@@ -49,9 +55,9 @@ class DataCollector:
                 # Request parameters: daily stock data for the past year
                 request_params = StockBarsRequest(
                     symbol_or_symbols=symbol,
-                    start=datetime(2023, 11, 20),
-                    end=datetime(2024, 11, 19),
-                    timeframe=TimeFrame.Day
+                    start=startDate,
+                    end=endDate,
+                    timeframe=TimeFrame.Hour
                 )
 
                 # Retrieve stock data
