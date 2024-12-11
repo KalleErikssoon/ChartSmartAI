@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: rsi-pipeline
-        image: gcr.io/adroit-arcana-443708-m9/rsi_pipeline:v2
+        image: gcr.io/adroit-arcana-443708-m9/rsi_pipeline:v1
         imagePullPolicy: Always
         command: ["python", "main_script.py"] 
       restartPolicy: Never

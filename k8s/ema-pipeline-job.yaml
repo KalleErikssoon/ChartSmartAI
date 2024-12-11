@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: ema-pipeline
-        image: gcr.io/adroit-arcana-443708-m9/ema_pipeline:v2
+        image: gcr.io/adroit-arcana-443708-m9/ema_pipeline:v1
         imagePullPolicy: Always
         command: ["python", "main_script.py"]  
       restartPolicy: Never

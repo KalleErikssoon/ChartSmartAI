@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: model-implementation
-        image: gcr.io/adroit-arcana-443708-m9/model_implementation:v4
+        image: gcr.io/adroit-arcana-443708-m9/model_implementation:v1
         imagePullPolicy: Always
-        command: ["python", "main_script.py", "rsi"] 
+        command: ["python", "main_script.py", "ema"] 
       restartPolicy: Never

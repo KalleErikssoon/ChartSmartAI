@@ -4,13 +4,17 @@
 # Ignore temp python files
 **/__pycache__/
 
-# Ignore macd data for now
+# Ignore temp data
 **/macd_data.csv
 **/ema_data.csv
 **/rsi_data.csv
+**/X_test.csv
+**/X_train.csv
+**/y_test.csv
+**/y_train.csv
 
-# Ignore the mode training output files (for now, will most likely need to be altered before final product)
-ml_pipelines/model_implementation/X_test.csv
-ml_pipelines/model_implementation/X_train.csv
-ml_pipelines/model_implementation/y_test.csv
-ml_pipelines/model_implementation/y_train.csv
+# Ignore temp model files and metadata
+ml_pipelines/model_implementation/trained_models/*
+stock_project/stock_app/inference/models/*
+stock_project/metadata/*
+

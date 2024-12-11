@@ -7,6 +7,6 @@ spec:
     spec:
       containers:
       - name: macd-pipeline
-        image: gcr.io/adroit-arcana-443708-m9/macd_pipeline:v2
+        image: gcr.io/adroit-arcana-443708-m9/macd_pipeline:v1
         command: ["python", "main_script.py"] 
       restartPolicy: Never
