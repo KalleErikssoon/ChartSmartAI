@@ -97,7 +97,40 @@ function verifyModel() {
 
     }, 2000);
 }
+function get_model_version_list() {
+    fetch('get_models/')
+        .then(response => response.json())
+        .then(data => {
+            // Check if the response has files
+            if (data.files && Array.isArray(data.files)) {
+                const selectElement = document.getElementById('model-version');
 
+                // Clear existing options
+                selectElement.innerHTML = '';
+
+                // Add an empty placeholder option
+                const placeholderOption = document.createElement('option');
+                placeholderOption.value = '';
+                placeholderOption.textContent = 'Select a model';
+                placeholderOption.disabled = true;
+                placeholderOption.selected = true;
+                selectElement.appendChild(placeholderOption);
+
+                // Populate the select dropdown with file options
+                data.files.forEach(file => {
+                    const option = document.createElement('option');
+                    option.value = file; // Set the value to the file name
+                    option.textContent = file; // Display the file name
+                    selectElement.appendChild(option);
+                });
+            } else {
+                console.error('No files found in the response');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
 
 // Confirm Rollback
 function confirmRollback() {
@@ -151,3 +184,7 @@ function setupSingleSelectionCheckbox(className) {
 
 // Call the function and pass the class name of the checkboxes
 setupSingleSelectionCheckbox('strategy-checkbox');
+
+document.addEventListener('DOMContentLoaded', function() {
+    get_model_version_list();
+});

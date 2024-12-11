@@ -17,6 +17,8 @@ import subprocess
 import time 
 from kubernetes.client.rest import ApiException
 
+import os
+
 @csrf_exempt
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
@@ -450,3 +452,15 @@ def clear_job(job_name, namespace="default"):
     except ApiException as e:
         print(f"An error occurred: {e}")
         raise
+
+@api_view(['GET'])
+def list_files(request):
+
+    directory_path = "./stock_project/models"
+    print(directory_path)
+    try:
+        # List files in the directory
+        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+        return JsonResponse({"files": files})
+    except Exception as e:
+        return JsonResponse({'error':  str(e)}, status=500)
