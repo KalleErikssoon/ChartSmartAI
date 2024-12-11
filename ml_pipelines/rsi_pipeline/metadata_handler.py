@@ -10,7 +10,6 @@ load_dotenv()
 # Set the strategy
 STRATEGY = "RSI"
 
-
 URL = os.getenv(f"{STRATEGY}_URL")
 # Extract the first part of the URL before the path after the port
 parsed_url = URL.split("/", 3)[0:3] # ['http:', '', 'localhost:8000']
@@ -64,6 +63,9 @@ class DataMetadata:
         print(f"Status Code: {response.status_code}")
         print(f"Response: {response.json()}")
 
+        # remove the metadata file
+        os.remove(self.metadata_file_path)
+        
 # Example usage:
 # stocks = [list of stock data here]
 # metadata_handler = DataMetadata(stocks)

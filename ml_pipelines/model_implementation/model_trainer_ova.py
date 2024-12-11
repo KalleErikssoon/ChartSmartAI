@@ -4,6 +4,7 @@ from logregression_utils import LogisticRegressionUtils
 from scipy.optimize import minimize
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
+import json
 
 #Class that trains models with One Vs All Logistic Regression (Multi Class models)
 class ModelTrainer:
@@ -52,10 +53,29 @@ class ModelTrainer:
         return predictions
 
     def evaluate(self, X_test, y_test):
+        # Generate predictions
         predictions = self.predict_one_vs_all(X_test)
+        
+        # Calculate the classification report and accuracy
+        report = classification_report(y_test, predictions, output_dict=True)  # Get report as a dictionary
+        accuracy = accuracy_score(y_test, predictions)
+        
+        # Print results to the console
         print("Classification Report:")
-        print(classification_report(y_test, predictions))
-        print(f"Accuracy: {accuracy_score(y_test, predictions):.4f}")
+        print(classification_report(y_test, predictions))  # Print formatted report
+        print(f"Accuracy: {accuracy:.4f}")
+        
+        # Save results to a JSON file
+        results = {
+            "classification_report": report,
+            "accuracy": accuracy
+        }
+
+        json_path=self.model_output_path.replace(".pkl", "_performance.json")
+        with open(json_path, "w") as json_file:
+            json.dump(results, json_file, indent=4)
+        print(f"Results saved to {json_path}")
+
 
     def save_models(self):
         joblib.dump(self.models, self.model_output_path)

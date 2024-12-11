@@ -27,8 +27,8 @@
         "TSLA",
         "TSM"
     ],
-    "origin": "Alpaca API, library version: 0.33.1",
-    "start date": "2023-12-28",
-    "end date": "2024-12-06",
-    "date collected": "2024-12-09 19:40:29.787181"
+    "origin": "Alpaca API, library version: 0.34.0",
+    "start date": "2023-12-29",
+    "end date": "2024-12-09",
+    "date collected": "2024-12-11 12:40:50.587252"
 }

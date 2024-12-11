@@ -12,6 +12,7 @@ urlpatterns = [
     path('get_database/rsi/', api_views.get_rsi_data, name='get_rsi'),
     path('validate-stock-data/', views.validate_stock_data, name='validate_stock_data'),
     path('upload_metadata/', api_views.upload_metadata, name='upload_metadata'),
+    path('rename_metadata/', api_views.rename_metadata, name='rename_metadata'),
     path('upload_model/', api_views.upload_model, name='upload_model'),  #for the pickle file  
 ]
 

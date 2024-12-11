@@ -226,6 +226,27 @@ def upload_metadata(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON file'}, status=400)
 
+@csrf_exempt
+@api_view(['POST'])
+def rename_metadata(request):
+    # rename the metadata file to the new name
+    data = request.data
+    old_name = data.get('old_name')
+    new_name = data.get('new_name')
+
+    # Rename the metadata file in the metadata directory
+    metadata_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../metadata")
+    old_path = os.path.join(metadata_dir, old_name)
+    new_path = os.path.join(metadata_dir, new_name)
+
+    try:
+        os.rename(old_path, new_path)
+        return JsonResponse({'message': 'File renamed successfully'}, status=200)
+    except FileNotFoundError:
+        return JsonResponse({'error': 'File not found'}, status=404)
+    except FileExistsError:
+        return JsonResponse({'error': 'File with the new name already exists'}, status=409)
+
 
 @csrf_exempt
 @api_view(['POST'])
