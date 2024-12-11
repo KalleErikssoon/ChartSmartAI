@@ -64,7 +64,6 @@ def runpipeline():
     metadata_handler.upload_metadata()
 
     # clean up
-    os.remove(f"{STRATEGY}_data.csv")
-    os.remove(f"metadata_{STRATEGY.upper()}.csv")
-    
+    os.remove(f"{STRATEGY.lower()}_data.csv")
+
 runpipeline()

@@ -1,7 +1,7 @@
 {
-    "name of file": "macd_data.csv",
-    "model": "STOCK_APP_MACD_DATA",
-    "description": "MACD stock data for the top-10 stocks",
+    "name of file": "ema_data.csv",
+    "model": "STOCK_APP_EMA_DATA",
+    "description": "EMA stock data for the top-10 stocks",
     "schema": [
         "symbol",
         "timestamp",
@@ -12,8 +12,7 @@
         "volume",
         "trade_count",
         "vwap",
-        "macd",
-        "signal_line",
+        "ema",
         "label"
     ],
     "stocks": [
@@ -29,7 +28,7 @@
         "AVGO"
     ],
     "origin": "Alpaca API, library version: 0.34.0",
-    "start date": "2024-11-12",
-    "end date": "2024-12-09",
-    "date collected": "2024-12-11 13:53:57.436688"
+    "start date": "2024-11-11",
+    "end date": "2024-12-10",
+    "date collected": "2024-12-11 14:40:28.709052"
 }
