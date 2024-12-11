@@ -1,80 +1,65 @@
-//aate Validation
-function validateDates() {
-    const startDateInput = document.getElementById('start-date');
-    const endDateInput = document.getElementById('end-date');
-    const validationMessage = document.getElementById('date-validation-message');
-
-    if (startDateInput.value && endDateInput.value) {
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
-
-        if (startDate >= endDate) {
-            validationMessage.style.display = 'block';
-            return false;
-        } else {
-            validationMessage.style.display = 'none';
-            return true;
-        }
-    }
-    validationMessage.style.display = 'none';
-    return false;
-}
 
 
-function getSelectedStrategies() {
+function getSelectedStrategy() {
     const checkboxes = document.querySelectorAll('.strategy-options input[type="checkbox"]');
-    const selectedStrategies = [];
+    const selectedStrategy = [];
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
-            selectedStrategies.push(checkbox.value);
+            selectedStrategy.push(checkbox.value);
         }
     });
-    return selectedStrategies;
+    return selectedStrategy;
 }
 
-// Confirm  button for Retrain
+// Confirm button for Retrain
 function confirmRetrain() {
-    const startDateInput = document.getElementById('start-date');
-    const endDateInput = document.getElementById('end-date');
-    const dateValidationMessage = document.getElementById('date-validation-message');
-
-    //get selected strategies
-    const strategies = Array.from(document.querySelectorAll('.strategy-options input[type="checkbox"]:checked'))
+    // Get selected strategy
+    const strategy = Array.from(document.querySelectorAll('.strategy-options input[type="checkbox"]:checked'))
         .map(checkbox => checkbox.value);
 
-    //validate dates
-    const startDate = startDateInput.value;
-    const endDate = endDateInput.value;
-    if (!startDate || !endDate) {
-        dateValidationMessage.textContent = 'Both Start Date and End Date must be entered.';
-        dateValidationMessage.style.display = 'block';
-        return;
-    }
-    if (new Date(startDate) >= new Date(endDate)) {
-        dateValidationMessage.textContent = 'Start Date must be before End Date.';
-        dateValidationMessage.style.display = 'block';
-        return;
-    }
-    dateValidationMessage.style.display = 'none'; // Clear validation message
-
-    //validate strategies
-    if (strategies.length === 0) {
+    // Validate strategy
+    if (strategy.length === 0) {
         alert('Please select at least one strategy.');
         return;
     }
 
-    //show confirmation modal
+    // Show confirmation modal
     showModal(
         'Confirm Retrain',
-        `Are you sure you want to retrain the model with strategies: ${strategies.join(', ')}?`,
+        `Are you sure you want to retrain the model with strategy: ${strategy.join(', ')}?`,
         () => {
-            startRetraining(strategies);
+            sendRetrainingRequest(strategy);
         }
     );
 }
 
-function startRetraining(strategies) {
-    closeModal();
+function sendRetrainingRequest(strategy) {
+
+    fetch('run_strategy/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ strategy })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(`Error: ${data.error}`);
+        } else {
+            alert('Retraining job created successfully.');
+            startTrainingProgress(strategy);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while creating the retraining job.');
+    });
+    console.log('Sending retraining request with strategy:', strategy);
+ 
+}
+
+function startTrainingProgress(strategy) {
+    closeModal(); // Make sure this closes the modal you showed earlier
+
     const progressBar = document.getElementById('progress-bar');
     const logs = document.getElementById('logs');
     const progressBarInner = document.getElementById('progress-bar-inner');
@@ -83,14 +68,12 @@ function startRetraining(strategies) {
     logs.style.display = 'block';
     logs.innerHTML = ''; 
 
-    // Training bar
     let progress = 0;
     const interval = setInterval(() => {
         progress += 10;
         progressBarInner.style.width = progress + '%';
         
-        // Overwrite the log content with the current progress
-        logs.innerHTML = `Training progress: ${progress}% with strategies: ${strategies.join(', ')}`;
+        logs.innerHTML = `Training progress: ${progress}% with strategy: ${strategy.join(', ')}`;
         logs.scrollTop = logs.scrollHeight;
 
         if (progress >= 100) {
@@ -148,10 +131,37 @@ function closeModal() {
     document.getElementById('confirmation-modal').style.display = 'none';
 }
 
-//event Listeners for Date Inputs
-document.getElementById('start-date').addEventListener('change', validateDates);
-document.getElementById('end-date').addEventListener('change', validateDates);
 
+
+function setupSingleSelectionCheckbox(className) {
+    // Select all checkboxes using the provided class name
+    const checkboxes = document.querySelectorAll(`.${className}`);
+    
+    // Attach an event listener to each checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                // If the current checkbox is checked, disable all others
+                checkboxes.forEach(otherCheckbox => {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.disabled = true;
+                    }
+                });
+            } else {
+                // If no checkbox is checked, enable all checkboxes
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                if (!anyChecked) {
+                    checkboxes.forEach(otherCheckbox => {
+                        otherCheckbox.disabled = false;
+                    });
+                }
+            }
+        });
+    });
+}
+
+// Call the function and pass the class name of the checkboxes
+setupSingleSelectionCheckbox('strategy-checkbox');
 
 // window.onload = function() {
 //     // Get the context of the canvas element we want to select
