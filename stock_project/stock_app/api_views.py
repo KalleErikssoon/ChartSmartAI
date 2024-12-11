@@ -16,7 +16,6 @@ from kubernetes import client, config
 import subprocess
 import time 
 from kubernetes.client.rest import ApiException
-import time
 
 @csrf_exempt
 @api_view(['POST'])
@@ -283,7 +282,7 @@ def retrain(request):
         run_ema_strategy_job()
     else:
         return Response({'error': f'Unknown strategy: {strategy}'}, status=400)
-    time.sleep(3)
+    # time.sleep(3)
     #after running strategy pipeline job run the model job
     run_model_job(strategy)
     
