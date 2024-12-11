@@ -11,7 +11,7 @@ django.setup()
 
 from stock_app.models import RSI_Data
 
-class DatabaseCleaner:
+class RsiCleaner:
     """
     A class responsible for clearing all rows from the StockData table in the database.
     """
@@ -19,17 +19,22 @@ class DatabaseCleaner:
     @staticmethod
     def clear_table():
         """
-        Clears all rows from the StockData table.
+        Clears all rows from the StockData table if table isn't empty.
         """
         try:
-            # Delete all records from the StockData table
-            RSI_Data.objects.all().delete()
-            print("All rows cleared from the StockData table successfully.")
+            # check if table is empty
+            if RSI_Data.objects.exists():
+                # delete all records from the RSI_Data table
+                RSI_Data.objects.all().delete()
+                print("All rows deleted from the RSI_Data table successfully.")
+            else:
+                print("The RSI_Data table is empty.")
 
         except Exception as e:
             print(f"An error occurred while clearing the table: {e}")
 
+
 # Main block to execute the cleaner
 if __name__ == "__main__":
-    cleaner = DatabaseCleaner()
+    cleaner = RsiCleaner()
     cleaner.clear_table()

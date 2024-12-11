@@ -11,7 +11,7 @@ django.setup()
 
 from stock_app.models import MACD_Data
 
-class DatabaseCleaner:
+class MacdCleaner:
     """
     A class responsible for clearing all rows from the StockData table in the database.
     """
@@ -22,14 +22,18 @@ class DatabaseCleaner:
         Clears all rows from the StockData table.
         """
         try:
-            # Delete all records from the StockData table
-            MACD_Data.objects.all().delete()
-            print("All rows cleared from the StockData table successfully.")
+                # check if table is empty
+                if MACD_Data.objects.exists():
+                    # delete all records from the table
+                    MACD_Data.objects.all().delete()
+                    print("All rows deleted from the MACD table successfully.")
+                else:
+                    print("The EMA table is empty.")
 
         except Exception as e:
-            print(f"An error occurred while clearing the table: {e}")
+                print(f"An error occurred while clearing the table: {e}")
 
 # Main block to execute the cleaner
 if __name__ == "__main__":
-    cleaner = DatabaseCleaner()
+    cleaner = MacdCleaner()
     cleaner.clear_table()
