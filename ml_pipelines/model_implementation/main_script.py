@@ -89,6 +89,9 @@ def runpipeline(strategy, current_datetime):
     # this is to post the picke file to the django project
     # we can move this to another place later on
 
+    with open(model_output_path, 'rb') as f:
+        response = requests.post(f"{URL}/upload_model/", files={'file': f})
+
     if response.status_code == 201:
         print("Pickle model file is posted successfully")
         
@@ -115,6 +118,9 @@ def runpipeline(strategy, current_datetime):
 
         # Remove the model file
         os.remove(model_output_path)
+
+        # Remove trained models
+        os.remove(model_base_path)
         
     else:
         print(f"Failed to upload file: {response.content}")

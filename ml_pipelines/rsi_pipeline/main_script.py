@@ -63,4 +63,8 @@ def runpipeline():
     metadata_handler = metadata_handler.DataMetadata(fileName, description, stocks, model, schema, startDate, endDate)
     metadata_handler.upload_metadata()
 
+    # clean up
+    os.remove(f"{STRATEGY}_data.csv")
+    os.remove(f"metadata_{STRATEGY.upper()}.csv")
+    
 runpipeline()

@@ -274,49 +274,41 @@ def rename_metadata(request):
 
 #     except Exception as e:
 #         return JsonResponse({'error': str(e)}, status=500)
-    
+
 
 @csrf_exempt
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
 def upload_model(request):
-    # Check for both model and scaler files
-    model_file = request.FILES.get("model_file")
-    scaler_file = request.FILES.get("scaler_file")
-    strategy = request.POST.get("strategy")
-    timestamp = request.POST.get("timestamp")
-
-    # Validate request data
-    if not model_file or not scaler_file:
-        return JsonResponse({"error": "Both model and scaler files must be uploaded."}, status=400)
-    if not strategy:
-        return JsonResponse({"error": "Strategy is required."}, status=400)
-    if not timestamp:
-        return JsonResponse({"error": "Timestamp is required."}, status=400)
-
-    # Define paths for saving files
-    strategy_dir = os.path.join(settings.BASE_DIR, f"stock_app/inference/models/{strategy}/")
-    os.makedirs(strategy_dir, exist_ok=True)
-
-    model_path = os.path.join(strategy_dir, f"{timestamp}_{model_file.name}")
-    scaler_path = os.path.join(strategy_dir, f"{timestamp}_{scaler_file.name}")
+    if 'file' not in request.FILES:
+        return JsonResponse({'error': 'No file uploaded'}, status=400)
 
     try:
-        # Save model file
-        with open(model_path, "wb") as f:
-            for chunk in model_file.chunks():
+        pkl_file = request.FILES['file']
+        file_name = pkl_file.name
+
+        strategy = "-"
+
+        if "macd" in file_name:
+            strategy = "macd"
+        elif "ema" in file_name:
+            strategy = "ema"
+        elif "rsi" in file_name:
+            strategy = "rsi"
+
+        # path to save the file
+        save_path = os.path.join(settings.BASE_DIR, f"stock_app/inference/models/{strategy}/", file_name)
+        # make the directory if doesnt exist
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        #save
+        with open(save_path, 'wb') as f:
+            for chunk in pkl_file.chunks():
                 f.write(chunk)
 
-        # Save scaler file
-        with open(scaler_path, "wb") as f:
-            for chunk in scaler_file.chunks():
-                f.write(chunk)
-
-        return JsonResponse({"message": "Model and scaler uploaded successfully."}, status=201)
+        return JsonResponse({'message': 'File successfully uploaded'}, status=201)
 
     except Exception as e:
-        return JsonResponse({"error": f"Failed to save files: {str(e)}"}, status=500)
-    
+        return JsonResponse({'error': str(e)}, status=500)
     
 @api_view(['GET'])
 def make_prediction(request, strategy, stock_symbol):
