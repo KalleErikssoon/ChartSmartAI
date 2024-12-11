@@ -10,32 +10,27 @@ function getSelectedStrategy() {
     });
     return selectedStrategy;
 }
-
-// Confirm button for Retrain
 function confirmRetrain() {
-    // Get selected strategy
     const strategy = Array.from(document.querySelectorAll('.strategy-options input[type="checkbox"]:checked'))
         .map(checkbox => checkbox.value);
 
-    // Validate strategy
     if (strategy.length === 0) {
         alert('Please select at least one strategy.');
         return;
     }
 
-    // Show confirmation modal
     showModal(
         'Confirm Retrain',
         `Are you sure you want to retrain the model with strategy: ${strategy.join(', ')}?`,
         () => {
-            sendRetrainingRequest(strategy);
+            closeModal();
+            startTrainingProgress(strategy, sendRetrainingRequest(strategy));
         }
     );
 }
 
 function sendRetrainingRequest(strategy) {
-
-    fetch('run_strategy/', {
+    return fetch('run_strategy/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ strategy })
@@ -43,45 +38,47 @@ function sendRetrainingRequest(strategy) {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            alert(`Error: ${data.error}`);
+            throw new Error(`Error: ${data.error}`);
         } else {
-            alert('Retraining job created successfully.');
-            startTrainingProgress(strategy);
+            return "Retraining job created successfully.";
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while creating the retraining job.');
+        throw error; 
     });
-    console.log('Sending retraining request with strategy:', strategy);
- 
 }
 
-function startTrainingProgress(strategy) {
-    closeModal(); // Make sure this closes the modal you showed earlier
-
+function startTrainingProgress(strategy, fetchPromise) {
     const progressBar = document.getElementById('progress-bar');
     const logs = document.getElementById('logs');
     const progressBarInner = document.getElementById('progress-bar-inner');
 
     progressBar.style.display = 'block';
     logs.style.display = 'block';
-    logs.innerHTML = ''; 
+    logs.innerHTML = '';
 
     let progress = 0;
     const interval = setInterval(() => {
-        progress += 10;
+        progress = Math.min(progress + 10, 85);
         progressBarInner.style.width = progress + '%';
-        
+
         logs.innerHTML = `Training progress: ${progress}% with strategy: ${strategy.join(', ')}`;
         logs.scrollTop = logs.scrollHeight;
+    }, 1000);
 
-        if (progress >= 100) {
+    fetchPromise
+        .then((message) => {
             clearInterval(interval);
-            logs.innerHTML = 'Training completed successfully.';
+            progressBarInner.style.width = '100%';
+            logs.innerHTML = `${message} `;
             progressBar.style.display = 'none';
-        }
-    }, 500);
+        })
+        .catch((error) => {
+            clearInterval(interval);
+            logs.innerHTML = `An error occurred: ${error.message}`;
+            progressBar.style.display = 'none';
+        });
 }
 
 
