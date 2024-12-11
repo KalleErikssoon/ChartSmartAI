@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,6 +11,7 @@ from stock_app.models import EMA_Data
 from stock_app.models import RSI_Data
 import os
 from django.conf import settings
+from stock_app.inference.inference import fetch_stock_data, load_model, run_inference, preprocess_data
 
 @csrf_exempt
 @api_view(['POST'])
@@ -248,27 +250,130 @@ def rename_metadata(request):
         return JsonResponse({'error': 'File with the new name already exists'}, status=409)
 
 
+# @csrf_exempt
+# @api_view(['POST'])
+# @parser_classes([MultiPartParser])
+# def upload_model(request):
+#     if 'file' not in request.FILES:
+#         return JsonResponse({'error': 'No file uploaded'}, status=400)
+
+#     try:
+#         pkl_file = request.FILES['file']
+#         file_name = pkl_file.name
+
+#         # path to save the file
+#         save_path = os.path.join(settings.BASE_DIR, 'models', file_name)
+#         # make the directory if doesnt exist
+#         os.makedirs(os.path.dirname(save_path), exist_ok=True)
+#         #save
+#         with open(save_path, 'wb') as f:
+#             for chunk in pkl_file.chunks():
+#                 f.write(chunk)
+
+#         return JsonResponse({'message': 'File successfully uploaded'}, status=201)
+
+#     except Exception as e:
+#         return JsonResponse({'error': str(e)}, status=500)
+    
+
 @csrf_exempt
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
 def upload_model(request):
-    if 'file' not in request.FILES:
-        return JsonResponse({'error': 'No file uploaded'}, status=400)
+    # Check for both model and scaler files
+    model_file = request.FILES.get("model_file")
+    scaler_file = request.FILES.get("scaler_file")
+    strategy = request.POST.get("strategy")
+    timestamp = request.POST.get("timestamp")
+
+    # Validate request data
+    if not model_file or not scaler_file:
+        return JsonResponse({"error": "Both model and scaler files must be uploaded."}, status=400)
+    if not strategy:
+        return JsonResponse({"error": "Strategy is required."}, status=400)
+    if not timestamp:
+        return JsonResponse({"error": "Timestamp is required."}, status=400)
+
+    # Define paths for saving files
+    strategy_dir = os.path.join(settings.BASE_DIR, f"stock_app/inference/models/{strategy}/")
+    os.makedirs(strategy_dir, exist_ok=True)
+
+    model_path = os.path.join(strategy_dir, f"{timestamp}_{model_file.name}")
+    scaler_path = os.path.join(strategy_dir, f"{timestamp}_{scaler_file.name}")
 
     try:
-        pkl_file = request.FILES['file']
-        file_name = pkl_file.name
-
-        # path to save the file
-        save_path = os.path.join(settings.BASE_DIR, 'models', file_name)
-        # make the directory if doesnt exist
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        #save
-        with open(save_path, 'wb') as f:
-            for chunk in pkl_file.chunks():
+        # Save model file
+        with open(model_path, "wb") as f:
+            for chunk in model_file.chunks():
                 f.write(chunk)
 
-        return JsonResponse({'message': 'File successfully uploaded'}, status=201)
+        # Save scaler file
+        with open(scaler_path, "wb") as f:
+            for chunk in scaler_file.chunks():
+                f.write(chunk)
+
+        return JsonResponse({"message": "Model and scaler uploaded successfully."}, status=201)
 
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({"error": f"Failed to save files: {str(e)}"}, status=500)
+    
+    
+@api_view(['GET'])
+def make_prediction(request, strategy, stock_symbol):
+    try:
+        strategy = strategy.lower()
+        print(f"make_prediction called with strategy={strategy} and stock_symbol={stock_symbol}")
+        
+        # Validate inputs
+        if not stock_symbol or not strategy:
+            return JsonResponse({"error": "Missing stock_symbol or strategy."}, status=400)
+        
+        # Define the mapping of user-friendly stock names to Alpaca-compatible symbols
+        stock_symbol_mapping = {
+            "Nvidia": "NVDA",
+            "Apple": "AAPL",
+            "Microsoft": "MSFT",
+            "Amazon": "AMZN",
+            "Google": "GOOGL",
+            "Meta": "META",
+            "Tesla": "TSLA",
+            "Berkshire Hathaway": "BRK.B",
+            "Taiwan Semiconductors": "TSM",
+            "Broadcom": "AVGO"
+        }
+
+        # Map the user-selected stock name to the Alpaca-compatible symbol
+        alpaca_symbol = stock_symbol_mapping.get(stock_symbol)
+        if not alpaca_symbol:
+            return JsonResponse({"error": f"Invalid stock symbol: {stock_symbol}"}, status=400)
+
+        # Fetch stock data
+        print("Fetching stock data...")
+        yesterday = (datetime.now() - timedelta(days=1)).date()
+        start_date = yesterday - timedelta(days=15)  # Fetch at least 15 days of data for EMA
+        stock_data = fetch_stock_data(alpaca_symbol, start_date=start_date, end_date=yesterday)
+        
+        if stock_data.empty:
+            raise ValueError(f"No data fetched for {alpaca_symbol} from {start_date} to {yesterday}.")
+        
+        print(f"Fetched stock data:\n{stock_data.head()}")
+
+        # Preprocess the stock data
+        processed_data = preprocess_data(stock_data, strategy)
+        print(f"Processed data:\n{processed_data}")
+
+        # Run inference
+        predicted_action = run_inference(processed_data, strategy)
+        print(f"Predicted action: {predicted_action}")
+
+        # Return the predictions as a response
+        return JsonResponse({
+            "stock_symbol": stock_symbol,
+            "strategy": strategy,
+            "prediction": predicted_action
+        })
+
+    except Exception as e:
+        print(f"Error in make_prediction: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
