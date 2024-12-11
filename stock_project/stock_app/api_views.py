@@ -291,7 +291,7 @@ def retrain(request):
 
 def run_rsi_strategy_job():
     # RSI job definition
-    # subprocess.run(["python", "../stock_project/scripts/clear_rsi_table.py"], check=True)
+    subprocess.run(["python", "./stock_project/scripts/clear_rsi_table.py"], check=True)
     clear_job("rsi-pipeline-job", namespace="default")
     job_spec = {
         "api_version": "batch/v1",
@@ -320,6 +320,7 @@ def run_rsi_strategy_job():
 
 def run_macd_strategy_job():
     # MACD job definition
+    subprocess.run(["python", "./stock_project/scripts/clear_macd_table.py"], check=True)
     clear_job("macd-pipeline-job", namespace="default")
     job_spec = {
         "api_version": "batch/v1",
@@ -348,6 +349,7 @@ def run_macd_strategy_job():
 
 def run_ema_strategy_job():
     # ema  job definition
+    subprocess.run(["python", "./stock_project/scripts/clear_ema_table.py"], check=True)
     clear_job("ema-pipeline-job", namespace="default")
     job_spec = {
         "api_version": "batch/v1",
