@@ -25,6 +25,7 @@ function confirmRetrain() {
         () => {
             closeModal();
             startTrainingProgress(strategy, sendRetrainingRequest(strategy));
+            get_model_version_list();
         }
     );
 }
