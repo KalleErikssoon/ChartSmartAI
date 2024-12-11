@@ -119,8 +119,8 @@ def runpipeline(strategy, current_datetime):
         # Remove the model file
         os.remove(model_output_path)
 
-        # Remove trained models
-        os.remove(model_base_path)
+        # Remove trained models directory even if it is not empty
+        #os.rmdir(model_base_path)
         
     else:
         print(f"Failed to upload file: {response.content}")
