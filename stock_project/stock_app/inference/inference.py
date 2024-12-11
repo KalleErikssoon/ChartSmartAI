@@ -1,4 +1,4 @@
-from venv import logger
+#from venv import logger
 from django.conf import settings
 import pandas as pd
 import joblib
