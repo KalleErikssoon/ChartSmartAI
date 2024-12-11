@@ -7,10 +7,11 @@ import joblib
 
 #Class that trains models with One Vs All Logistic Regression (Multi Class models)
 class ModelTrainer:
-    def __init__(self, train_data_path, test_data_path, model_output_path):
+    def __init__(self, train_data_path, test_data_path, model_output_path, scaler=None):
         self.train_data_path = train_data_path
         self.test_data_path = test_data_path
         self.model_output_path = model_output_path
+        self.scaler = scaler #accept the scaler from the preprocessor
         self.models = {}  #store one model (weights) per class
 
     #Load the training data from the specific, split, files for training and for testing 
@@ -62,10 +63,29 @@ class ModelTrainer:
         print(classification_report(y_test, predictions))
         print(f"Accuracy: {accuracy_score(y_test, predictions):.4f}")
 
-    #save the model pkl file to file path corresponding to each strategy (ema, macd, rsi)
-    def save_models(self):
+    # #save the model pkl file to file path corresponding to each strategy (ema, macd, rsi)
+    # def save_models(self):
+    #     joblib.dump(self.models, self.model_output_path)
+    #     print(f"Models saved to {self.model_output_path}")
+
+    def save_scaler(scaler, scaler_output_path):
+        joblib.dump(scaler, scaler_output_path)
+        print(f"Scaler saved to {scaler_output_path}")
+
+    def save_models_and_scaler(self):
+        # Save the model
         joblib.dump(self.models, self.model_output_path)
         print(f"Models saved to {self.model_output_path}")
+
+        # Save the scaler separately
+        if self.scaler is not None:
+            scaler_output_path = self.model_output_path.replace(".pkl", "_scaler.pkl")
+            joblib.dump(self.scaler, scaler_output_path)
+            print(f"Scaler saved to {scaler_output_path}")
+        else:
+            print("No scaler to save.")
+
+
 
     #run the model trainer pipeline in order
     def run_pipeline(self):
@@ -79,6 +99,10 @@ class ModelTrainer:
         print("Evaluating the model...")
         self.evaluate(X_test, y_test)
         
-        print("Saving the models...")
-        self.save_models()
+        # print("Saving the models...")
+        # self.save_models()
+        # print("Pipeline completed successfully.")
+
+        print("Saving the models and scaler...")
+        self.save_models_and_scaler()
         print("Pipeline completed successfully.")

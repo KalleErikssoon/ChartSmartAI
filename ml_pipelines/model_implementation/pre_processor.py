@@ -73,8 +73,11 @@ class Preprocessor:
         #apply scaling before the splitting
         if self.apply_scaling:
             X_scaled = self.scaler.fit_transform(X)
-            # scaler_mean = self.scaler.mean_
-            # scaler_scale = self.scaler.scale_
+            scaler_mean = self.scaler.mean_
+            scaler_scale = self.scaler.scale_
+            print(f"Scaler mean:{scaler_mean}")
+            print(f"Scaler scale:{scaler_scale}")
+
 
         else:
             print("Skipping feature scaling...")
