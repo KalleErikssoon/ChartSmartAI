@@ -464,3 +464,34 @@ def list_files(request):
         return JsonResponse({"files": files})
     except Exception as e:
         return JsonResponse({'error':  str(e)}, status=500)
+    
+
+
+@api_view(['POST'])
+def change_chosen_model(request):
+    try:
+        # Extract text and name from the request data
+        chosen_strategy = request.data.get('chosen_strategy')
+        chosen_model = request.data.get('chosen_model')
+
+        if not chosen_strategy or not chosen_model:
+            return Response({'error': 'Both text and name are required.'}, status=400)
+
+        # Determine the file path based on the name
+        if 'ema' in chosen_model.lower():
+            file_path = "./stock_project/chosen_model/ema.txt"
+        elif 'rsi' in chosen_model.lower():
+            file_path = "./stock_project/chosen_model/rsi.txt"
+        elif 'macd' in chosen_model.lower():
+            file_path = "./stock_project/chosen_model/macd.txt"
+        else:
+            return Response({'error': 'Invalid name provided.'}, status=400)
+
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        # Save the text to the appropriate file
+        with open(file_path, 'w') as file:
+            file.write(chosen_model + '\n')
+
+        return Response({'message': 'Text saved successfully.'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)

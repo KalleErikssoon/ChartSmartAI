@@ -15,5 +15,6 @@ urlpatterns = [
     path('upload_model/', api_views.upload_model, name='upload_model'),  #for the pickle file  ,
     path('stockadmin/run_strategy/', api_views.retrain, name='retrain_model'),  
     path('stockadmin/get_models/', api_views.list_files, name='get_model'),
+    path('stockadmin/change_model/', api_views.change_chosen_model, name='change_chosen_model'),
 ]
 

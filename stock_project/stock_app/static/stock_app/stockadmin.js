@@ -136,10 +136,37 @@ function get_model_version_list() {
 // Confirm Rollback
 function confirmRollback() {
     const selectedVersion = document.getElementById('model-version').value;
+    const chosen_model = selectedVersion;  
+    const strategyMatch = selectedVersion.match(/_(ema|macd|rsi)_/i);
+    const chosen_strategy = strategyMatch ? strategyMatch[1].toUpperCase() : "UNKNOWN";
+    
+
     showModal('Confirm Rollback', `Are you sure you want to rollback to ${selectedVersion}?`, () => {
         closeModal();
-        alert(`Model rolled back to ${selectedVersion}.`);
-        //rollback logic here
+        send_chosen_model(chosen_strategy, chosen_model);
+    });
+}
+function send_chosen_model(chosen_strategy, chosen_model) {
+    fetch('change_model/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ chosen_strategy: chosen_strategy, chosen_model: chosen_model })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            alert(`Error: ${data.error}`);
+        } else {
+            console.log('Success:', data.message);
+            alert(`Model rolled back to ${chosen_model}.`);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while rolling back the model.');
     });
 }
 
