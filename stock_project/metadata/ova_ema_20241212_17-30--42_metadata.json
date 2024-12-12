@@ -1,0 +1,44 @@
+{
+    "strategy": "EMA",
+    "model_pickle": "ova_ema_20241212_17-30--42.pkl",
+    "scaler_pickle": "ova_ema_20241212_17-30--42_scaler.pkl",
+    "database_class": "STOCK_APP_EMA_DATA",
+    "description": "ema one-vs-all classifier model",
+    "training date": "20241212_17-30--42",
+    "performance metrics": {
+        "classification_report": {
+            "0": {
+                "precision": 0.3137254901960784,
+                "recall": 0.2807017543859649,
+                "f1-score": 0.2962962962962963,
+                "support": 114.0
+            },
+            "1": {
+                "precision": 0.7343283582089553,
+                "recall": 0.5553047404063205,
+                "f1-score": 0.6323907455012854,
+                "support": 443.0
+            },
+            "2": {
+                "precision": 0.24311926605504589,
+                "recall": 0.5408163265306123,
+                "f1-score": 0.33544303797468356,
+                "support": 98.0
+            },
+            "accuracy": 0.5053435114503817,
+            "macro avg": {
+                "precision": 0.43039103815335983,
+                "recall": 0.4589409404409659,
+                "f1-score": 0.4213766932574217,
+                "support": 655.0
+            },
+            "weighted avg": {
+                "precision": 0.5876303154844498,
+                "recall": 0.5053435114503817,
+                "f1-score": 0.5294661003913987,
+                "support": 655.0
+            }
+        },
+        "accuracy": 0.5053435114503817
+    }
+}

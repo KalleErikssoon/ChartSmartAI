@@ -1,0 +1,44 @@
+{
+    "strategy": "RSI",
+    "model_pickle": "ova_rsi_20241212_17-30--32.pkl",
+    "scaler_pickle": "ova_rsi_20241212_17-30--32_scaler.pkl",
+    "database_class": "STOCK_APP_RSI_DATA",
+    "description": "rsi one-vs-all classifier model",
+    "training date": "20241212_17-30--32",
+    "performance metrics": {
+        "classification_report": {
+            "0": {
+                "precision": 0.47191011235955055,
+                "recall": 0.19534883720930232,
+                "f1-score": 0.27631578947368424,
+                "support": 215.0
+            },
+            "1": {
+                "precision": 0.3445692883895131,
+                "recall": 0.6917293233082706,
+                "f1-score": 0.46,
+                "support": 133.0
+            },
+            "2": {
+                "precision": 0.3114754098360656,
+                "recall": 0.2923076923076923,
+                "f1-score": 0.30158730158730157,
+                "support": 130.0
+            },
+            "accuracy": 0.3598326359832636,
+            "macro avg": {
+                "precision": 0.3759849368617097,
+                "recall": 0.3931286176084217,
+                "f1-score": 0.34596769702032865,
+                "support": 478.0
+            },
+            "weighted avg": {
+                "precision": 0.3928455916146384,
+                "recall": 0.3598326359832636,
+                "f1-score": 0.3342975814711115,
+                "support": 478.0
+            }
+        },
+        "accuracy": 0.3598326359832636
+    }
+}

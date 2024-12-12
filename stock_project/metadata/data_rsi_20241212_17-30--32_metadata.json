@@ -1,0 +1,34 @@
+{
+    "name of file": "rsi_data.csv",
+    "model": "STOCK_APP_RSI_DATA",
+    "description": "RSI stock data for the top-10 stocks",
+    "schema": [
+        "symbol",
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "trade_count",
+        "vwap",
+        "rsi",
+        "label"
+    ],
+    "stocks": [
+        "AAPL",
+        "AMZN",
+        "AVGO",
+        "BRK.B",
+        "GOOG",
+        "META",
+        "MSFT",
+        "NVDA",
+        "TSLA",
+        "TSM"
+    ],
+    "origin": "Alpaca API, library version: 0.34.0",
+    "start date": "2023-12-29",
+    "end date": "2024-12-10",
+    "date collected": "2024-12-12 17:23:29.232093"
+}
