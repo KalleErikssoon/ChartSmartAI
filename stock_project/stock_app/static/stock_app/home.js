@@ -138,14 +138,15 @@ function setIndicator(indicator) {
     // Update the info box depending on what indicator is selected
     if (indicator == 'RSI') {
         infoHeader.textContent = "RSI";
-        infoBox.value = "Relative Strength Index";
+        infoBox.value = "The RSI (Relative Strength Index) is a momentum oscillator that measures the speed and magnitude of recent price movements on a scale of 0 to 100. Values above 70 typically indicate overbought conditions, signaling a potential price reversal or pullback, while values below 30 suggest oversold conditions, indicating a possible upward price correction. Traders use RSI to identify potential entry and exit points and to confirm trends.";
     } else if (indicator == 'MACD') {
         infoHeader.textContent = "MACD";
-        infoBox.value = "The MACD (Moving Average Convergence Divergence) is a momentum indicator used to analyze price trends by comparing two moving averages of a stock's price. Our machine learning model uses MACD patterns, to predict short-term trends and recommend Buy, Hold, or Sell decisions based on expected price movements over the next t+3 days. This approach combines technical analysis with AI to provide actionable insights for confident trading."
+        infoBox.value = "The MACD (Moving Average Convergence Divergence) is a trend-following momentum indicator that compares the difference between a short-term moving average (typically 12 periods) and a long-term moving average (typically 26 periods). When the MACD line crosses above the signal line, it suggests bullish momentum, while a crossover below indicates bearish momentum. MACD is used to identify trend changes, assess strength, and generate buy or sell signals.";
     } else if (indicator == 'EMA') {
         infoHeader.textContent = "EMA";
-        infoBox.value = "EMA"
+        infoBox.value = "The EMA (Exponential Moving Average) is a type of moving average that gives more weight to recent price data, making it more responsive to recent changes compared to a simple moving average. Traders use the EMA to identify the direction of the trend and to spot potential support or resistance levels. Crossovers between shorter-term and longer-term EMAs often serve as signals for entry or exit points in a trade.";
     }
+    
 }
 
 //Function to call the backend API
