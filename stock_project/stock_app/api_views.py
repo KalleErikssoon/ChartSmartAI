@@ -410,7 +410,6 @@ def run_model_job(strategy):
     
 def clear_job(job_name, namespace="default"):
     try:
-        # Load kube config if not already loaded externally
         config.load_kube_config()
         batch_v1 = client.BatchV1Api()
         core_v1 = client.CoreV1Api()
@@ -459,7 +458,7 @@ def list_files(request):
     directory_path = "./stock_project/models"
     print(directory_path)
     try:
-        # List files in the directory
+        #list files in the directory
         files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
         return JsonResponse({"files": files})
     except Exception as e:
@@ -470,14 +469,14 @@ def list_files(request):
 @api_view(['POST'])
 def change_chosen_model(request):
     try:
-        # Extract text and name from the request data
+        #get chosen_strategy and chosen_model from the request data
         chosen_strategy = request.data.get('chosen_strategy')
         chosen_model = request.data.get('chosen_model')
 
         if not chosen_strategy or not chosen_model:
             return Response({'error': 'Both text and name are required.'}, status=400)
 
-        # Determine the file path based on the name
+        #determine the file path based on the name
         if 'ema' in chosen_model.lower():
             file_path = "./stock_project/chosen_model/ema.txt"
         elif 'rsi' in chosen_model.lower():
@@ -488,10 +487,23 @@ def change_chosen_model(request):
             return Response({'error': 'Invalid name provided.'}, status=400)
 
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        # Save the text to the appropriate file
+        #save
         with open(file_path, 'w') as file:
             file.write(chosen_model + '\n')
 
         return Response({'message': 'Text saved successfully.'}, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+    
+
+@api_view(['GET'])
+def get_performance(request):
+
+    directory_path = "./stock_project/models"
+    print(directory_path)
+    try:
+        # List files in the directory
+        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+        return JsonResponse({"files": files})
+    except Exception as e:
+        return JsonResponse({'error':  str(e)}, status=500)

@@ -16,5 +16,6 @@ urlpatterns = [
     path('stockadmin/run_strategy/', api_views.retrain, name='retrain_model'),  
     path('stockadmin/get_models/', api_views.list_files, name='get_model'),
     path('stockadmin/change_model/', api_views.change_chosen_model, name='change_chosen_model'),
+    path('stockadmin/get_performance/', api_views.get_performance, name='get_performance'),
 ]
 

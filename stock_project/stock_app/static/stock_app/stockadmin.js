@@ -1,5 +1,3 @@
-
-
 function getSelectedStrategy() {
     const checkboxes = document.querySelectorAll('.strategy-options input[type="checkbox"]');
     const selectedStrategy = [];
@@ -184,21 +182,20 @@ function closeModal() {
 
 
 function setupSingleSelectionCheckbox(className) {
-    // Select all checkboxes using the provided class name
     const checkboxes = document.querySelectorAll(`.${className}`);
     
-    // Attach an event listener to each checkbox
+    // event listener in each checkbox
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
-                // If the current checkbox is checked, disable all others
+                //iff the current checkbox is checked disable all others
                 checkboxes.forEach(otherCheckbox => {
                     if (otherCheckbox !== checkbox) {
                         otherCheckbox.disabled = true;
                     }
                 });
             } else {
-                // If no checkbox is checked, enable all checkboxes
+                //if no checkbox is checked enable all checkboxes
                 const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
                 if (!anyChecked) {
                     checkboxes.forEach(otherCheckbox => {
@@ -209,8 +206,7 @@ function setupSingleSelectionCheckbox(className) {
         });
     });
 }
-
-// Call the function and pass the class name of the checkboxes
+// this is for selections of strategies
 setupSingleSelectionCheckbox('strategy-checkbox');
 
 document.addEventListener('DOMContentLoaded', function() {
