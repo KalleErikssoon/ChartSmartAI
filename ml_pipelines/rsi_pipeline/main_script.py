@@ -38,5 +38,32 @@ def runpipeline():
 
     print(response.status_code)
     print(response.json())
+
+    ## Step 5: Metadata
+    import metadata_handler
+    import pandas as pd
+    # Set the strategy
+    STRATEGY = "RSI"
+
+    fileName = FILE_PATH
+    description = f"{STRATEGY} stock data for the top-10 stocks"
+    model = f"STOCK_APP_{STRATEGY}_DATA"
+
+    # Read the columns from the csv file data frame
+    df = pd.read_csv(fileName)
+    schema = list(df.columns)
     
+    # Read off the timestamps
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    startDate = df['timestamp'].min()
+    endDate = df['timestamp'].max()
+    
+    # Get unique stock symbols
+    stocks = df['symbol'].unique().tolist()
+    metadata_handler = metadata_handler.DataMetadata(fileName, description, stocks, model, schema, startDate, endDate)
+    metadata_handler.upload_metadata()
+
+    # clean up
+    os.remove(f"{STRATEGY.lower()}_data.csv")
+
 runpipeline()

@@ -1,5 +1,6 @@
 from django.urls import path
 from stock_app import views, api_views
+
 # Add home to path
 urlpatterns = [
     path('', views.home, name='home'), # Render home html page
@@ -17,5 +18,8 @@ urlpatterns = [
     path('stockadmin/get_models/', api_views.list_files, name='get_model'),
     path('stockadmin/change_model/', api_views.change_chosen_model, name='change_chosen_model'),
     path('stockadmin/get_performance/', api_views.get_performance, name='get_performance'),
+    path('rename_metadata/', api_views.rename_metadata, name='rename_metadata'),
+    path('upload_model/', api_views.upload_model, name='upload_model'),  #for the pickle file  
+    path('predict/<str:strategy>/<str:stock_symbol>/', api_views.make_prediction, name='predict_stock') # for inference
 ]
 

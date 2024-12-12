@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,6 +11,7 @@ from stock_app.models import EMA_Data
 from stock_app.models import RSI_Data
 import os
 from django.conf import settings
+from stock_app.inference.inference import fetch_stock_data, load_model, run_inference, preprocess_data
 
 from rest_framework.response import Response
 from kubernetes import client, config
@@ -234,6 +236,53 @@ def upload_metadata(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON file'}, status=400)
 
+@csrf_exempt
+@api_view(['POST'])
+def rename_metadata(request):
+    # rename the metadata file to the new name
+    data = request.data
+    old_name = data.get('old_name')
+    new_name = data.get('new_name')
+
+    # Rename the metadata file in the metadata directory
+    metadata_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../metadata")
+    old_path = os.path.join(metadata_dir, old_name)
+    new_path = os.path.join(metadata_dir, new_name)
+
+    try:
+        os.rename(old_path, new_path)
+        return JsonResponse({'message': 'File renamed successfully'}, status=200)
+    except FileNotFoundError:
+        return JsonResponse({'error': 'File not found'}, status=404)
+    except FileExistsError:
+        return JsonResponse({'error': 'File with the new name already exists'}, status=409)
+
+
+# @csrf_exempt
+# @api_view(['POST'])
+# @parser_classes([MultiPartParser])
+# def upload_model(request):
+#     if 'file' not in request.FILES:
+#         return JsonResponse({'error': 'No file uploaded'}, status=400)
+
+#     try:
+#         pkl_file = request.FILES['file']
+#         file_name = pkl_file.name
+
+#         # path to save the file
+#         save_path = os.path.join(settings.BASE_DIR, 'models', file_name)
+#         # make the directory if doesnt exist
+#         os.makedirs(os.path.dirname(save_path), exist_ok=True)
+#         #save
+#         with open(save_path, 'wb') as f:
+#             for chunk in pkl_file.chunks():
+#                 f.write(chunk)
+
+#         return JsonResponse({'message': 'File successfully uploaded'}, status=201)
+
+#     except Exception as e:
+#         return JsonResponse({'error': str(e)}, status=500)
+
 
 @csrf_exempt
 @api_view(['POST'])
@@ -246,8 +295,17 @@ def upload_model(request):
         pkl_file = request.FILES['file']
         file_name = pkl_file.name
 
+        strategy = "-"
+
+        if "macd" in file_name:
+            strategy = "macd"
+        elif "ema" in file_name:
+            strategy = "ema"
+        elif "rsi" in file_name:
+            strategy = "rsi"
+
         # path to save the file
-        save_path = os.path.join(settings.BASE_DIR, 'models', file_name)
+        save_path = os.path.join(settings.BASE_DIR, f"stock_app/inference/models/{strategy}/", file_name)
         # make the directory if doesnt exist
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         #save
@@ -259,7 +317,6 @@ def upload_model(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
 
 @csrf_exempt
 @api_view(['POST'])
@@ -507,3 +564,63 @@ def get_performance(request):
         return JsonResponse({"files": files})
     except Exception as e:
         return JsonResponse({'error':  str(e)}, status=500)
+    
+@api_view(['GET'])
+def make_prediction(request, strategy, stock_symbol):
+    try:
+        strategy = strategy.lower()
+        print(f"make_prediction called with strategy={strategy} and stock_symbol={stock_symbol}")
+        
+        # Validate inputs
+        if not stock_symbol or not strategy:
+            return JsonResponse({"error": "Missing stock_symbol or strategy."}, status=400)
+        
+        # Define the mapping of user-friendly stock names to Alpaca-compatible symbols
+        stock_symbol_mapping = {
+            "Nvidia": "NVDA",
+            "Apple": "AAPL",
+            "Microsoft": "MSFT",
+            "Amazon": "AMZN",
+            "Google": "GOOGL",
+            "Meta": "META",
+            "Tesla": "TSLA",
+            "Berkshire Hathaway": "BRK.B",
+            "Taiwan Semiconductors": "TSM",
+            "Broadcom": "AVGO"
+        }
+
+        # Map the user-selected stock name to the Alpaca-compatible symbol
+        alpaca_symbol = stock_symbol_mapping.get(stock_symbol)
+        if not alpaca_symbol:
+            return JsonResponse({"error": f"Invalid stock symbol: {stock_symbol}"}, status=400)
+
+        # Fetch stock data
+        print("Fetching stock data...")
+        yesterday = (datetime.now() - timedelta(days=1)).date()
+        start_date = yesterday - timedelta(days=15)  # Fetch at least 15 days of data for EMA
+        stock_data = fetch_stock_data(alpaca_symbol, start_date=start_date, end_date=yesterday)
+        
+        if stock_data.empty:
+            raise ValueError(f"No data fetched for {alpaca_symbol} from {start_date} to {yesterday}.")
+        
+        print(f"Fetched stock data:\n{stock_data.head()}")
+
+        # Preprocess the stock data
+        processed_data = preprocess_data(stock_data, strategy)
+        print(f"Processed data:\n{processed_data}")
+
+        # Run inference
+        predicted_action = run_inference(processed_data, strategy)
+        print(f"Predicted action: {predicted_action}")
+
+        # Return the predictions as a response
+        return JsonResponse({
+            "stock_symbol": stock_symbol,
+            "strategy": strategy,
+            "prediction": predicted_action
+        })
+
+    except Exception as e:
+        print(f"Error in make_prediction: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+

@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render
+import os
 
 # Create your views here.
 # Home view
@@ -14,6 +16,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
 from stock_app.models import StockData
+from stock_app.inference.inference import run_inference, fetch_stock_data
 
 # Disclaimer: These tests were created using ChatGPT to cross-check database against metadata
 def validate_stock_data(request):
@@ -94,3 +97,4 @@ def validate_stock_data(request):
 
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
