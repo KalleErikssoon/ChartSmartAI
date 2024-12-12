@@ -279,20 +279,50 @@ def run_inference(processed_data, strategy):
         # Load the model
         strategy_dir = os.path.join(settings.BASE_DIR, f"stock_app/inference/models/{strategy}/")
         print(f"Looking for models in: {strategy_dir}")
+        chosen_model_file_path = os.path.join(settings.BASE_DIR, f"stock_app/chosen_model/{strategy}.txt")
+        print(f"Looking for chosen strategy in: {chosen_model_file_path}")
 
-        # Find the latest model file
-        model_files = [f for f in os.listdir(strategy_dir) if f.endswith(".pkl") and not f.endswith("_scaler.pkl")]
-        model_files = sorted(
-            model_files, 
-            key=lambda x: os.path.getmtime(os.path.join(strategy_dir, x)), 
-            reverse=True
-        )
-        if not model_files:
-            raise FileNotFoundError(f"No model files found in {strategy_dir}")
+        # # Find the latest model file
+        # model_files = [f for f in os.listdir(strategy_dir) if f.endswith(".pkl") and not f.endswith("_scaler.pkl")]
+        # model_files = sorted(
+        #     model_files, 
+        #     key=lambda x: os.path.getmtime(os.path.join(strategy_dir, x)), 
+        #     reverse=True
+        # )
+        # if not model_files:
+        #     raise FileNotFoundError(f"No model files found in {strategy_dir}")
 
-        latest_model_file = model_files[0]
-        model_path = os.path.join(strategy_dir, latest_model_file)
-        print(f"Loading model from: {model_path}")
+        model_path = None
+
+        #Check if the admin has chosen a model
+        chosen_model = None
+        if os.path.exists(chosen_model_file_path):
+            with open(chosen_model_file_path, "r") as file:
+                chosen_model = file.read().strip() #read the chosen model name
+                print(f"Chosen model from {strategy}.txt: {chosen_model}")
+
+        if chosen_model:
+            model_path = os.path.join(strategy_dir, chosen_model)
+            if not os.path.exists(model_path):
+                print(f"Chosen model file does not exist: {model_path}")
+                print("Falling back to the latest available model...")
+                model_path = None  # Reset to trigger fallback logic
+
+        if not model_path:
+            # Fall back to the latest model logic
+            print("No valid chosen model specified. Falling back to the latest model...")
+            model_files = [f for f in os.listdir(strategy_dir) if f.endswith(".pkl") and not f.endswith("_scaler.pkl")]
+            model_files = sorted(
+                model_files,
+                key=lambda x: os.path.getmtime(os.path.join(strategy_dir, x)),
+                reverse=True
+            )
+            if not model_files:
+                raise FileNotFoundError(f"No model files found in {strategy_dir}")
+
+            latest_model_file = model_files[0]
+            model_path = os.path.join(strategy_dir, latest_model_file)
+            print(f"Loading the latest model from: {model_path}")
 
         # Load the model
         model_dict = joblib.load(model_path)

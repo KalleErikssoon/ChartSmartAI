@@ -3,7 +3,7 @@ import os
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import JSONParser, MultiPartParser
 import pandas as pd
 import json
 from stock_app.models import MACD_Data 
@@ -12,6 +12,14 @@ from stock_app.models import RSI_Data
 import os
 from django.conf import settings
 from stock_app.inference.inference import fetch_stock_data, load_model, run_inference, preprocess_data
+
+from rest_framework.response import Response
+from kubernetes import client, config
+import subprocess
+import time 
+from kubernetes.client.rest import ApiException
+
+import os
 
 @csrf_exempt
 @api_view(['POST'])
@@ -307,6 +315,287 @@ def upload_model(request):
 
         return JsonResponse({'message': 'File successfully uploaded'}, status=201)
 
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@api_view(['POST'])
+@parser_classes([JSONParser, MultiPartParser])
+def retrain(request):
+    data = request.data
+    strategy = data.get('strategy')
+    if not strategy:
+        return Response({'error': 'No strategy provided'}, status=400)
+
+    if isinstance(strategy, list):
+        strategy = strategy[0]
+
+    # config.load_kube_config()
+    config.load_incluster_config()
+
+    strategy_lower = strategy.lower()
+    if strategy_lower == "rsi":
+        run_rsi_strategy_job()
+    elif strategy_lower == "macd":
+        run_macd_strategy_job()
+    elif strategy_lower == "ema":
+        run_ema_strategy_job()
+    else:
+        return Response({'error': f'Unknown strategy: {strategy}'}, status=400)
+    # time.sleep(3)
+    #after running strategy pipeline job run the model job
+    run_model_job(strategy)
+    
+    return Response({'message': f'Retraining job for {strategy} created successfully'}, status=200)
+
+def run_rsi_strategy_job():
+    # RSI job definition
+    subprocess.run(["python", "./scripts/clear_rsi_table.py"], check=True)
+    clear_job("rsi-pipeline-job", namespace="default")
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "rsi-pipeline-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "rsi-pipeline",
+                        "image": "gcr.io/adroit-arcana-443708-m9/rsi_pipeline:v1",
+                        "imagePullPolicy": "Always",
+                        "command": ["python", "main_script.py"] 
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+
+def run_macd_strategy_job():
+    # MACD job definition
+    subprocess.run(["python", "./scripts/clear_macd_table.py"], check=True)
+    clear_job("macd-pipeline-job", namespace="default")
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "macd-pipeline-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "macd-pipeline",
+                        "image": "gcr.io/adroit-arcana-443708-m9/macd_pipeline:v1",
+                        "command": ["python", "main_script.py"]
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+
+
+def run_ema_strategy_job():
+    # ema  job definition
+    subprocess.run(["python", "./scripts/clear_ema_table.py"], check=True)
+    clear_job("ema-pipeline-job", namespace="default")
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "ema-pipeline-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "ema-pipeline",
+                        "image": "gcr.io/adroit-arcana-443708-m9/ema_pipeline:v1",
+                        "imagePullPolicy": "Always",
+                        "command": ["python", "main_script.py"]
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+ 
+
+def run_model_job(strategy):
+    # model job definition
+    clear_job("model-job", namespace="default")
+    job_spec = {
+        "api_version": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+            "name": "model-job"
+        },
+        "spec": {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "name": "model-implementation",
+                        "image": "gcr.io/adroit-arcana-443708-m9/model_implementation:v1",
+                        "imagePullPolicy": "Always",
+                        "command": ["python", "main_script.py", strategy.lower()]
+                    }],
+                    "restartPolicy": "Never"
+                }
+            }
+        }
+    }
+
+    batch_v1 = client.BatchV1Api()
+    job = client.V1Job(**job_spec)
+    batch_v1.create_namespaced_job(namespace="default", body=job)
+    
+
+    
+def clear_job(job_name, namespace="default"):
+    try:
+        # config.load_kube_config()
+        config.load_incluster_config()
+        batch_v1 = client.BatchV1Api()
+        core_v1 = client.CoreV1Api()
+
+        #check if job exists
+        try:
+            job = batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
+        except ApiException as e:
+            if e.status == 404:
+                print(f"Job '{job_name}' not found in namespace '{namespace}'. Skipping deletion.")
+                return
+            else:
+                raise
+
+        #delete the job and its pods
+        delete_options = client.V1DeleteOptions(propagation_policy="Foreground")
+        batch_v1.delete_namespaced_job(name=job_name, namespace=namespace, body=delete_options)
+        print(f"Initiated deletion of job '{job_name}' in namespace '{namespace}'.")
+
+        #wait for the job to be fully deleted
+        while True:
+            try:
+                batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
+                print(f"Waiting for job '{job_name}' to be deleted...")
+                time.sleep(3)
+            except ApiException as e:
+                if e.status == 404:
+                    print(f"Job '{job_name}' successfully deleted.")
+                    break
+                else:
+                    raise
+
+        # make sure pods are deleted
+        pod_list = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
+        for pod in pod_list.items:
+            core_v1.delete_namespaced_pod(name=pod.metadata.name, namespace=namespace)
+            print(f"Deleted pod '{pod.metadata.name}' associated with job '{job_name}'.")
+
+    except ApiException as e:
+        print(f"An error occurred: {e}")
+        raise
+
+@api_view(['GET'])
+def list_files(request):
+    import os
+    directory_path = "./stock_app/inference/models/"
+    try:
+        all_files = []  #list to collect all files across strategies
+        strategies = ['rsi', 'ema', 'macd']
+
+        for strategy in strategies:
+            strategy_path = os.path.join(directory_path, strategy)
+            
+            # Skip if dir doesnt exist
+            if not os.path.exists(strategy_path) or not os.path.isdir(strategy_path):
+                print(f"Skipping non-existent folder: {strategy_path}")
+                continue
+            
+            # exclude '_scaler.pkl'
+            strategy_files = [
+                f for f in os.listdir(strategy_path)
+                if os.path.isfile(os.path.join(strategy_path, f)) and not f.endswith('_scaler.pkl')
+            ]
+            
+            print(f"Checking path: {strategy_path}")
+            all_files.extend(strategy_files)  
+
+        return JsonResponse({"files": all_files}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['POST'])
+def change_chosen_model(request):
+    try:
+        #get chosen_strategy and chosen_model from the request data
+        chosen_strategy = request.data.get('chosen_strategy')
+        chosen_model = request.data.get('chosen_model')
+
+        if not chosen_strategy or not chosen_model:
+            return Response({'error': 'Both text and name are required.'}, status=400)
+
+        #determine the file path based on the name
+        if 'ema' in chosen_model.lower():
+            file_path = "./chosen_model/ema.txt"
+        elif 'rsi' in chosen_model.lower():
+            file_path = "./chosen_model/rsi.txt"
+        elif 'macd' in chosen_model.lower():
+            file_path = "./chosen_model/macd.txt"
+        else:
+            return Response({'error': 'Invalid name provided.'}, status=400)
+
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        #save
+        with open(file_path, 'w') as file:
+            file.write(chosen_model + '\n')
+
+        return Response({'message': 'Text saved successfully.'}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
+
+@api_view(['GET'])
+def get_performance(request):
+    directory_path = "./metadata"
+    print(directory_path)
+    try:
+        # List JSON files in the directory
+        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f)) and f.endswith('.json') and not f.startswith('data_')]
+        
+        performance_data = []
+        for file in files:
+            file_path = os.path.join(directory_path, file)
+            with open(file_path, 'r') as json_file:
+                data = json.load(json_file)
+                model_pickle = data.get("model_pickle")
+                performance_metrics = data.get("performance metrics", {})
+                classification_report = performance_metrics.get("classification_report", {})
+                accuracy = classification_report.get("accuracy")
+                macro_avg = classification_report.get("macro avg")
+                performance_data.append({
+                    "model_pickle": model_pickle,
+                    "file": file,
+                    "accuracy": accuracy,
+                    "macro_avg": macro_avg
+                })
+        
+        return JsonResponse({"performance_data": performance_data})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
     

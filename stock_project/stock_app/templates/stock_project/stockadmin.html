@@ -90,7 +90,9 @@
         .metrics {
             display: flex;
             gap: 20px;
-            flex-wrap: wrap; 
+            flex-wrap: wrap;
+            margin-bottom: 15px; 
+            margin-top: 15px ;
         }
         .metric-card {
             flex: 1;
@@ -176,21 +178,6 @@
 
     <!-- Main contanier -->
     <div class="container">
-        <!-- dates -->
-        <div class="section">
-            <h2>Training Date Range</h2>
-            <div class="date-range">
-                <label>
-                    Start Date:
-                    <input type="datetime-local" id="start-date">
-                </label>
-                <label>
-                    End Date:
-                    <input type="datetime-local" id="end-date">
-                </label>
-            </div>
-            <p id="date-validation-message">Start date must be before end date.</p>
-        </div>
 
         <!--training controls -->
         <div class="section">
@@ -198,12 +185,12 @@
             <div class="strategy-selection">
                 <label>Select Strategy:</label>
                 <div class="strategy-options">
-                    <label><input type="checkbox" value="RSI"> RSI</label>
-                    <label><input type="checkbox" value="MACD"> MACD</label>
-                    <label><input type="checkbox" value="EMA"> EMA</label>
+                    <label><input type="checkbox" class="strategy-checkbox" value="RSI"> RSI</label>
+                    <label><input type="checkbox" class="strategy-checkbox" value="MACD"> MACD</label>
+                    <label><input type="checkbox" class="strategy-checkbox" value="EMA"> EMA</label>
                 </div>
             </div>
-            <button class="button" onclick="confirmRetrain()">Retrain Model</button>
+            <button class="button" onclick="confirmRetrain()">Get Newdata and Retrain Model</button>
             <div class="progress-bar" id="progress-bar">
                 <div class="progress-bar-inner" id="progress-bar-inner"></div>
             </div>
@@ -214,6 +201,12 @@
         <!--  -->
         <div class="section">
             <h2>Model Performance Evaluation</h2>
+            <div class="deployment-options">
+                <label for="model-version-evaluation">Select Model:</label>
+                <select id="model-version-evaluation">
+                </select>
+                <button class="button" onclick="verifyModel()">Get Performance</button>
+            </div>
             <!-- Metrics dashboard -->
             <div class="metrics">
                 <div class="metric-card">
@@ -233,29 +226,22 @@
                     <p id="f1-score">--%</p>
                 </div>
             </div>
-
-            <!-- I dont know if we can put a chart about the precision recall and accurcacy-->
-            <canvas id="performance-chart" width="400" height="200" style="margin-top: 20px;"></canvas>
-
-            <!-- Verify model button -->
-            <button class="button" onclick="verifyModel()">Verify Model</button>
+            <!-- Get performance -->
+            <!-- <button class="button" onclick="verifyModel()">Get Performance</button> -->
             <p id="verification-result"></p>
         </div>
 
         <!-- deploy the model-->
         <div class="section">
             <h2>Model Deployment</h2>
-            <button class="button" onclick="deployModel()">Deploy New Model</button>
+            <!-- <button class="button" onclick="deployModel()">Deploy New Model</button> -->
 
             <!-- Rollback TO PREV VERS -->
             <div class="deployment-options">
                 <label for="model-version">Select Previous Model:</label>
                 <select id="model-version">
-                    <!-- EXAMPLE -->
-                    <option value="v1.0">v1.0 - 2023-09-01</option>
-                    <option value="v1.1">v1.1 - 2023-10-15</option>
                 </select>
-                <button class="button" onclick="confirmRollback()">Rollback Model</button>
+                <button class="button" onclick="confirmRollback()">Change Model</button>
             </div>
         </div>
     </div>
@@ -272,7 +258,6 @@
         </div>
     </div>
     <!-- this can be aded to put some charts -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="{% static 'stock_app/stockadmin.js' %}"></script>
 
 </body>
