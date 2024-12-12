@@ -14,9 +14,9 @@
 **/y_train.csv
 
 # Ignore temp model files and metadata
-ml_pipelines/model_implementation/trained_models/*
-stock_project/stock_app/inference/models/*
-stock_project/metadata/*
-stock_project/chosen_model/*
+#ml_pipelines/model_implementation/trained_models/*
+#stock_project/stock_app/inference/models/*
+#stock_project/metadata/*
+#stock_project/chosen_model/*
 
 config
