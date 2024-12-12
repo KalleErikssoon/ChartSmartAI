@@ -552,11 +552,11 @@ def change_chosen_model(request):
 
         #determine the file path based on the name
         if 'ema' in chosen_model.lower():
-            file_path = "./chosen_model/ema.txt"
+            file_path = "./stock_app/chosen_model/ema.txt"
         elif 'rsi' in chosen_model.lower():
-            file_path = "./chosen_model/rsi.txt"
+            file_path = "./stock_app/chosen_model/rsi.txt"
         elif 'macd' in chosen_model.lower():
-            file_path = "./chosen_model/macd.txt"
+            file_path = "./stock_app/chosen_model/macd.txt"
         else:
             return Response({'error': 'Invalid name provided.'}, status=400)
 
