@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'stock_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3', #/app/db/db.sqlite3 for production
+        'NAME': BASE_DIR / 'db.sqlite3', #/app/db/db.sqlite3 for production
     }
 }
 
