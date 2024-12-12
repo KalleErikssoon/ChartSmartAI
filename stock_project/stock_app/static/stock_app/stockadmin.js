@@ -81,21 +81,38 @@ function startTrainingProgress(strategy, fetchPromise) {
 }
 
 
-
 function verifyModel() {
     const verificationResult = document.getElementById('verification-result');
     verificationResult.style.display = 'block';
-    verificationResult.innerText = 'Model verification in progress...';
+    // verificationResult.innerText = 'Model verification in progress...';
 
-    setTimeout(() => {
-        verificationResult.innerText = 'New model meets performance thresholds.';
-        document.getElementById('accuracy').innerText = '95%';
-        document.getElementById('precision').innerText = '93%';
-        document.getElementById('recall').innerText = '92%';
-        document.getElementById('f1-score').innerText = '94%';
+    const modelVersionDropdown = document.getElementById('model-version-evaluation');
+    const selectedModel = modelVersionDropdown.value;
 
-    }, 2000);
+    fetch('get_performance/')
+        .then(response => response.json())
+        .then(data => {
+            // Find the performance data for the selected model
+            const performanceData = data.performance_data.find(item => item.model_pickle === selectedModel);
+            if (performanceData) {
+                const accuracy = performanceData.accuracy;
+                const macroAvg = performanceData.macro_avg;
+
+                // verificationResult.innerText = 'New model meets performance thresholds.';
+                document.getElementById('accuracy').innerText = `${(accuracy * 100).toFixed(2)}%`;
+                document.getElementById('precision').innerText = `${(macroAvg.precision * 100).toFixed(2)}%`;
+                document.getElementById('recall').innerText = `${(macroAvg.recall * 100).toFixed(2)}%`;
+                document.getElementById('f1-score').innerText = `${(macroAvg["f1-score"] * 100).toFixed(2)}%`;
+            } else {
+                verificationResult.innerText = 'Selected model data not found.';
+            }
+        })
+        .catch(error => {
+            verificationResult.innerText = 'Error fetching performance data.';
+            console.error('Error:', error);
+        });
 }
+
 function get_model_version_list() {
     fetch('get_models/')
         .then(response => response.json())
@@ -103,24 +120,39 @@ function get_model_version_list() {
             // Check if the response has files
             if (data.files && Array.isArray(data.files)) {
                 const selectElement = document.getElementById('model-version');
+                const selectPerformance = document.getElementById('model-version-evaluation');
 
                 // Clear existing options
                 selectElement.innerHTML = '';
+                selectPerformance.innerHTML = '';
 
-                // Add an empty placeholder option
-                const placeholderOption = document.createElement('option');
-                placeholderOption.value = '';
-                placeholderOption.textContent = 'Select a model';
-                placeholderOption.disabled = true;
-                placeholderOption.selected = true;
-                selectElement.appendChild(placeholderOption);
+                // Add an empty placeholder option to "Select Model"
+                const placeholderOption1 = document.createElement('option');
+                placeholderOption1.value = '';
+                placeholderOption1.textContent = 'Select a model';
+                placeholderOption1.disabled = true;
+                placeholderOption1.selected = true;
+                selectElement.appendChild(placeholderOption1);
 
-                // Populate the select dropdown with file options
+                // Add an empty placeholder option to "Model Evaluation"
+                const placeholderOption2 = document.createElement('option');
+                placeholderOption2.value = '';
+                placeholderOption2.textContent = 'Select a model';
+                placeholderOption2.disabled = true;
+                placeholderOption2.selected = true;
+                selectPerformance.appendChild(placeholderOption2);
+
+                // Populate the select dropdowns with file options
                 data.files.forEach(file => {
-                    const option = document.createElement('option');
-                    option.value = file; // Set the value to the file name
-                    option.textContent = file; // Display the file name
-                    selectElement.appendChild(option);
+                    const option1 = document.createElement('option');
+                    option1.value = file; // Set the value to the file name
+                    option1.textContent = file; // Display the file name
+                    selectElement.appendChild(option1);
+
+                    const option2 = document.createElement('option');
+                    option2.value = file; // Set the value to the file name
+                    option2.textContent = file; // Display the file name
+                    selectPerformance.appendChild(option2);
                 });
             } else {
                 console.error('No files found in the response');

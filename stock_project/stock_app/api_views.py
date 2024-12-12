@@ -570,15 +570,32 @@ def change_chosen_model(request):
 
 @api_view(['GET'])
 def get_performance(request):
-
-    directory_path = "./metadata"
+    directory_path = "./stock_project/metadata"
     print(directory_path)
     try:
-        # List files in the directory
-        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
-        return JsonResponse({"files": files})
+        # List JSON files in the directory
+        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f)) and f.endswith('.json') and not f.startswith('data_')]
+        
+        performance_data = []
+        for file in files:
+            file_path = os.path.join(directory_path, file)
+            with open(file_path, 'r') as json_file:
+                data = json.load(json_file)
+                model_pickle = data.get("model_pickle")
+                performance_metrics = data.get("performance metrics", {})
+                classification_report = performance_metrics.get("classification_report", {})
+                accuracy = classification_report.get("accuracy")
+                macro_avg = classification_report.get("macro avg")
+                performance_data.append({
+                    "model_pickle": model_pickle,
+                    "file": file,
+                    "accuracy": accuracy,
+                    "macro_avg": macro_avg
+                })
+        
+        return JsonResponse({"performance_data": performance_data})
     except Exception as e:
-        return JsonResponse({'error':  str(e)}, status=500)
+        return JsonResponse({'error': str(e)}, status=500)
     
 @api_view(['GET'])
 def make_prediction(request, strategy, stock_symbol):
