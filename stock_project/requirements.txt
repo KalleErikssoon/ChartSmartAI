@@ -2,3 +2,9 @@ django
 djangorestframework
 python-dotenv
 pandas
+joblib
+alpaca-py
+ta
+scikit-learn
+scipy
+numpy

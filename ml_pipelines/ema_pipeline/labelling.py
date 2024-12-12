@@ -10,11 +10,12 @@ class Labeler:
         self.threshold = threshold
         self.prediction_window = prediction_window  # this is number of days to predict
 
+    #Load the data from the csv file path from the .env file
     def load_data(self):
         self.data = pd.read_csv(self.csv_file_path)
         print(f"Loaded data from {self.csv_file_path}")
 
-
+    #Calculate what the label should be by taking into consideration both the change in ema value and price change over time
     def label_function(self, row):
         if pd.isna(row['price_change']):
             return None  # if there are no future price then return none
@@ -32,6 +33,7 @@ class Labeler:
         else:
             return "1"  #hold
 
+    #Create the actual label column and call the label_function to calculate labels for each datapoint
     def create_label(self):
         if 'ema' not in self.data.columns:
             raise ValueError("The 'ema' column is missing.")
@@ -51,6 +53,7 @@ class Labeler:
         #drop columns that are not needed
         self.data.drop(['future_price', 'price_change', 'ema_change'], axis=1, inplace=True)
 
+    #Remove rows (datapoints) with missing label or ema value
     def data_cleaning(self):
         self.data.dropna(subset=['label', 'ema'], inplace=True)
         print("Removed values with missing label or EMA value.")
