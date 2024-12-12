@@ -330,7 +330,8 @@ def retrain(request):
     if isinstance(strategy, list):
         strategy = strategy[0]
 
-    config.load_kube_config()
+    # config.load_kube_config()
+    config.load_incluster_config()
 
     strategy_lower = strategy.lower()
     if strategy_lower == "rsi":
@@ -349,7 +350,7 @@ def retrain(request):
 
 def run_rsi_strategy_job():
     # RSI job definition
-    subprocess.run(["python", "./stock_project/scripts/clear_rsi_table.py"], check=True)
+    subprocess.run(["python", "./scripts/clear_rsi_table.py"], check=True)
     clear_job("rsi-pipeline-job", namespace="default")
     job_spec = {
         "api_version": "batch/v1",
@@ -378,7 +379,7 @@ def run_rsi_strategy_job():
 
 def run_macd_strategy_job():
     # MACD job definition
-    subprocess.run(["python", "./stock_project/scripts/clear_macd_table.py"], check=True)
+    subprocess.run(["python", "./scripts/clear_macd_table.py"], check=True)
     clear_job("macd-pipeline-job", namespace="default")
     job_spec = {
         "api_version": "batch/v1",
@@ -391,7 +392,7 @@ def run_macd_strategy_job():
                 "spec": {
                     "containers": [{
                         "name": "macd-pipeline",
-                        "image": "gcr.io/adroit-arcana-443708-m9/macd_test:v1",
+                        "image": "gcr.io/adroit-arcana-443708-m9/macd_pipeline:v1",
                         "command": ["python", "main_script.py"]
                     }],
                     "restartPolicy": "Never"
@@ -407,7 +408,7 @@ def run_macd_strategy_job():
 
 def run_ema_strategy_job():
     # ema  job definition
-    subprocess.run(["python", "./stock_project/scripts/clear_ema_table.py"], check=True)
+    subprocess.run(["python", "./scripts/clear_ema_table.py"], check=True)
     clear_job("ema-pipeline-job", namespace="default")
     job_spec = {
         "api_version": "batch/v1",
@@ -467,7 +468,8 @@ def run_model_job(strategy):
     
 def clear_job(job_name, namespace="default"):
     try:
-        config.load_kube_config()
+        # config.load_kube_config()
+        config.load_incluster_config()
         batch_v1 = client.BatchV1Api()
         core_v1 = client.CoreV1Api()
 
@@ -512,7 +514,7 @@ def clear_job(job_name, namespace="default"):
 @api_view(['GET'])
 def list_files(request):
     import os
-    directory_path = "./stock_project/stock_app/inference/models/"
+    directory_path = "./stock_app/inference/models/"
     try:
         all_files = []  #list to collect all files across strategies
         strategies = ['rsi', 'ema', 'macd']
@@ -550,11 +552,11 @@ def change_chosen_model(request):
 
         #determine the file path based on the name
         if 'ema' in chosen_model.lower():
-            file_path = "./stock_project/chosen_model/ema.txt"
+            file_path = "./chosen_model/ema.txt"
         elif 'rsi' in chosen_model.lower():
-            file_path = "./stock_project/chosen_model/rsi.txt"
+            file_path = "./chosen_model/rsi.txt"
         elif 'macd' in chosen_model.lower():
-            file_path = "./stock_project/chosen_model/macd.txt"
+            file_path = "./chosen_model/macd.txt"
         else:
             return Response({'error': 'Invalid name provided.'}, status=400)
 
@@ -570,7 +572,7 @@ def change_chosen_model(request):
 
 @api_view(['GET'])
 def get_performance(request):
-    directory_path = "./stock_project/metadata"
+    directory_path = "./metadata"
     print(directory_path)
     try:
         # List JSON files in the directory

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: django-server-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: django-server
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: group2-django-server
-        image: gcr.io/adroit-arcana-443708-m9/django_server:v1
+        image: gcr.io/adroit-arcana-443708-m9/django_server:v13
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
