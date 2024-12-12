@@ -511,17 +511,32 @@ def clear_job(job_name, namespace="default"):
 
 @api_view(['GET'])
 def list_files(request):
-
-    directory_path = "./stock_project/models"
-    print(directory_path)
+    import os
+    directory_path = "./stock_project/stock_app/inference/models/"
     try:
-        #list files in the directory
-        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
-        return JsonResponse({"files": files})
-    except Exception as e:
-        return JsonResponse({'error':  str(e)}, status=500)
-    
+        all_files = []  #list to collect all files across strategies
+        strategies = ['rsi', 'ema', 'macd']
 
+        for strategy in strategies:
+            strategy_path = os.path.join(directory_path, strategy)
+            
+            # Skip if dir doesnt exist
+            if not os.path.exists(strategy_path) or not os.path.isdir(strategy_path):
+                print(f"Skipping non-existent folder: {strategy_path}")
+                continue
+            
+            # exclude '_scaler.pkl'
+            strategy_files = [
+                f for f in os.listdir(strategy_path)
+                if os.path.isfile(os.path.join(strategy_path, f)) and not f.endswith('_scaler.pkl')
+            ]
+            
+            print(f"Checking path: {strategy_path}")
+            all_files.extend(strategy_files)  
+
+        return JsonResponse({"files": all_files}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @api_view(['POST'])
 def change_chosen_model(request):
@@ -556,7 +571,7 @@ def change_chosen_model(request):
 @api_view(['GET'])
 def get_performance(request):
 
-    directory_path = "./stock_project/models"
+    directory_path = "./metadata"
     print(directory_path)
     try:
         # List files in the directory
