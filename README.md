@@ -102,8 +102,7 @@ The authors thank Daniel Strüber @danstru and the DIT826 teaching team for orga
 This project is licensed under the MIT License.
 
 ## Project status
-**v1.0.0:**
-[![Latest Release](https://https://git.chalmers.se/courses/dit826/2024/group2/-/badges/release.svg)](https://https://git.chalmers.se/courses/dit826/2024/group2/-/releases)
+**v1.0.0:** [MVP project](https://git.chalmers.se/courses/dit826/2024/group2/-/releases/v1.0.0)
 
 ## Contributors
 - Mehmet Asim Altinisik @mehmetas
