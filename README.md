@@ -1,7 +1,16 @@
 # Group 2 - Stock Market Prediction System
 
 ## Description
-The Stock Market Prediction System is a ...
+The system provides AI-powered stock analyses to give users valuable insights into stock market behavior and trends. The system leverages machine learning models trained on technical analysis strategies and future price movements to generate “buy”, “sell”, or “hold” recommendations for the top 10 stocks on the US market (according to market cap),  allowing users to explore and apply strategies in their own trading decisions. In addition, deep learning models are used to forecast future prices.
+
+**Classification - One-vs-All**:
+- RSI (Relative Strength Index)
+- MACD (Moving Average Convergence/Divergence) model
+- EMA (Exponential Moving Average)
+
+**Regression - Time Series Forecasting:**
+- RNN model 
+- LSTM model
 
 ## Usage
 The project is deployed via Google Cloud. Access the project using your favorite web browser:
