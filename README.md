@@ -1,4 +1,11 @@
-# Group 2 - Stock market prediction system
+# Group 2 - Stock Market Prediction System
+
+## Cloud Deployment
+Access the project using your favorite web browser:
+```
+http://35.228.158.218:8000/
+http://35.228.158.218:8000/stockadmin
+```
 
 ## Kubernetes, Docker, and Google cloud cheat sheet
 **Prerequisites:** Install kubectl, docker, and Google Cloud CLI
