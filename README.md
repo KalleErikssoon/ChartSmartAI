@@ -2,49 +2,80 @@
 
 ## Kubernetes, Docker, and Google cloud cheat sheet
 **Prerequisites:** Install kubectl, docker, and Google Cloud CLI
+
+**Deployment Prerequisites:** Use free Google Cloud credits. Configure cloud services via Google Cloud Console, in particular, GKE and Container Registry.
+
 ### Google Cloud CLI commands
-- Login: `gcloud auth login`
+- Login: `gcloud auth login` (oauth with group2.dit826@gmail.com)
 - Activate project: `gcloud config set project adroit-arcana-443708-m9`
 - Install plugin to authenticate **kubectl** with **GKE**: `gcloud components install gke-gcloud-auth-plugin`
 - Connect kubectl to cluster: `gcloud container clusters get-credentials stock-project-cluster --zone europe-north1`
-### Docker commands
 - Authenticate docker with Google Cloud: `gcloud auth configure-docker`
+### Docker commands
+- Build docker image: `docker build -t <IMAGE_NAME> .`
 - Tag docker image: `docker tag <IMAGE_NAME> gcr.io/<PROJECT_ID>/<IMAGE_NAME>:v1`
 - Push docker image: `docker push gcr.io/<PROJECT_ID>/<IMAGE_NAME>:v1`
+- Debug local docker image via terminal (if needed):
+`docker run --rm -it <IMAGE_NAME> /bin/bash`
 ### kubectl commands
 - Check version and connection: `kubectl version`
 - List pods: `kubectl get pods`
+- List jobs: `kubectl get jobs`
 - List services: `kubectl get services`
 - List all contexts: `kubectl config get-contexts`
 - Switch context: `kubectl config use-context <context>`
 - Apply configuration to kubernetes yaml file: `kubectl apply -f <yaml file>`
 - Delete pod: `kubectl delete pod <pod-name>`
+- Delete job: `kubectl delete job <job-name>`
 - Delete deployment (to stop K8s from recreating pods): `kubectl delete deployment <deployment-name>`
+- Read logs from pod: `kubectl logs <pod-name>`
+- Create terminal inside a K8s pod: `kubectl exec -it <pod-name> -- /bin/sh`
 
+## Local Build
+**Prerequisites:** conda or python
+1. Fetch dependencies:
 
-
-## Configuring Django project - Environment Variables (API keys)
-0. Obtain dependencies:
-```
+if using conda:
+```sh
 conda env create -f environment.yml
 conda activate django-env
 ```
-1. Create a '.env' file in the root of the Django project (same level as 'manage.py')
-2. Add the following to '.env':
+if using python:
+```sh
+python3 -m venv venv # create virtual environment
+source venv/bin/activate # activate virtual environment
+pip install -r stock_project/requirements.txt
+pip install -r ml_pipelines/ema/requirements.txt
+pip install -r ml_pipelines/macd/requirements.txt
+pip install -r ml_pipelines/rsi/requirements.txt
+pip install -r ml_pipelines/model_implementation/requirements.txt
+```
+
+2. Obtain ALPACA API key:
 ```
 ALPACA_API_KEY=YOUR_API_KEY
 ALPACA_SECRET_KEY=YOUR_SECRET_KEY
 ```
-3. Populate Database (as needed):
+3. Create `.env` files as described in DIT826 google drive folder.
+4. Start Django server:
 ```sh
-python clear_db.py # clear SQLite db
-python populate_db.py # populate SQLite db with data requested from Alpaca API
+python stock_project/manage.py makemigrations # apply changes to models
+python stock_project/manage.py migrate # apply database migrations
+python stock_project/manage.py runserver # run Django server
 ```
-4. Run Django server:
+5. Run ML pipelines:
 ```sh
-python manage.py makemigrations # if you apply changes to model, make migrations file
-python manage.py migrate # apply migrations to database
-python manage.py runserver # run Django server, optionally add 0.0.0.0:8000 for IP and port
+python ml_pipelines/ema/main_script.py # wait 60 seconds to fetch and process data, post to database
+python ml_pipelines/macd/main_script.py # wait 60 seconds to fetch and process data, post to database
+python ml_pipelines/rsi/main_script.py # wait 60 seconds to fetch and process data, post to database
+python ml_pipelines/model_implementation main_script.py ema # wait 10 seconds to train, post pickle file and metaadata
+python ml_pipelines/model_implementation main_script.py macd # wait 10 seconds to train, post pickle file and metaadata
+python ml_pipelines/model_implementation main_script.py rsi # wait 10 seconds to train, post pickle file and metaadata
+```
+6. Access frontend for user and admin:
+```
+http://localhost:8000/
+http://localhost:8000/stockadmin
 ```
 
 ## Getting started
