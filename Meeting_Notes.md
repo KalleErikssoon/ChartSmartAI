@@ -12,6 +12,10 @@
 | 2024-11-29 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Merged branches, created new issues. Divide tasks |
 | 2024-12-03 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Prepared questions for TA. Evaluated remaining work. Divided tasks. |
 | 2024-12-09 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Everyone setup environment for cloud development. Divided tasks |
+| 2024-12-10 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finish remaining features and solve merge conflicts. |
+| 2024-12-11 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finish remaining features and solve merge conflicts. Fix bugs. Deploy system. Fix deployment issues. Work on Assignment 2.|
+| 2024-12-12 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finish remaining features and solve merge conflicts. Fix bugs. Test the deployed system. Fix deployment issues. Work on Assignment 2. |
+| 2024-12-13 | Isaac, Kalle, Malte, Asim, Jessie, Nas | Finalize Deployment. Work on Presentation. Divide Tasks. Work on Assignment 2. |
 ---
 
 # Attendance Tracker
@@ -19,12 +23,12 @@
 
 | Name     | Assignment 1 Meetings  | Assignment 2 Meetings|
 |----------|------------------------|----------------------|
-| Kalle    | ✅✅✅✅✅✅         |✅✅✅✅             |
-| Malte    | ✅✅✅✅✅✅         |✅✅✅✅             |
-| Isaac    | ✅✅✅✅✅✅         |✅✅✅✅             |
-| Nas      | ✅✅✅✅✅✅         |✅✅✅✅             |
-| Jessie   | ✅✅✅✅✅✅         |✅✅✅✅             |
-| Asim     | ✅✅✅✅✅✅         |✅✅✅✅             |
+| Kalle    | ✅✅✅✅✅✅         |✅✅✅✅✅✅✅✅    |
+| Malte    | ✅✅✅✅✅✅         |✅✅✅✅✅✅✅✅    |
+| Isaac    | ✅✅✅✅✅✅         |✅✅✅✅✅✅✅✅    |
+| Nas      | ✅✅✅✅✅✅         |✅✅✅✅✅✅✅✅    |
+| Jessie   | ✅✅✅✅✅✅         |✅✅✅✅✅✅✅✅    |
+| Asim     | ✅✅✅✅✅✅         |✅✅✅✅✅✅✅✅    |
 
 ---
 
@@ -132,3 +136,42 @@
 **TODO:** Work on individual tasks. 
 
 ---
+### Meeting 11 - Tuesday, 10-12-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Pair-programming and debugging to finish final remaining features
+* TA meeting with Yi Peng - clarify requirements for unit testing (redundant to unit test more than 1 classification model as they are all similar)
+* Merge bugfixes related to system integration (paths, URLs)
+
+**TODO:** TA meeting with Yi Peng at 13:30. Work on individual tasks. 
+
+---
+### Meeting 12 - Wednesday, 11-12-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Pair-programming and debugging to finish final remaining features
+* Solve merge conflicts
+* Fix deployment issues (paths)
+* Work on Assignment 2 report
+
+**TODO:** Work on individual tasks. 
+
+---
+
+### Meeting 12 - Thursday, 12-12-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Pair-programming and debugging to finish final remaining features
+* Solve merge conflicts
+* Fix deployment issues (paths, permissions)
+* Test deployed system
+* Work on Assignment 2 report
+
+**TODO:** Work on individual tasks. 
+
+---
+
+### Meeting 12 - Thursday, 11-12-24
+**Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
+* Work on Assignment 2 report - further divide tasks
+* Finalize deployment (MVP project)
+* Work on Presentation and assign responsibilities
+
+**TODO:** Presentation is on Tuesday, from 10:15-12:00 in Jupiter 243.
