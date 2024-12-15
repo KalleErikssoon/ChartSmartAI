@@ -26,7 +26,7 @@ http://35.228.158.218:8000/stockadmin
 ![Screenshot 2](screenshots/admin-ui.png)
 
 ## Installation
-**Prerequisites:** conda or python
+**Prerequisites:** conda or python (recommended)
 1. Fetch dependencies:
 
 if using conda:
@@ -34,7 +34,7 @@ if using conda:
 conda env create -f environment.yml
 conda activate django-env
 ```
-if using python:
+if using python (recommended):
 ```sh
 python3 -m venv venv # create virtual environment
 source venv/bin/activate # activate virtual environment
@@ -105,7 +105,7 @@ http://localhost:8000/stockadmin
 - Create terminal inside a K8s pod: `kubectl exec -it <pod-name> -- /bin/sh`
 
 ## Acknowledgements
-The authors thank Daniel Strüber @danstru and the DIT826 teaching team for organizing the course. The authors thank Yi Peng @yipe for supporting the project through weekly discussions.
+The authors thank Daniel Strüber @danstru and the DIT826 teaching team for organizing the course. Special thanks to Yi Peng @yipe for supporting the project during weekly discussions.
 
 ## License
 This project is licensed under the MIT License.
