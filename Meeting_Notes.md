@@ -156,7 +156,7 @@
 
 ---
 
-### Meeting 12 - Thursday, 12-12-24
+### Meeting 13 - Thursday, 12-12-24
 **Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
 * Pair-programming and debugging to finish final remaining features
 * Solve merge conflicts
@@ -168,10 +168,10 @@
 
 ---
 
-### Meeting 12 - Thursday, 11-12-24
+### Meeting 14 - Thursday, 11-12-24
 **Attendance:** Kalle, Malte, Isaac, Nas, Jessie, Asim
 * Work on Assignment 2 report - further divide tasks
 * Finalize deployment (MVP project)
 * Work on Presentation and assign responsibilities
 
-**TODO:** Presentation is on Tuesday, from 10:15-12:00 in Jupiter 243.
+**TODO:** Presentation is on Tuesday, from 10:15-12:00 in Jupiter 243. We will present our MVP project and provide feedback to other groups.
