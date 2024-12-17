@@ -1,3 +1,4 @@
+# Author: Isaac Lindegren Ternbom
 from django.apps import AppConfig
 
 

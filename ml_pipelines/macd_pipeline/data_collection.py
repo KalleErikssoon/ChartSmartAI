@@ -1,4 +1,5 @@
 
+# Author: Karl Eriksson, Isaac Lindegren Ternbom
 # Alpaca API imports
 from alpaca.data import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest

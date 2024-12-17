@@ -1,4 +1,4 @@
-
+# Author: Malte Bengtsson, Karl Eriksson
 # Scientific and vector computation for python
 import numpy as np
 

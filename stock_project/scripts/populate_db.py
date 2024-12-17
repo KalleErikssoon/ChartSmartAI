@@ -1,3 +1,4 @@
+# Author: Isaac Lindegren Ternbom
 import os
 import sys
 import json

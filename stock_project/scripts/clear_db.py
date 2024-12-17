@@ -1,3 +1,4 @@
+# Author: Isaac Lindegren Ternbom
 # Django imports
 import os
 import sys

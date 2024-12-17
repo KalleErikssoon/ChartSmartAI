@@ -1,3 +1,4 @@
+# Author: Malte Bengtsson, Karl Eriksson, Nasit Vurgun
 import pickle
 import pandas as pd
 import numpy as np

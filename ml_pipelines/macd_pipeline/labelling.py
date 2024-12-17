@@ -1,3 +1,4 @@
+# Author: Karl Eriksson, Isaac Lindegren Ternbom, Malte Bengtsson
 import pandas as pd
 import os
 from dotenv import load_dotenv

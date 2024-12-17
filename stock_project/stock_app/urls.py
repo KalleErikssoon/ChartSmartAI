@@ -1,3 +1,4 @@
+# Author: Everyone
 from django.urls import path
 from stock_app import views, api_views
 

@@ -1,3 +1,4 @@
+# Author: Karl Eriksson, Nasit Vurgun
 services:
   django_server:
     build:

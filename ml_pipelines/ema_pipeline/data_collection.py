@@ -1,3 +1,5 @@
+# Author: Malte Bengtsson, Mehmet Asim Altinisik
+
 # Alpaca API imports
 from alpaca.data import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest

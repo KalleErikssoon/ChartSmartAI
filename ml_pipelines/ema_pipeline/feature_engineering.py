@@ -1,3 +1,4 @@
+# Author: Malte Bengtsson, Mehmet Asim Altinisik
 # Imports
 import numpy as np
 import os

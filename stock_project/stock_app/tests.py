@@ -1,3 +1,4 @@
+# Author: Jessie Johnsson, Nasit Vurgun
 from django.test import TestCase
 from datetime import datetime
 from .models import MACD_Data, EMA_Data, RSI_Data

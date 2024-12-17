@@ -1,3 +1,4 @@
+# Author: Malte Bengtsson, Mehmet Asim Altinisik
 import pandas as pd
 import os
 from dotenv import load_dotenv

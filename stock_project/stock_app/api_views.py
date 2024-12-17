@@ -1,3 +1,4 @@
+# Author: Everyone
 from datetime import datetime, timedelta
 import os
 from django.http import HttpResponse, JsonResponse

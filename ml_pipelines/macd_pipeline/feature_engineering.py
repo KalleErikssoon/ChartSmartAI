@@ -1,3 +1,4 @@
+# Author: Karl Eriksson, Isaac Lindegren Ternbom
 import pandas as pd  
 
 import os

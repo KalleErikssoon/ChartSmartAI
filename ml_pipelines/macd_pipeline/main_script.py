@@ -1,3 +1,4 @@
+# Author: Karl Eriksson, Isaac Lindegren Ternbom, Nasit Vurgun
 from data_collection import DataCollector
 from feature_engineering import FeatureEngineering
 from labelling import DataLabeler

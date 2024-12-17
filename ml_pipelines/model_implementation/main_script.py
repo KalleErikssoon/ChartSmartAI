@@ -1,4 +1,4 @@
-
+# Author: Karl Eriksson, Malte Bengtsson, Nasit Vurgun
 import joblib
 from pre_processor import Preprocessor
 from model_trainer_ova import ModelTrainer

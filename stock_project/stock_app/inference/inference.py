@@ -1,3 +1,4 @@
+# Author: Malte Bengtsson
 #from venv import logger
 from django.conf import settings
 import pandas as pd

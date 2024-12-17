@@ -1,3 +1,4 @@
+# Author: Malte Bengtsson
 import numpy as np
 import pandas as pd
 from logregression_utils import LogisticRegressionUtils

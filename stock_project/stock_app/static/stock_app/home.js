@@ -1,3 +1,4 @@
+// Author: Isaac Lindegren Ternbom
 //variaböes to track selected stock and indicator
 let selectedStock = null;
 let selectedIndicator = null;

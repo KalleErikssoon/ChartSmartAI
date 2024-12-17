@@ -1,3 +1,4 @@
+// Author: Mehmet Asim Altinisik
 function getSelectedStrategy() {
     const checkboxes = document.querySelectorAll('.strategy-options input[type="checkbox"]');
     const selectedStrategy = [];

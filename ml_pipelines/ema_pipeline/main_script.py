@@ -1,3 +1,4 @@
+# Author: Malte Bengtsson, Mehmet Asim Altinisik
 from data_collection import DataCollector
 from labelling import Labeler
 from feature_engineering import EmaCalculator
