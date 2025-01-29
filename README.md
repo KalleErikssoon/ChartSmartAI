@@ -79,8 +79,8 @@ http://localhost:8000/stockadmin
 **Deployment Prerequisites:** Use free Google Cloud credits. Configure cloud services via Google Cloud Console, in particular, GKE and Container Registry.
 
 ### Google Cloud CLI commands
-- Login: `gcloud auth login` (oauth with group2.dit826@gmail.com)
-- Activate project: `gcloud config set project adroit-arcana-443708-m9`
+- Login: `gcloud auth login` (oauth with gmail)
+- Activate project: `gcloud config set project <PROJECT_ID>`
 - Install plugin to authenticate **kubectl** with **GKE**: `gcloud components install gke-gcloud-auth-plugin`
 - Connect kubectl to cluster: `gcloud container clusters get-credentials stock-project-cluster --zone europe-north1`
 - Authenticate docker with Google Cloud: `gcloud auth configure-docker`
